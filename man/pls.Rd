@@ -3,16 +3,30 @@
 \docType{methods}
 \name{pls}
 \alias{pls}
-\alias{pls,NULL,NULL,formula,NULL-method}
+\alias{pls,ANY,ANY,formula,ANY-method}
+\alias{pls,ANY,ANY,formula,MultiAssayExperiment-method}
+\alias{pls,ANY,ANY,ANY,MultiAssayExperiment-method}
 \title{Partial Least Squares (PLS) Regression}
 \usage{
 \S4method{pls}{ANY}(X, Y, ncomp = 2, scale = TRUE, mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"), multilevel = NULL, all.outputs = TRUE)
 
-\S4method{pls}{`NULL`,`NULL`,formula,`NULL`}(X, Y, formula = NULL,
-  data = NULL, ncomp = 2, scale = TRUE, mode = c("regression",
-  "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100,
-  near.zero.var = FALSE, logratio = "none", multilevel = NULL,
-  all.outputs = TRUE, ...)
+\S4method{pls}{ANY,ANY,formula,ANY}(X = NULL, Y = NULL,
+  formula = NULL, data = NULL, ncomp = 2, scale = TRUE,
+  mode = c("regression", "canonical", "invariant", "classic"),
+  tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
+  logratio = "none", multilevel = NULL, all.outputs = TRUE, ...)
+
+\S4method{pls}{ANY,ANY,formula,MultiAssayExperiment}(X = NULL,
+  Y = NULL, formula = NULL, data = NULL, ncomp = 2, scale = TRUE,
+  mode = c("regression", "canonical", "invariant", "classic"),
+  tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
+  logratio = "none", multilevel = NULL, all.outputs = TRUE, ...)
+
+\S4method{pls}{ANY,ANY,ANY,MultiAssayExperiment}(X = NULL, Y = NULL,
+  formula = NULL, data = NULL, ncomp = 2, scale = TRUE,
+  mode = c("regression", "canonical", "invariant", "classic"),
+  tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
+  logratio = "none", multilevel = NULL, all.outputs = TRUE, ...)
 }
 \arguments{
 \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
@@ -123,13 +137,11 @@ internal pre-processing step, through \code{\link{logratio.transfo}} and
 \code{\link{withinVariation}} respectively.
 }
 \examples{
-data(linnerud)
 X <- linnerud$exercise
 Y <- linnerud$physiological
 linn.pls <- pls(X, Y, mode = "classic")
 
 \dontrun{
-  data(liver.toxicity)
   X <- liver.toxicity$gene
   Y <- liver.toxicity$clinic
   toxicity.pls <- pls(X, Y, ncomp = 3)

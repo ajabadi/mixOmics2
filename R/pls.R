@@ -143,22 +143,27 @@
 #' Reviews: Computational Statistics}, 2(1), 97-106.
 #' @keywords regression multivariate
 ## --------------------------------------------------------------------------------------- examples
-#' @examples
+#' @example examples/pls-example.R
 #'
-#' data(linnerud)
-#' X <- linnerud$exercise
-#' Y <- linnerud$physiological
-#' linn.pls <- pls(X, Y, mode = "classic")
-#'
-#' \dontrun{
-#' data(liver.toxicity)
-#' X <- liver.toxicity$gene
-#' Y <- liver.toxicity$clinic
-#' toxicity.pls <- pls(X, Y, ncomp = 3)
-#' }
-#'
-#' @export pls
-pls = function(X,
+
+#############################################################
+## generic function
+#############################################################
+#' @usage \S4method{pls}{ANY}(X, Y, ncomp = 2, scale = TRUE, mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"), multilevel = NULL, all.outputs = TRUE)
+#' @usage \S4method{pls}{ANY}(formula=Y~X, ncomp = 2, scale = TRUE, mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"), multilevel = NULL, all.outputs = TRUE)
+## arguemnts must be copied from internal to both @usage and setGeneric plus the '...' in generic so the methods can add arguments - if we only include X, RStudio won't suggest the rest automatically for autofill
+#' @export
+setGeneric("pls", def = function(X=NULL, Y=NULL, formula=NULL, data=NULL, ncomp = 2, scale = TRUE,
+                                 mode = c("regression", "canonical", "invariant", "classic"),
+                                 tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = "none",
+                                 multilevel = NULL, all.outputs = TRUE,...) standardGeneric("pls"))
+
+#############################################################
+## internal function
+#############################################################
+#' @importFrom matrixStats colSds
+#' @importFrom matrixStats colVars
+.pls = function(X,
 Y,
 ncomp = 2,
 scale = TRUE,
@@ -166,7 +171,7 @@ mode = c("regression", "canonical", "invariant", "classic"),
 tol = 1e-06,
 max.iter = 100,
 near.zero.var = FALSE,
-logratio = "none",   # one of "none", "CLR"
+logratio = "none",
 multilevel = NULL,
 all.outputs = TRUE)
 {
@@ -209,3 +214,69 @@ all.outputs = TRUE)
     return(invisible(out))
 
 }
+
+#############################################################
+## S4 method definitions.
+#############################################################
+
+## ----------- default - both matrices (Y can be numeric)
+#' @export
+#' @importFrom SummarizedExperiment assay
+#' @importFrom MultiAssayExperiment MultiAssayExperiment
+setMethod("pls", signature("matrix", "matrix"), definition = function(X,Y, formula, data,...){
+    ## making sure there are no missing arguments
+    args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
+    ## add 'Expect' formal for internal - 'xy' since the call matches these two only but we
+    ## want to make sure other unused arguments are NULL so the user is not confused
+    args.g$Expect="xy"
+    XY.list <- do.call(check_generic_args,args = args.g, envir = parent.frame())
+    X <- XY.list$X
+    Y <- XY.list$Y
+    .pls(X,Y,...)
+})
+
+## ----------- formula = Y_numeric ~ X_matrix
+#' @export
+#' @rdname pls
+setMethod("pls", signature("ANY", "ANY", "formula"), definition = function(X,Y, formula, data,...){
+    ## making sure there are no missing arguments
+    args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
+    ## add 'Expect' formal for internal - 'xy' since the call matches these two only but we
+    ## want to make sure other unused arguments are NULL so the user is not confused
+    args.g$Expect="formula"
+    XY.list <- do.call(check_generic_args,args = args.g, envir = parent.frame())
+    X <- XY.list$X
+    Y <- XY.list$Y
+    .pls(X,Y,...)
+})
+
+## ----------- if formula=assay ~ phenotype/assay and data=MAE is provided
+#' @export
+#' @rdname pls
+setMethod("pls", signature("ANY", "ANY", "formula", "MultiAssayExperiment"), definition = function(X,Y, formula, data,...){
+    ## making sure there are no missing arguments
+    args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
+    ## add 'Expect' formal for internal - 'formula' since the call matches these two only but we
+    ## want to make sure other unused arguments are NULL so the user is not confused
+    args.g$Expect="formula_mae"
+    XY.list <- do.call(check_generic_args,args = args.g, envir = parent.frame())
+    X <- XY.list$X
+    Y <- XY.list$Y
+    .pls(X,Y,...)
+})
+
+## ----------- if X=X_assay, Y=Y_assay/Y_colData and data=MAE is provided
+#' @export
+#' @rdname pls
+setMethod("pls", signature("ANY", "ANY", "ANY", "MultiAssayExperiment"), definition = function(X,Y, formula, data,...){
+    ## making sure there are no missing arguments
+    args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
+    # args.g[c("X","Y")] <- as.character(substitute(args.g[c("X","Y")]))
+    ## add 'Expect' formal for internal - 'formula' since the call matches these two only but we
+    ## want to make sure other unused arguments are NULL so the user is not confused
+    args.g$Expect="xy_mae"
+    XY.list <- do.call(check_generic_args,args = args.g, envir = parent.frame())
+    X <- XY.list$X
+    Y <- XY.list$Y
+    .pls(X,Y,...)
+})
