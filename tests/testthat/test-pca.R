@@ -1,4 +1,4 @@
-context("pca")
+context("pca") ## context helps devtools::test() to categorise tests
 test_that('pca results for nutrimouse are the same when using either list or MAE class (with and without quotes OR using assay index for Y)',{
   pca.res1 <- pca(X = nutrimouse$lipid)
   pca.res2 <- pca(X = nutrimouse.mae, Assay = "lipid")

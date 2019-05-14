@@ -1,8 +1,6 @@
 context("test-mae")
 
 # ####################### ipca - calls function from ica.def.par.R
-# data(liver.toxicity.mae)
-# data(liver.toxicity)
 # #### run test
 # test_that('ipca results for nutrimouse are the same when using either list or MAE class (with and without quotes for Y)',{
 #   ipca.res1 <- ipca(X = liver.toxicity$gene)
@@ -13,8 +11,6 @@ context("test-mae")
 # })
 #
 # ####################### sipca - calls function from ica.def.par.R
-# data(liver.toxicity.mae)
-# data(liver.toxicity)
 # #### run test
 # test_that('sipca results for nutrimouse are the same when using either list or MAE class (with and without quotes for Y)',{
 #   keepX.test <- rep(5,3)
@@ -28,8 +24,6 @@ context("test-mae")
 # ####################### plsda
 ## TODO
 ##  both Y and formula creates error of class args_conflict
-# data(liver.toxicity.mae)
-# data(liver.toxicity)
 # #### run test
 # test_that('plsda results for nutrimouse are the same when using either matrix or MAE class with formula',{
 #   plsda.res1 <- plsda(nutrimouse$gene,nutrimouse$diet)
