@@ -137,6 +137,22 @@
 #############################################################
 #' @usage \S4method{pca}{ANY}(X, ncomp = 2, center = TRUE, scale = FALSE, max.iter = 500, tol = 1e-09, logratio = c('none','CLR','ILR'), ilr.offset = 0.001, V = NULL, multilevel = NULL)
 ## arguemnts must be copied from internal to both @usage and setGeneric plus the '...' in generic so the methods can add arguments - if we only include X, RStudio won't suggest the rest automatically for autofill
+
+
+## --------------- the importFrom section for automation of NAMESPACE which should ideally be distrbuted to corresponding function files that import them
+#' @import MASS lattice igraph ggplot2 corpcor parallel RColorBrewer
+#' @importFrom grDevices as.graphicsAnnot chull col2rgb colorRamp colorRampPalette colors dev.cur dev.new dev.off dev.prev dev.set devAskNewPage graphics.off gray gray.colors heat.colors rgb jpeg pdf tiff x11 adjustcolor rainbow
+#' @importFrom graphics abline arrows axis barplot box image layout legend lines locator mtext par plot plot.default points polygon rect segments strheight strwidth symbols text title Axis boxplot rasterImage matplot
+#' @importFrom stats as.dendrogram as.dist coefficients cor cov dist hclust lm lsfit median na.omit order.dendrogram predict quantile reorder var sd pnorm aggregate t.test
+#' @importFrom utils setTxtProgressBar txtProgressBar packageDescription relist download.file
+#' @importFrom ellipse ellipse
+#' @importFrom methods hasArg is
+#' @importFrom dplyr group_by mutate summarise arrange row_number filter n
+#' @importFrom tidyr gather
+#' @importFrom reshape2 melt dcast
+#' @importFrom rARPACK svds
+#' @importFrom gridExtra grid.arrange
+
 #' @export
 setGeneric("pca", def = function( X, Assay=NULL, ncomp = 2, center = TRUE, scale = FALSE, max.iter = 500, tol = 1e-09,
                                   logratio = 'none', ilr.offset = 0.001, V = NULL, multilevel = NULL,...) standardGeneric("pca"))
