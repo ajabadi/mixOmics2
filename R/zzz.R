@@ -24,11 +24,11 @@
 #############################################################################################################
 
 
-.onAttach <- function(libname, pkgname){ packageStartupMessage("\nLoaded mixOmics ",as.character(packageDescription("mixOmics")[["Version"]]),
-    
+.onAttach <- function(libname, pkgname){ packageStartupMessage("\nLoaded mixOmics2 ",as.character(packageDescription("mixOmics2")[["Version"]]),
+
     "\n\nThank you for using mixOmics! Learn how to apply our methods with our tutorials on www.mixOmics.org, vignette and bookdown on  https://github.com/mixOmicsTeam/mixOmics",
     "\nQuestions: email us at mixomics[at]math.univ-toulouse.fr  ",
     "\nBugs, Issues? https://github.com/mixOmicsTeam/mixOmics/issues",
     "\nCite us:  citation('mixOmics')"
-    
+
     )}
