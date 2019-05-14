@@ -25,37 +25,38 @@
 
 #-- green-black-red gradient colors --#
 #-------------------------------------#
+#' @importFrom grDevices colorRampPalette colorRamp
 color.GreenRed =
 function (n, alpha = 1)
 {
     #-- checking general input parameters -------------------------------------#
     #--------------------------------------------------------------------------#
-    
+
     #-- n
     if (length(n) > 1 || !is.finite(n))
     stop("'n' must be an integer positive value.", call. = FALSE)
-    
+
     if (n < 1)
     stop("'n' must be an integer positive value.", call. = FALSE)
-    
+
     #-- alpha
     if (length(alpha) > 1 || !is.finite(alpha))
     stop("'alpha' must be an numeric value in the range [0, 1].", call. = FALSE)
-    
+
     if (alpha < 0 || alpha > 1)
     stop("'alpha' must be an numeric value in the range [0, 1].", call. = FALSE)
-    
+
     alpha = round(255 * alpha)
-    
+
     #-- end checking --#
     #------------------#
-    
+
     ramp = colorRampPalette(c("green", "darkgreen", "black", "darkred", "red"))
     ramp = ramp(101)
     green = ramp[1:43]
     red = ramp[59:101]
     ramp = colorRamp(c(green, "black", red), space = "Lab")
-    
+
     rgb(ramp(seq(0, 1, length = n)), alpha = alpha, maxColorValue = 255)
 }
 

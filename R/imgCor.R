@@ -42,29 +42,29 @@
 
 
 #' Image Maps of Correlation Matrices between two Data Sets
-#' 
+#'
 #' Display two-dimensional visualizations (image maps) of the correlation
 #' matrices within and between two data sets.
-#' 
+#'
 #' If \code{type="combine"}, the correlation matrix is computed of the combined
 #' matrices \code{cbind(X, Y)} and then plotted. If \code{type="separate"},
 #' three correlation matrices are computed, \code{cor(X)}, \code{cor(Y)} and
 #' \code{cor(X,Y)} and plotted separately on a device. In both cases, a color
 #' correlation scales strip is plotted.
-#' 
+#'
 #' The correlation matrices are pre-processed before calling the \code{image}
 #' function in order to get, as in the numerical representation, the diagonal
 #' from upper-left corner to bottom-right one.
-#' 
+#'
 #' Missing values are handled by casewise deletion in the \code{imgCor}
 #' function.
-#' 
+#'
 #' If \code{X.names = FALSE}, the name of each X-variable is hidden. Default
 #' value is \code{TRUE}.
-#' 
+#'
 #' If \code{Y.names = FALSE}, the name of each Y-variable is hidden. Default
 #' value is \code{TRUE}.
-#' 
+#'
 #' @param X numeric matrix or data frame \eqn{(n} x \eqn{p)}, the observations
 #' on the \eqn{X} variables. \code{NA}s are allowed.
 #' @param Y numeric matrix or data frame \eqn{(n} x \eqn{q)}, the observations
@@ -99,166 +99,168 @@
 #' @seealso \code{\link{cor}}, \code{\link{image}}, \code{\link{color.jet}}.
 #' @keywords multivariate dplot
 #' @examples
-#' 
+#'
 #' data(nutrimouse)
 #' X <- nutrimouse$lipid
 #' Y <- nutrimouse$gene
-#' 
+#'
 #' ## 'combine' type plot (default)
 #' imgCor(X, Y)
-#' 
+#'
 #' \dontrun{
 #' ## 'separate' type plot
-#' 
+#'
 #' imgCor(X, Y, type = "separate")
-#' 
+#'
 #' ## 'separate' type plot without the name of datas
 #' imgCor(X, Y, X.var.names = FALSE, Y.var.names = FALSE, type = "separate")
 #' }
-#' 
+#'
+#' @importFrom grDevices col2rgb
 #' @export imgCor
+
 imgCor <-
 function(X,
-         Y,  
-         type = "combine", 
-         X.var.names = TRUE, 
-         Y.var.names = TRUE,  	 
+         Y,
+         type = "combine",
+         X.var.names = TRUE,
+         Y.var.names = TRUE,
          sideColors = TRUE,
          interactive.dev = TRUE,
          title = TRUE,
-         color, row.cex, col.cex,symkey, keysize, 
-         xlab, ylab, margins, lhei, lwid) 
+         color, row.cex, col.cex,symkey, keysize,
+         xlab, ylab, margins, lhei, lwid)
 {
   #-- checking general input arguments ---------------------------------------#
   #---------------------------------------------------------------------------#
-  
+
   #-- check that the user did not enter extra arguments
   arg.call = match.call()
   user.arg = names(arg.call)[-1]
-  
-  err = tryCatch(mget(names(formals()), sys.frame(sys.nframe())), 
+
+  err = tryCatch(mget(names(formals()), sys.frame(sys.nframe())),
                  error = function(e) e)
-  
+
   if ("simpleError" %in% class(err))
     stop(err[[1]], ".", call. = FALSE)
-  
-  default.arg = c("color", "row.cex", "col.cex","symkey", "keysize", 
+
+  default.arg = c("color", "row.cex", "col.cex","symkey", "keysize",
                   "xlab", "ylab", "margins", "lhei", "lwid")
   function.arg = c(names(mget(names(formals()), sys.frame(sys.nframe()))),
                    default.arg)
   not.arg = !(user.arg %in% function.arg)
-  
+
   if (any(not.arg)) {
     unused.arg = user.arg[not.arg]
     not.arg = which(not.arg) + 1
     output = rep("", length(not.arg))
-    
+
     for (i in 1:length(not.arg)) {
       output[i] = paste0(unused.arg[i], " = ", arg.call[[not.arg[i]]])
     }
-    
+
     output = paste0("(",paste(output, collapse = ", "), ").")
     msg = "unused argument "
-    if (length(not.arg) > 1) msg ="unused arguments "  
+    if (length(not.arg) > 1) msg ="unused arguments "
     stop(msg, output, call. = FALSE)
   }
-  
+
   #-- X and Y matrices
   if (is.data.frame(X)) X = as.matrix(X)
   if (is.data.frame(Y)) Y = as.matrix(Y)
-  
-  if (!is.matrix(X) || !is.matrix(Y)) 
+
+  if (!is.matrix(X) || !is.matrix(Y))
     stop("'X' and/or 'Y' must be a numeric matrix.", call. = FALSE)
-  
-  if (!is.numeric(X) || !is.numeric(Y)) 
+
+  if (!is.numeric(X) || !is.numeric(Y))
     stop("'X' and/or 'Y' must be a numeric matrix.", call. = FALSE)
-  
+
   p = ncol(X)
-  q = ncol(Y)  
-  
+  q = ncol(Y)
+
   #-- X.var.names
-  if (!is.logical(X.var.names)) 
+  if (!is.logical(X.var.names))
     stop("'X.var.names' must be a logical constant (TRUE or FALSE).",
          call. = FALSE)
-  
+
   #-- Y.var.names
-  if (!is.logical(Y.var.names)) 
+  if (!is.logical(Y.var.names))
     stop("'Y.var.names' must be a logical constant (TRUE or FALSE).",
          call. = FALSE)
-  
+
   #-- type
   choices = c("combine", "separate")
   type = choices[pmatch(type, choices)]
-  
-  if (is.na(type)) 
-    stop("'type' should be one of 'combine' or 'separate'.", 
+
+  if (is.na(type))
+    stop("'type' should be one of 'combine' or 'separate'.",
          call. = FALSE)
-  
+
   #-- sideColors
   if (is.logical(sideColors)) {
     if(isTRUE(sideColors)) sideColors = c("blue", "red") else sideColors = NULL
   }
   else {
     if (length(sideColors) != 2)
-      stop("'sideColors' must be a character vector of length ", 2, ".", 
+      stop("'sideColors' must be a character vector of length ", 2, ".",
            call. = FALSE)
   }
-  
-  isColor = sapply(sideColors, function(x) { 
+
+  isColor = sapply(sideColors, function(x) {
     tryCatch(is.matrix(col2rgb(x)), error = function(e) FALSE) })
-  
-  if (any(!isColor)) 
-    stop("'sideColors' must be a character vector of recognized colors.", 
+
+  if (any(!isColor))
+    stop("'sideColors' must be a character vector of recognized colors.",
          call. = FALSE)
-  
+
   #-- interactive.dev
   if (!is.logical(interactive.dev))
     stop("'interactive.dev' must be a logical constant (TRUE or FALSE).",
          call. = FALSE)
-  
+
   #-- title
   if (!is.logical(title))
     stop("'title' must be a logical constant (TRUE or FALSE).",
          call. = FALSE)
-  
+
   #-- end checking --#
   #------------------#
-  
-  
+
+
   #-- calling the cim function for mapping -----------------------------------#
   #---------------------------------------------------------------------------#
-  
+
   #-- if type = "combine" --#
-    if (type == "combine") {		
-      
+    if (type == "combine") {
+
       if (isTRUE(X.var.names)) X.var.names = colnames(X)
       else X.var.names = rep("", p)
-      
+
       if (isTRUE(Y.var.names)) Y.var.names = colnames(Y)
       else Y.var.names = rep("", q)
-      
+
       mat.lab = c(X.var.names, Y.var.names)
-      
+
       matcor = cor(cbind(X, Y), use = "pairwise")
       colnames(matcor) = rownames(matcor) = mat.lab
         matcor=matcor[(p + q):1,]
-        
+
         row.sideColors = col.sideColors = NULL
-        
+
         if (!is.null(sideColors)) {
           bg.col = par("bg")
           row.sideColors = c(rep(sideColors[2], q),rep(sideColors[1], p))
           print(length(row.sideColors))
           col.sideColors = rev(row.sideColors)
         }
-        
-        cim(matcor, cluster = "none", 
+
+        cim(matcor, cluster = "none",
             title = if(title) "[X,Y] correlation matrix" else NULL,
             col.sideColors = col.sideColors,
             row.sideColors = row.sideColors,
             row.names = TRUE, col.names = TRUE)
     }
-     
+
     # representation des matrices de correlation de #
     # X, Y et entre X et Y                          #
     #-----------------------------------------------#
@@ -270,19 +272,19 @@ function(X,
         Xcor = Xcor[p:1,]#t(Xcor[p:1, ])
         Ycor = Ycor[q:1,]#t(Ycor[q:1, ])
         XYcor = XYcor[p:1,]
-		
-        if (interactive.dev) {   
+
+        if (interactive.dev) {
           cim(Xcor, cluster = "none",
               title = if(title) "X correlation matrix" else NULL,
               row.names = X.var.names, col.names = X.var.names)
-          
+
           devAskNewPage(TRUE)
-          cim(Ycor, cluster = "none", 
+          cim(Ycor, cluster = "none",
               title = if(title) "Y correlation matrix" else NULL,
               row.names = Y.var.names, col.names = Y.var.names)
-          
+
           cim(XYcor, cluster = "none",
-              title = if(title) "XY correlation matrix" else NULL,			
+              title = if(title) "XY correlation matrix" else NULL,
               row.names = X.var.names, col.names = Y.var.names)
         }
 		else {
@@ -290,23 +292,23 @@ function(X,
 		  if (is.character(GD)) {
 		    if (GD == "RStudioGD") GD = FALSE
 		  }
-		  else 
+		  else
 		    GD = TRUE
-		  
+
 		  if (isTRUE(GD)) getOption("device")()
 		  cim(Xcor, cluster = "none",
 		      title = if(title) "X correlation matrix" else NULL,
 		      row.names = X.var.names, col.names = X.var.names)
-		  
+
 		  if (isTRUE(GD)) getOption("device")()
-		  cim(Ycor, cluster = "none", 
+		  cim(Ycor, cluster = "none",
 		      title = if(title) "Y correlation matrix" else NULL,
 		      row.names = Y.var.names, col.names = Y.var.names)
-		  
+
 		  if (isTRUE(GD)) getOption("device")()
 		  cim(XYcor, cluster = "none",
 		      title = if(title) "XY correlation matrix" else NULL,
 		      row.names = X.var.names, col.names = Y.var.names)
 		}
-    }	
+    }
 }

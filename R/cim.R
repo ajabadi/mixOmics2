@@ -35,10 +35,10 @@
 
 
 #' Clustered Image Maps (CIMs) ("heat maps")
-#' 
+#'
 #' This function generates color-coded Clustered Image Maps (CIMs) ("heat
 #' maps") to represent "high-dimensional" data sets.
-#' 
+#'
 #' One matrix Clustered Image Map (default method) is a 2-dimensional
 #' visualization of a real-valued matrix (basically
 #' \code{\link{image}(t(mat))}) with rows and/or columns reordered according to
@@ -47,11 +47,11 @@
 #' top of the image. By default the used clustering method for rows and columns
 #' is the \emph{complete linkage} method and the used distance measure is the
 #' distance \emph{euclidean}.
-#' 
+#'
 #' In \code{"pca"}, \code{"spca"}, \code{"ipca"}, \code{"sipca"},
 #' \code{"plsda"}, \code{"splsda"} and multilevel variants methods the
 #' \code{mat} matrix is \code{object$X}.
-#' 
+#'
 #' For the remaining methods, if \code{mapping = "X"} or \code{mapping = "Y"}
 #' the \code{mat} matrix is \code{object$X} or \code{object$Y} respectively. If
 #' \code{mapping = "XY"}: \itemize{ \item in \code{rcc} method, the matrix
@@ -60,7 +60,7 @@
 #' the variables \eqn{X_j} and \eqn{Y_k} on the axis defined by \eqn{Z_i} with
 #' \eqn{i} in \code{comp}, where \eqn{Z_i} is the equiangular vector between
 #' the \eqn{i}-th \eqn{X} and \eqn{Y} canonical variate.
-#' 
+#'
 #' \item in \code{pls}, \code{spls} and multilevel spls methods, if
 #' \code{object$mode} is \code{"regression"}, the element \eqn{(j,k)} of the
 #' matrix \code{mat} is given by the scalar product value between every pairs
@@ -69,7 +69,7 @@
 #' \code{comp}, where \eqn{U_i} is the \eqn{i}-th \eqn{X} variate. If
 #' \code{object$mode} is \code{"canonical"} then \eqn{X_j} and \eqn{Y_k} are
 #' represented on the axis defined by \eqn{U_i} and \eqn{V_i} respectively.}
-#' 
+#'
 #' By default four components will be displayed in the plot. At the top left is
 #' the color key, top right is the column dendogram, bottom left is the row
 #' dendogram, bottom right is the image plot. When \code{sideColors} are
@@ -78,17 +78,17 @@
 #' \code{lwid} and \code{lhei}. \code{lwid} controls the column width, and
 #' \code{lhei} controls the row height. See the help page for
 #' \code{\link{layout}} for details on how to use these arguments.
-#' 
+#'
 #' For visualization of "high-dimensional" data sets, a nice zooming tool was
 #' created. \code{zoom = TRUE} open a new device, one for CIM, one for zoom-out
 #' region and define an interactive 'zoom' process: click two points at imagen
 #' map region by pressing the first mouse button. It then draws a rectangle
 #' around the selected region and zoom-out this at new device. The process can
 #' be repeated to zoom-out other regions of interest.
-#' 
+#'
 #' The zoom process is terminated by clicking the second button and selecting
 #' 'Stop' from the menu, or from the 'Stop' menu on the graphics window.
-#' 
+#'
 #' @param mat numeric matrix of values to be plotted. Alternatively, an object
 #' of class inheriting from \code{"pca"}, \code{"spca"}, \code{"ipca"},
 #' \code{"sipca"}, \code{"rcc"}, \code{"pls"}, \code{"spls"}, \code{"plsda"},
@@ -170,14 +170,14 @@
 #' @author Ignacio González, Francois Bartolo, Kim-Anh Lê Cao.
 #' @seealso \code{\link{heatmap}}, \code{\link{hclust}}, \code{\link{plotVar}},
 #' \code{\link{network}} and
-#' 
+#'
 #' \url{http://mixomics.org/graphics/} for more details on all options
 #' available.
 #' @references Eisen, M. B., Spellman, P. T., Brown, P. O. and Botstein, D.
 #' (1998). Cluster analysis and display of genome-wide expression patterns.
 #' \emph{Proceeding of the National Academy of Sciences of the USA} \bold{95},
 #' 14863-14868.
-#' 
+#'
 #' Weinstein, J. N., Myers, T. G., O'Connor, P. M., Friend, S. H., Fornace Jr.,
 #' A. J., Kohn, K. W., Fojo, T., Bates, S. E., Rubinstein, L. V., Anderson, N.
 #' L., Buolamwini, J. K., van Osdol, W. W., Monks, A. P., Scudiero, D. A.,
@@ -185,138 +185,138 @@
 #' G. S., Wittes, R. E. and Paull, K. D. (1997). An information-intensive
 #' approach to the molecular pharmacology of cancer. \emph{Science} \bold{275},
 #' 343-349.
-#' 
+#'
 #' González I., Lê Cao K.A., Davis M.J., Déjean S. (2012). Visualising
 #' associations between paired 'omics' data sets. \emph{BioData Mining};
 #' \bold{5}(1).
-#' 
+#'
 #' mixOmics article:
-#' 
+#'
 #' Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics
 #' feature selection and multiple data integration. PLoS Comput Biol 13(11):
 #' e1005752
 #' @keywords multivariate iplot hplot graphs cluster
 #' @examples
-#' 
+#'
 #' ## default method: shows cross correlation between 2 data sets
 #' #------------------------------------------------------------------
 #' data(nutrimouse)
 #' X <- nutrimouse$lipid
 #' Y <- nutrimouse$gene
-#' 
+#'
 #' cim(cor(X, Y), cluster = "none")
-#' 
-#' 
+#'
+#'
 #' \dontrun{
 #' ## CIM representation for objects of class 'rcc'
 #' #------------------------------------------------------------------
-#' 
+#'
 #' nutri.rcc <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
-#' 
+#'
 #' cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6))
-#' 
+#'
 #' #-- interactive 'zoom' available as below
-#' 
+#'
 #' cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6),
 #' zoom = TRUE)
 #' #-- select the region and "see" the zoom-out region
-#' 
-#' 
+#'
+#'
 #' #-- cim from X matrix with a side bar to indicate the diet
 #' diet.col <- palette()[as.numeric(nutrimouse$diet)]
 #' cim(nutri.rcc, mapping = "X", row.names = nutrimouse$diet,
 #' row.sideColors = diet.col, xlab = "lipids",
 #' clust.method = c("ward", "ward"), margins = c(6, 4))
-#' 
+#'
 #' #-- cim from Y matrix with a side bar to indicate the genotype
 #' geno.col = color.mixo(as.numeric(nutrimouse$genotype))
 #' cim(nutri.rcc, mapping = "Y", row.names = nutrimouse$genotype,
 #' row.sideColors = geno.col, xlab = "genes",
 #' clust.method = c("ward", "ward"))
-#' 
+#'
 #' #-- save the result as a jpeg file
 #' jpeg(filename = "test.jpeg", res = 600, width = 4000, height = 4000)
 #' cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6))
 #' dev.off()
-#' 
+#'
 #' ## CIM representation for objects of class 'spca' (also works for sipca)
 #' #------------------------------------------------------------------
-#' 
+#'
 #' data(liver.toxicity)
 #' X <- liver.toxicity$gene
-#' 
+#'
 #' liver.spca <- spca(X, ncomp = 2, keepX = c(30, 30), scale = FALSE)
-#' 
+#'
 #' dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
-#' 
+#'
 #' # side bar, no variable names shown
 #' cim(liver.spca, row.sideColors = dose.col, col.names = FALSE,
 #' row.names = liver.toxicity$treatment[, 3],
 #' clust.method = c("ward", "ward"))
-#' 
-#' 
+#'
+#'
 #' ## CIM representation for objects of class '(s)pls'
 #' #------------------------------------------------------------------
-#' 
+#'
 #' data(liver.toxicity)
-#' 
+#'
 #' X <- liver.toxicity$gene
 #' Y <- liver.toxicity$clinic
 #' liver.spls <- spls(X, Y, ncomp = 3,
 #' keepX = c(20, 50, 50), keepY = c(10, 10, 10))
-#' 
-#' 
+#'
+#'
 #' # default
 #' cim(liver.spls)
-#' 
-#' 
+#'
+#'
 #' # transpose matrix, choose clustering method
 #' cim(liver.spls, transpose = TRUE,
 #' clust.method = c("ward", "ward"), margins = c(5, 7))
-#' 
+#'
 #' # Here we visualise only the X variables selected
 #' cim(liver.spls, mapping="X")
-#' 
+#'
 #' # Here we should visualise only the Y variables selected
 #' cim(liver.spls, mapping="Y")
-#' 
+#'
 #' # Here we only visualise the similarity matrix between the variables by spls
 #' cim(liver.spls, cluster="none")
-#' 
+#'
 #' # plotting two data sets with the similarity matrix as input in the funciton
 #' # (see our BioData Mining paper for more details)
 #' # Only the variables selected by the sPLS model in X and Y are represented
 #' cim(liver.spls, mapping="XY")
-#' 
+#'
 #' # on the X matrix only, side col var to indicate dose
 #' dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
 #' cim(liver.spls, mapping = "X", row.sideColors = dose.col,
 #' row.names = liver.toxicity$treatment[, 3])
-#' 
+#'
 #' # CIM default representation includes the total of 120 genes selected, with the dose color
 #' # with a sparse method, show only the variables selected on specific components
 #' cim(liver.spls, comp = 1)
 #' cim(liver.spls, comp = 2)
 #' cim(liver.spls, comp = c(1,2))
 #' cim(liver.spls, comp = c(1,3))
-#' 
-#' 
+#'
+#'
 #' ## CIM representation for objects of class '(s)plsda'
 #' #------------------------------------------------------------------
 #' data(liver.toxicity)
-#' 
+#'
 #' X <- liver.toxicity$gene
 #' # Setting up the Y outcome first
 #' Y <- liver.toxicity$treatment[, 3]
 #' #set up colors for cim
 #' dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
-#' 
-#' 
+#'
+#'
 #' liver.splsda <- splsda(X, Y, ncomp = 2, keepX = c(40, 30))
-#' 
+#'
 #' cim(liver.splsda, row.sideColors = dose.col, row.names = Y)
-#' 
-#' 
+#'
+#'
 #' ## CIM representation for objects of class splsda 'multilevel'
 #' # with a two level factor (repeated sample and time)
 #' #------------------------------------------------------------------
@@ -325,16 +325,16 @@
 #' design <- data.frame(samp = vac18.simulated$sample)
 #' Y = data.frame(time = vac18.simulated$time,
 #' stim = vac18.simulated$stimulation)
-#' 
+#'
 #' res.2level <- splsda(X, Y = Y, ncomp = 2, multilevel = design,
 #' keepX = c(120, 10))
-#' 
+#'
 #' #define colors for the levels: stimulation and time
 #' stim.col <- c("darkblue", "purple", "green4","red3")
 #' stim.col <- stim.col[as.numeric(Y$stim)]
 #' time.col <- c("orange", "cyan")[as.numeric(Y$time)]
-#' 
-#' 
+#'
+#'
 #' # The row side bar indicates the two levels of the facteor, stimulation and time.
 #' # the sample names have been motified on the plot.
 #' cim(res.2level, row.sideColors = cbind(stim.col, time.col),
@@ -345,17 +345,17 @@
 #' col = c("orange", "cyan", "darkblue", "purple", "green4","red3"),
 #' title = "Condition", cex = 0.7)
 #' )
-#' 
-#' 
+#'
+#'
 #' ## CIM representation for objects of class spls 'multilevel'
 #' #------------------------------------------------------------------
-#' 
+#'
 #' data(liver.toxicity)
 #' repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
 #' 6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,
 #' 10, 11, 12, 12, 10, 11, 12, 11, 12, 13, 14, 13, 14, 13, 14,
 #' 13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
-#' 
+#'
 #' # sPLS is a non supervised technique, and so we only indicate the sample repetitions
 #' # in the design (1 factor only here, sample)
 #' # sPLS takes as an input 2 data sets, and the variables selected
@@ -366,32 +366,33 @@
 #' ncomp = 2,
 #' keepX = c(50, 50), keepY = c(5, 5),
 #' mode = 'canonical')
-#' 
+#'
 #' stim.col <- c("darkblue", "purple", "green4","red3")
-#' 
+#'
 #' # showing only the Y variables, and only those selected in comp 1
 #' cim(res.spls.1level, mapping="Y",
 #' row.sideColors = stim.col[factor(liver.toxicity$treatment[,3])], comp = 1,
 #' #setting up legend:
 #' legend=list(legend = unique(liver.toxicity$treatment[,3]), col=stim.col,
 #' title = "Dose", cex=0.9))
-#' 
-#' 
+#'
+#'
 #' # showing only the X variables, for all selected on comp 1 and 2
 #' cim(res.spls.1level, mapping="X",
 #' row.sideColors = stim.col[factor(liver.toxicity$treatment[,3])],
 #' #setting up legend:
 #' legend=list(legend = unique(liver.toxicity$treatment[,3]), col=stim.col,
 #' title = "Dose", cex=0.9))
-#' 
-#' 
+#'
+#'
 #' # These are the cross correlations between the variables selected in X and Y.
 #' # The similarity matrix is obtained as in our paper in Data Mining
 #' cim(res.spls.1level, mapping="XY")
-#' 
+#'
 #' }
-#' 
+#'
 #' @export cim
+#' @importFrom grDevices as.graphicsAnnot
 cim =
 function(mat,
 color = NULL,
@@ -427,71 +428,71 @@ name.save = NULL)
 
 {
     class.object=class(mat)
-    
-    
-    
+
+
+
     #-- checking general input parameters -------------------------------------#
     #--------------------------------------------------------------------------#
-    
+
     #-- check that the user did not enter extra arguments
     arg.call = match.call()
     user.arg = names(arg.call)[-1]
-    
+
     err = tryCatch(mget(names(formals()), sys.frame(sys.nframe())),
     error = function(e) e)
-    
+
     if ("simpleError" %in% class(err))
     stop(err[[1]], ".", call. = FALSE)
 
     #-- color
     if (is.null(color))
     color = color.spectral(25)
-    
-    
+
+
     #-- cluster
     choices = c("both", "row", "column", "none")
     cluster = choices[pmatch(cluster, choices)]
-    
+
     if (is.na(cluster))
     stop("'cluster' should be one of 'both', 'row', 'column' or 'none'.",
     call. = FALSE)
-    
+
     #-- cluster method
     if (!is.character(clust.method) | length(as.vector(clust.method)) != 2)
     stop("'clust.method' must be a character vector of length 2.",
     call. = FALSE)
-    
+
     choices = c("ward.D", "single", "complete", "average", "mcquitty",
     "median", "centroid")
     clust.method = choices[c(pmatch(clust.method[1], choices),
     pmatch(clust.method[2], choices))]
-    
+
     if (any(is.na(clust.method)))
     stop("invalid clustering method.", call. = FALSE)
-    
+
     #-- distance method
     if (!is.character(dist.method) | length(as.vector(dist.method)) != 2)
     stop("'dist.method' must be a character vector of length 2.", call. = FALSE)
-    
+
     choices = c("euclidean", "correlation", "maximum", "manhattan",
     "canberra", "binary", "minkowski")
     dist.method = choices[c(pmatch(dist.method[1], choices),
     pmatch(dist.method[2], choices))]
-    
+
     if (any(is.na(dist.method)))
     stop("invalid distance method.", call. = FALSE)
-    
-    
+
+
     #-- checking general input arguments -------------------------------------#
     #-------------------------------------------------------------------------#
-    
+
     #-- color
     if (any(!sapply(color, function(color) {
         tryCatch(is.matrix(col2rgb(color)), error = function(e) FALSE) })))
     stop("'color' must be a character vector of recognized colors.",
     call. = FALSE)
-    
-    
+
+
     #-- row.sideColors
     if (any(!sapply(row.sideColors, function(row.sideColors) {
         tryCatch(is.matrix(col2rgb(row.sideColors)),
@@ -499,8 +500,8 @@ name.save = NULL)
     stop("color names for vertical side bar must be a character vector
     of recognized colors.",
     call. = FALSE)
-    
-    
+
+
     #-- col.sideColors
     if (any(!sapply(col.sideColors, function(col.sideColors) {
         tryCatch(is.matrix(col2rgb(col.sideColors)),
@@ -508,25 +509,25 @@ name.save = NULL)
     stop("color names for horizontal side bar must be a character vector
     of recognized colors.",
     call. = FALSE)
-    
-    
+
+
     #-- row.cex
     if (!is.null(row.cex)) {
         if (!is.numeric(row.cex) || length(row.cex) != 1)
         stop("'row.cex' must be a numerical value.", call. = FALSE)
     }
-    
+
     #-- col.cex
     if (!is.null(col.cex)) {
         if (!is.numeric(col.cex) || length(col.cex) != 1)
         stop("'col.cex' must be a numerical value.", call. = FALSE)
     }
-    
+
     #-- transpose
     if (!is.logical(transpose))
     stop("'transpose' must be a logical constant (TRUE or FALSE).",
     call. = FALSE)
-    
+
     #-- cut.tree
     if (!is.numeric(cut.tree) || length(cut.tree) != 2)
     stop("'cut.tree' must be a numeric vector of length 2.",
@@ -536,32 +537,32 @@ name.save = NULL)
         stop("Components of 'cut.tree' must be between 0 and 1.",
         call. = FALSE)
     }
-    
+
     #-- keysize
     if (length(keysize) != 2 || any(!is.finite(keysize)))
     stop("'keysize' must be a numeric vector of length 2.",
     call. = FALSE)
-    
+
     #-- keysize.label
     if (length(keysize.label) != 1 || any(!is.finite(keysize)))
     stop("'keysize' must be a numeric vector of length 1.",
     call. = FALSE)
-    
+
     #-- zoom
     if (!is.logical(zoom))
     stop("'zoom' must be a logical constant (TRUE or FALSE).",
     call. = FALSE)
-    
+
     #-- margins
     if (!is.numeric(margins) || length(margins) != 2)
     stop("'margins' must be a numeric vector of length 2.",
     call. = FALSE)
-    
+
     #-- symkey
     if (!is.logical(symkey))
     stop("'symkey' must be a logical constant (TRUE or FALSE).",
     call. = FALSE)
-    
+
     #-- lhei
     if (!is.null(lhei)) {
         if (is.null(col.sideColors)) {
@@ -575,7 +576,7 @@ name.save = NULL)
             call. = FALSE)
         }
     }
-    
+
     #-- lwid
     if (!is.null(lwid)) {
         if (is.null(row.sideColors)) {
@@ -589,28 +590,28 @@ name.save = NULL)
             call. = FALSE)
         }
     }
-    
+
     #-- xlab
     xlab = as.graphicsAnnot(xlab)
-    
+
     #-- ylab
     ylab = as.graphicsAnnot(ylab)
-    
+
     #-- title
     title = as.graphicsAnnot(title)
-    
+
     #-- threshold correlation
     if (!is.numeric(threshold) | (threshold > 1) | (threshold < 0))
     stop("The value taken by 'threshold' must be between 0 and 1",
     call. = FALSE)
-    
+
     #-- save
     if (!is.null(save)){
         if (! save %in% c("jpeg","tiff","png","pdf"))
         stop("'save' must be one of 'jpeg', 'png', 'tiff' or 'pdf'.",
         call. = FALSE)
     }
-    
+
     #-- name.save
     if (!is.null(name.save)){
         if (! is.character(name.save) || length(name.save) > 1)
@@ -620,14 +621,14 @@ name.save = NULL)
         name.save = paste0("cim_",gsub(".", "_", deparse(substitute(mat)),
         fixed = TRUE))
     }
-    
+
     #-- end checking --#
     #------------------#
     if (!is.null(save)){
-        
+
         while (dev.cur()>2)
         dev.off()
-        
+
         if (save == "jpeg")
         jpeg(filename = paste0(name.save,".jpeg"), res = 600, width = 4000,
         height = 4000)
@@ -639,28 +640,28 @@ name.save = NULL)
         height = 4000)
         if (save == "pdf")
         pdf(file = paste0(name.save,".pdf"))
-        
+
     }
-    
-    
-    
+
+
+
     object.pca=c("pca","spca","ipca","sipca","mixo_mlsplsda","mixo_splsda",
     "mixo_plsda")
     object.rcc=c("rcc")
     object.pls=c("mixo_pls","mixo_spls","mixo_mlspls")
     object.list=c("pca","spca","ipca","sipca","mixo_mlsplsda","mixo_splsda",
     "mixo_plsda", "rcc","mixo_pls","mixo_spls","mixo_mlspls")
-    
+
     if (any(class.object == "block.splsda"))
     stop("Please call the 'cimDiablo' function on your 'block.splsda' object",
     call. = FALSE)
-    
-    
+
+
     if (!any(class.object %in% c(object.list,"matrix")))
     stop("'mat' has to be a matrix or one of the following object: ",
     paste(object.list, collapse =", "), ".", call. = FALSE)
-    
-    
+
+
     if(any(class.object  %in%  object.list))
     {
         p = ncol(mat$X)
@@ -678,15 +679,15 @@ name.save = NULL)
             stop("the elements of 'comp' must be smaller or equal than ",
             ncomp, ".", call. = FALSE)
         }
-        
+
         if (length(comp) == 1) {
             if (is.null(comp) || !is.numeric(comp) || comp <= 0 || comp > ncomp)
             stop("invalid value for 'comp'.", call. = FALSE)
             comp=c(comp,comp)
         }
-        
+
         comp = round(comp)
-        
+
         # if object is a pls or spls with a univariate Y, or multivariate but
         # only 1 variable selected on all comp, we only plot a heatmap of X
         if(any(class.object %in%  object.pls))
@@ -695,23 +696,23 @@ name.save = NULL)
             function(x){which(x!=0, arr.ind=TRUE)})
             # gives which variables are selected
             num.variable.selected.Y = table(unlist(temp))
-            
+
             if (length(num.variable.selected.Y) == 1)
             #only one variable in Y to plot, will raise trouble so we
             # switch from (s)pls to (s)plsda
             class.object = "mixo_splsda"
         }
-        
+
         if( ! any(class.object  %in%  object.pca))
         {
-            
+
             #-- mapping
             choices = c("XY", "X", "Y")
             mapping = choices[pmatch(mapping, choices)]
-            
+
             if (is.na(mapping))
             stop("'mapping' should be one of 'XY', 'X' or 'Y'.", call. = FALSE)
-            
+
             if (mapping == "XY")
             {
                 if (is.logical(row.names))
@@ -725,7 +726,7 @@ name.save = NULL)
                     stop("'row.names' must be a character vector of length ",
                     p, ".", call. = FALSE)
                 }
-                
+
                 if (is.logical(col.names))
                 {
                     if (isTRUE(col.names))
@@ -737,7 +738,7 @@ name.save = NULL)
                     stop("'col.names' must be a character vector of length ",
                     q, ".", call. = FALSE)
                 }
-                
+
                 if (!is.null(row.sideColors))
                 {
                     row.sideColors = as.matrix(row.sideColors)
@@ -755,8 +756,8 @@ name.save = NULL)
                     call. = FALSE)
                 }
             }
-            
-            
+
+
             if (mapping == "X")
             {
                 if (is.logical(row.names))
@@ -786,7 +787,7 @@ name.save = NULL)
                     p, ".",
                     call. = FALSE)
                 }
-                
+
                 if (!is.null(row.sideColors))
                 {
                     row.sideColors = as.matrix(row.sideColors)
@@ -804,7 +805,7 @@ name.save = NULL)
                     call. = FALSE)
                 }
             }
-            
+
             if (mapping == "Y")
             {
                 if (is.logical(row.names))
@@ -835,7 +836,7 @@ name.save = NULL)
                     q, ".",
                     call. = FALSE)
                 }
-                
+
                 if (!is.null(row.sideColors))
                 {
                     row.sideColors = as.matrix(row.sideColors)
@@ -854,11 +855,11 @@ name.save = NULL)
                 }
             }
         }
-        
+
         if(any(class.object %in%  object.pca))
         {
-            
-            
+
+
             #-- row.sideColors
             if (!is.null(row.sideColors))
             {
@@ -868,7 +869,7 @@ name.save = NULL)
                 (matrix) of length (nrow) ", n, ".",
                 call. = FALSE)
             }
-            
+
             #-- col.sideColors
             if (!is.null(col.sideColors))
             {
@@ -879,7 +880,7 @@ name.save = NULL)
                 call. = FALSE)
             }
             sample.sideColors = row.sideColors
-            
+
             #-- clustering ---------------------------------------------------#
             #-----------------------------------------------------------------#
             if(any(class.object %in%  c("mixo_splsda","mixo_plsda",
@@ -926,8 +927,8 @@ name.save = NULL)
                 cord.X = cor(mat$X[, keep.X], mat$x[, comp], use = "pairwise")
                 X.mat = as.matrix(mat$x[, comp])
             }
-            
-            
+
+
             #-- cheking center and scale
             if (!is.logical(center)) {
                 if (!is.numeric(center) || (length(center) != ncol(mat$X)))
@@ -941,87 +942,87 @@ name.save = NULL)
                 vector of length equal to the number of columns of 'X'.",
                 call. = FALSE)
             }
-            
+
             object = scale(mat$X[, keep.X], center = center, scale = scale)
             col.names = col.names[keep.X]
-            
+
             if (!is.null(col.sideColors))
             col.sideColors = as.matrix(col.sideColors[keep.X, ])
-            
+
             if ((cluster == "both") || (cluster == "row")) {
                 Rowv = rowMeans(X.mat)
-                
+
                 if (dist.method[1] == "correlation")
                 dist.mat = as.dist(1 - cor(t(as.matrix(X.mat)),
                 method = "pearson"))
                 else
                 dist.mat = dist(X.mat, method = dist.method[1])
-                
+
                 hcr = hclust(dist.mat, method = clust.method[1])
                 ddr = as.dendrogram(hcr)
                 ddr = reorder(ddr, Rowv)
                 rowInd = order.dendrogram(ddr)
                 object = object[rowInd, ]
                 row.names = row.names[rowInd]
-                
+
                 if (!is.null(row.sideColors))
                 row.sideColors = as.matrix(row.sideColors[rowInd, ])
             }
-            
+
             if ((cluster == "both") || (cluster == "column")) {
                 Colv = rowMeans(cord.X)
-                
+
                 if (dist.method[2] == "correlation")
                 dist.mat = as.dist(1 - cor(t(cord.X), method = "pearson"))
                 else
                 dist.mat = dist(cord.X, method = dist.method[2])
-                
+
                 hcc = hclust(dist.mat, method = clust.method[2])
                 ddc = as.dendrogram(hcc)
                 ddc = reorder(ddc, Colv)
                 colInd = order.dendrogram(ddc)
                 object = object[, colInd]
                 col.names = col.names[colInd]
-                
+
                 if (!is.null(col.sideColors))
                 col.sideColors = as.matrix(col.sideColors[colInd, ])
             }
-            
+
             #-- calling the image.map function --------------------------------#
             #------------------------------------------------------------------#
-            
-            
-            
+
+
+
             #-- output --------------------------------------------------------#
             #------------------------------------------------------------------#
             res = list(mat = object, row.names = row.names,
             col.names = col.names)
-            
+
             if ((cluster == "both") || (cluster == "row")) {
                 res$rowInd = rowInd
                 res$ddr = ddr
             }
-            
+
             if ((cluster == "both") || (cluster == "column")) {
                 res$colInd = colInd
                 res$ddc = ddc
             }
-            
+
             class(res) = paste("cim",class.object[1],sep="_")
-            
+
         }
         else if(any(class.object %in%  object.rcc))
         {
-            
+
             bisect = mat$variates$X[, comp] + mat$variates$Y[, comp]
             cord.X = cor(mat$X, bisect, use = "pairwise")
             cord.Y = cor(mat$Y, bisect, use = "pairwise")
             XY.mat = as.matrix(cord.X %*% t(cord.Y))
-            
+
             #-- if mapping = "XY"
             if (mapping == "XY") {
                 object = XY.mat
-                
+
                 cut=list()
                 if (threshold != 0) {
                     cut[[1]] = unlist(lapply(1:nrow(object),
@@ -1029,84 +1030,84 @@ name.save = NULL)
                     object = object[cut[[1]],]
                     if (dist.method[1] != "correlation")
                     cord.X = cord.X[cut[[1]],]
-                    
-                    
+
+
                     if (is.null(nrow(object)) || nrow(object) == 0)
                     stop("threshold value very high. No variable was selected.",
                     call. = FALSE)
-                    
-                    
+
+
                     cut[[2]] = unlist(lapply(1:ncol(object),
                     function(x){any(abs(object[,x]) > threshold)}))
                     object = object[,cut[[2]]]
                     if (dist.method[2] != "correlation")
                     cord.Y = cord.Y[cut[[2]],]
-                    
-                    
+
+
                     if (is.null(ncol(object)) || ncol(object) == 0)
                     stop("threshold value very high. No variable was selected.",
                     call. = FALSE)
-                    
+
                 }
-                
+
                 if ((cluster == "both") || (cluster == "row")) {
                     #Rowv = rowMeans(XY.mat)
                     Rowv = rowMeans(cord.X)
-                    
+
                     if (dist.method[1] == "correlation")
                     dist.mat = as.dist(1 - cor(t(as.matrix(object)),
                     method = "pearson"))
-                    
+
                     else
                     dist.mat = dist(cord.X, method = dist.method[1])
-                    
+
                     if (threshold > 0 ) {
                         row.names = row.names[cut[[1]]]
                         if (!is.null(row.sideColors))
                         row.sideColors = as.matrix(row.sideColors[cut[[1]], ])
                     }
-                    
+
                     hcr = hclust(dist.mat, method = clust.method[1])
                     ddr = as.dendrogram(hcr)
                     ddr = reorder(ddr, Rowv)
                     rowInd = order.dendrogram(ddr)
                     object = object[rowInd, ]
                     row.names = row.names[rowInd]
-                    
+
                     if (!is.null(row.sideColors))
                     row.sideColors = as.matrix(row.sideColors[rowInd, ])
                 }
-                
+
                 if ((cluster == "both") || (cluster == "column")) {
                     Colv = rowMeans(cord.Y)
-                    
+
                     if (dist.method[2] == "correlation")
                     dist.mat = as.dist(1 - cor(as.matrix(object),
                     method = "pearson"))
                     else
                     dist.mat = dist(cord.Y, method = dist.method[2])
-                    
+
                     if (threshold > 0 ) {
                         col.names = col.names[cut[[2]]]
                         if (!is.null(col.sideColors))
                         col.sideColors = as.matrix(col.sideColors[cut[[2]], ])
                     }
-                    
+
                     hcc = hclust(dist.mat, method = clust.method[2])
                     ddc = as.dendrogram(hcc)
                     ddc = reorder(ddc, Colv)
                     colInd = order.dendrogram(ddc)
                     object = object[, colInd]
                     col.names = col.names[colInd]
-                    
+
                     if (!is.null(col.sideColors))
                     col.sideColors = as.matrix(col.sideColors[colInd, ])
                 }
             }
-            
+
             #-- if mapping = "X"
             if (mapping == "X") {
-                
+
                 #-- cheking center and scale
                 if (!is.logical(center)) {
                     if (!is.numeric(center) || (length(center) != ncol(mat$X)))
@@ -1122,56 +1123,56 @@ name.save = NULL)
                     'X'.",
                     call. = FALSE)
                 }
-                
+
                 object = scale(mat$X, center = center, scale = scale)
                 X.mat = as.matrix(mat$variates$X[, comp])
-                
+
                 if ((cluster == "both") || (cluster == "row")) {
                     Rowv = rowMeans(X.mat)
-                    
+
                     if (dist.method[1] == "correlation")
                     dist.mat = as.dist(1 - cor(t(as.matrix(X.mat)),
                     method = "pearson"))
                     else
                     dist.mat = dist(X.mat, method = dist.method[1])
-                    
+
                     hcr = hclust(dist.mat, method = clust.method[1])
                     ddr = as.dendrogram(hcr)
                     ddr = reorder(ddr, Rowv)
                     rowInd = order.dendrogram(ddr)
                     object = object[rowInd, ]
                     row.names = row.names[rowInd]
-                    
-                    
+
+
                     if (!is.null(row.sideColors))
                     row.sideColors = as.matrix(row.sideColors[rowInd, ])
                 }
-                
+
                 if ((cluster == "both") || (cluster == "column")) {
                     Colv = rowMeans(cord.X)
-                    
+
                     if (dist.method[2] == "correlation")
                     dist.mat = as.dist(1 - cor(t(cord.X), method = "pearson"))
                     else
                     dist.mat = dist(cord.X, method = dist.method[2])
-                    
+
                     hcc = hclust(dist.mat, method = clust.method[2])
                     ddc = as.dendrogram(hcc)
                     ddc = reorder(ddc, Colv)
                     colInd = order.dendrogram(ddc)
                     object = object[, colInd]
                     col.names = col.names[colInd]
-                    
+
                     if (!is.null(col.sideColors))
                     col.sideColors = as.matrix(col.sideColors[colInd, ])
-                    
+
                 }
-                
+
             }
-            
+
             #-- if mapping = "Y"
             if (mapping == "Y") {
-                
+
                 #-- cheking center and scale
                 if (!is.logical(center)) {
                     if (!is.numeric(center) || (length(center) != ncol(mat$Y)))
@@ -1185,74 +1186,74 @@ name.save = NULL)
                     vector of length equal to the number of columns of 'Y'.",
                     call. = FALSE)
                 }
-                
+
                 object = scale(mat$Y, center = center, scale = scale)
                 Y.mat = as.matrix(mat$variates$Y[, comp])
-                
-                
+
+
                 if ((cluster == "both") || (cluster == "row")) {
                     Rowv = rowMeans(Y.mat)
-                    
+
                     if (dist.method[1] == "correlation")
                     dist.mat = as.dist(1 - cor(t(as.matrix(Y.mat)),
                     method = "pearson"))
                     else
                     dist.mat = dist(Y.mat, method = dist.method[1])
-                    
+
                     hcr = hclust(dist.mat, method = clust.method[1])
                     ddr = as.dendrogram(hcr)
                     ddr = reorder(ddr, Rowv)
                     rowInd = order.dendrogram(ddr)
                     object = object[rowInd, ]
                     row.names = row.names[rowInd]
-                    
+
                     if (!is.null(row.sideColors))
                     row.sideColors = as.matrix(row.sideColors[rowInd, ])
                 }
-                
+
                 if ((cluster == "both") || (cluster == "column")) {
                     Colv = rowMeans(cord.Y)
-                    
+
                     if (dist.method[2] == "correlation")
                     dist.mat = as.dist(1 - cor(t(cord.Y), method = "pearson"))
                     else
                     dist.mat = dist(cord.Y, method = dist.method[2])
-                    
+
                     hcc = hclust(dist.mat, method = clust.method[2])
                     ddc = as.dendrogram(hcc)
                     ddc = reorder(ddc, Colv)
                     colInd = order.dendrogram(ddc)
                     object = object[, colInd]
                     col.names = col.names[colInd]
-                    
+
                     if (!is.null(col.sideColors))
                     col.sideColors = as.matrix(col.sideColors[colInd, ])
-                    
+
                 }
             }
-            
+
             #-- calling the image.map function --------------------------------#
             #------------------------------------------------------------------#
-            
-            
-            
+
+
+
             #-- output --------------------------------------------------------#
             #------------------------------------------------------------------#
             res = list(mat = object, row.names = row.names,
             col.names = col.names)
-            
+
             if ((cluster == "both") || (cluster == "row")) {
                 res$rowInd = rowInd
                 res$ddr = ddr
             }
-            
+
             if ((cluster == "both") || (cluster == "column")) {
                 res$colInd = colInd
                 res$ddc = ddc
             }
-            
+
             class(res) = "cim_rcc"
-            
+
         }
         else if(any(class.object %in%  object.pls))
         {
@@ -1266,9 +1267,9 @@ name.save = NULL)
             {
                 keep.X = apply(abs(mat$loadings$X), 1, sum) > 0
                 keep.Y = apply(abs(mat$loadings$Y), 1, sum) > 0}
-            
-            
-            
+
+
+
             if (mat$mode == "canonical") {
                 cord.X = cor(mat$X[, keep.X, drop = FALSE],
                 mat$variates$X[, comp], use = "pairwise")
@@ -1281,16 +1282,16 @@ name.save = NULL)
                 cord.Y = cor(mat$Y[, keep.Y, drop = FALSE],
                 mat$variates$X[, comp], use = "pairwise")
             }
-            
+
             XY.mat = as.matrix(cord.X %*% t(cord.Y))
             sample.sideColors = row.sideColors
-            
+
             #-- if mapping = "XY"
             if (mapping == "XY") {
                 object = XY.mat
                 row.names = row.names[keep.X]
                 col.names = col.names[keep.Y]
-                
+
                 cut=list()
                 if (threshold != 0) {
                     cut[[1]] = unlist(lapply(1:nrow(object),
@@ -1298,94 +1299,94 @@ name.save = NULL)
                     object = object[cut[[1]],]
                     if (dist.method[1] != "correlation")
                     cord.X = cord.X[cut[[1]],]
-                    
-                    
+
+
                     if (is.null(nrow(object)) || nrow(object) == 0)
                     stop("threshold value very high. No variable was selected.",
                     call. = FALSE)
-                    
-                    
+
+
                     cut[[2]] = unlist(lapply(1:ncol(object),
                     function(x){any(abs(object[,x]) > threshold)}))
                     object = object[,cut[[2]]]
                     if (dist.method[2] != "correlation")
                     cord.Y = cord.Y[cut[[2]],]
-                    
-                    
+
+
                     if (is.null(ncol(object)) || ncol(object) == 0)
                     stop("threshold value very high. No variable was selected.",
                     call. = FALSE)
-                    
+
                 }
-                
-                
+
+
                 if (!is.null(row.sideColors))
                 row.sideColors = as.matrix(row.sideColors[keep.X, ])
                 if (!is.null(col.sideColors))
                 col.sideColors = as.matrix(col.sideColors[keep.Y, ])
-                
+
                 if ((cluster == "both") || (cluster == "row")) {
-                    
-                    
+
+
                     #Rowv = rowMeans(XY.mat)
                     Rowv = rowMeans(cord.X)
-                    
+
                     if (dist.method[1] == "correlation")
                     dist.mat = as.dist(1 - cor(t(as.matrix(object)),
                     method = "pearson"))
                     else
                     #dist.mat = dist(mat, method = dist.method[1])
                     dist.mat = dist(cord.X, method = dist.method[1])
-                    
+
                     if (threshold > 0 ) {
                         row.names = row.names[cut[[1]]]
                         if (!is.null(row.sideColors))
                         row.sideColors = as.matrix(row.sideColors[cut[[1]], ])
                     }
-                    
+
                     hcr = hclust(dist.mat, method = clust.method[1])
                     ddr = as.dendrogram(hcr)
                     ddr = reorder(ddr, Rowv)
                     rowInd = order.dendrogram(ddr)
                     object = object[rowInd, ]
                     row.names = row.names[rowInd]
-                    
+
                     if (!is.null(row.sideColors))
                     row.sideColors = as.matrix(row.sideColors[rowInd, ])
                 }
-                
+
                 if ((cluster == "both") || (cluster == "column")) {
                     #Colv = colMeans(mat)
                     Colv = rowMeans(cord.Y)
-                    
+
                     if (dist.method[2] == "correlation")
                     dist.mat = as.dist(1 - cor(as.matrix(object),
                     method = "pearson"))
                     else
                     #dist.mat = dist(t(mat), method = dist.method[2])
                     dist.mat = dist(cord.Y, method = dist.method[2])
-                    
+
                     if (threshold > 0 ) {
                         col.names = col.names[cut[[2]]]
                         if (!is.null(col.sideColors))
                         col.sideColors = as.matrix(col.sideColors[cut[[2]], ])
                     }
-                    
+
                     hcc = hclust(dist.mat, method = clust.method[2])
                     ddc = as.dendrogram(hcc)
                     ddc = reorder(ddc, Colv)
                     colInd = order.dendrogram(ddc)
                     object = object[, colInd]
                     col.names = col.names[colInd]
-                    
+
                     if (!is.null(col.sideColors))
                     col.sideColors = as.matrix(col.sideColors[colInd, ])
                 }
             }
-            
+
             #-- if mapping = "X"
             if (mapping == "X") {
-                
+
                 #-- cheking center and scale
                 if (!is.logical(center)) {
                     if (!is.numeric(center) || (length(center) != ncol(mat$X)))
@@ -1399,61 +1400,61 @@ name.save = NULL)
                     vector of length equal to the number of columns of 'X'.",
                     call. = FALSE)
                 }
-                
+
                 object = scale(mat$X[, keep.X], center = center, scale = scale)
                 X.mat = as.matrix(mat$variates$X[, comp])
                 col.names = col.names[keep.X]
-                
-                
+
+
                 if (!is.null(col.sideColors))
                 col.sideColors = as.matrix(col.sideColors[keep.X, ])
-                
-                
-                
+
+
+
                 if ((cluster == "both") || (cluster == "row")) {
                     Rowv = rowMeans(X.mat)
-                    
+
                     if (dist.method[1] == "correlation")
                     dist.mat = as.dist(1 - cor(t(as.matrix(X.mat)),
                     method = "pearson"))
                     else
                     dist.mat = dist(X.mat, method = dist.method[1])
-                    
+
                     hcr = hclust(dist.mat, method = clust.method[1])
                     ddr = as.dendrogram(hcr)
                     ddr = reorder(ddr, Rowv)
                     rowInd = order.dendrogram(ddr)
                     object = object[rowInd, ]
                     row.names = row.names[rowInd]
-                    
+
                     if (!is.null(row.sideColors))
                     row.sideColors = as.matrix(row.sideColors[rowInd, ])
                 }
-                
+
                 if ((cluster == "both") || (cluster == "column")) {
                     Colv = rowMeans(cord.X)
-                    
+
                     if (dist.method[2] == "correlation")
                     dist.mat = as.dist(1 - cor(t(cord.X), method = "pearson"))
                     else
                     dist.mat = dist(cord.X, method = dist.method[2])
-                    
+
                     hcc = hclust(dist.mat, method = clust.method[2])
                     ddc = as.dendrogram(hcc)
                     ddc = reorder(ddc, Colv)
                     colInd = order.dendrogram(ddc)
                     object = object[, colInd]
                     col.names = col.names[colInd]
-                    
+
                     if (!is.null(col.sideColors))
                     col.sideColors = as.matrix(col.sideColors[colInd, ])
-                    
+
                 }
             }
-            
+
             #-- if mapping = "Y"
             if (mapping == "Y") {
-                
+
                 #-- cheking center and scale
                 if (!is.logical(center)) {
                     if (!is.numeric(center) || (length(center) != ncol(mat$Y)))
@@ -1467,75 +1468,75 @@ name.save = NULL)
                     vector of length equal to the number of columns of 'Y'.",
                     call. = FALSE)
                 }
-                
+
                 object = scale(mat$Y[, keep.Y], center = center, scale = scale)
                 Y.mat = as.matrix(mat$variates$Y[, comp])
                 col.names = col.names[keep.Y]
-                
-                
+
+
                 if (!is.null(col.sideColors))
                 col.sideColors = as.matrix(col.sideColors[keep.Y, ])
-                
-                
-                
+
+
+
                 if ((cluster == "both") || (cluster == "row")) {
                     Rowv = rowMeans(Y.mat)
-                    
+
                     if (dist.method[1] == "correlation")
                     dist.mat = as.dist(1 - cor(t(as.matrix(Y.mat)),
                     method = "pearson"))
                     else
                     dist.mat = dist(Y.mat, method = dist.method[1])
-                    
+
                     hcr = hclust(dist.mat, method = clust.method[1])
                     ddr = as.dendrogram(hcr)
                     ddr = reorder(ddr, Rowv)
                     rowInd = order.dendrogram(ddr)
                     object = object[rowInd, ]
                     row.names = row.names[rowInd]
-                    
+
                     if (!is.null(row.sideColors))
                     row.sideColors = as.matrix(row.sideColors[rowInd, ])
                 }
-                
+
                 if ((cluster == "both") || (cluster == "column")) {
                     Colv = rowMeans(cord.Y)
-                    
+
                     if (dist.method[2] == "correlation")
                     dist.mat = as.dist(1 - cor(t(cord.Y), method = "pearson"))
                     else
                     dist.mat = dist(cord.Y, method = dist.method[2])
-                    
+
                     hcc = hclust(dist.mat, method = clust.method[2])
                     ddc = as.dendrogram(hcc)
                     ddc = reorder(ddc, Colv)
                     colInd = order.dendrogram(ddc)
                     object = object[, colInd]
                     col.names = col.names[colInd]
-                    
+
                     if (!is.null(col.sideColors))
                     col.sideColors = as.matrix(col.sideColors[colInd, ])
                 }
             }
-            
+
             #-- calling the image.map function --------------------------------#
             #------------------------------------------------------------------#
-            
-            
+
+
             #-- output --------------------------------------------------------#
             #------------------------------------------------------------------#
             res = list(mat = object, row.names = row.names,
             col.names = col.names)
-            
+
             if (!is.null(sample.sideColors)) {
                 res$sample.sideColors = sample.sideColors
             }
-            
+
             if ((cluster == "both") || (cluster == "row")) {
                 res$rowInd = rowInd
                 res$ddr = ddr
             }
-            
+
             if ((cluster == "both") || (cluster == "column")) {
                 res$colInd = colInd
                 res$ddc = ddc
@@ -1546,13 +1547,13 @@ name.save = NULL)
     {
         #-- mat
         isMat = tryCatch(is.matrix(mat), error = function(e) e)
-        
+
         if ("simpleError" %in% class(isMat))
         stop(isMat[[1]], ".", call. = FALSE)
-        
+
         if (!is.matrix(mat) || !is.numeric(mat))
         stop("'mat' must be a numeric matrix.", call. = FALSE)
-        
+
         p = nrow(mat)
         q = ncol(mat)
         #-- row.names
@@ -1566,7 +1567,7 @@ name.save = NULL)
             stop("'row.names' must be a character vector of length ", p, ".",
             call. = FALSE)
         }
-        
+
         #-- col.names
         if (is.logical(col.names)) {
             if(isTRUE(col.names)) col.names = colnames(mat) else
@@ -1578,7 +1579,7 @@ name.save = NULL)
             stop("'col.names' must be a character vector of length ", q, ".",
             call. = FALSE)
         }
-        
+
         #-- row.sideColors
         if (!is.null(row.sideColors)) {
             row.sideColors = as.matrix(row.sideColors)
@@ -1587,7 +1588,7 @@ name.save = NULL)
             of length (nrow) ", p, ".",
             call. = FALSE)
         }
-        
+
         #-- col.sideColors
         if (!is.null(col.sideColors)) {
             col.sideColors = as.matrix(col.sideColors)
@@ -1596,32 +1597,32 @@ name.save = NULL)
             of length (nrow) ", q, ".",
             call. = FALSE)
         }
-        
+
         #-- clustering -------------------------------------------------------#
         #---------------------------------------------------------------------#
         object=mat
         if ((cluster == "both") || (cluster == "row")) {
             Rowv = rowMeans(mat)
-            
+
             if (dist.method[1] == "correlation")
             dist.mat = as.dist(1 - cor(t(as.matrix(mat)), method = "pearson"))
             else
             dist.mat = dist(mat, method = dist.method[1])
-            
+
             hcr = hclust(dist.mat, method = clust.method[1])
             ddr = as.dendrogram(hcr)
             ddr = reorder(ddr, Rowv)
             rowInd = order.dendrogram(ddr)
             object = mat[rowInd, ]
             row.names = row.names[rowInd]
-            
+
             if (!is.null(row.sideColors))
             row.sideColors = as.matrix(row.sideColors[rowInd, ])
         }
-        
+
         if ((cluster == "both") || (cluster == "column")) {
             Colv = colMeans(mat)
-            
+
             if (dist.method[2] == "correlation")
             dist.mat = as.dist(1 - cor(as.matrix(mat), method = "pearson"))
             else
@@ -1632,35 +1633,35 @@ name.save = NULL)
             colInd = order.dendrogram(ddc)
             object = object[, colInd]
             col.names = col.names[colInd]
-            
+
             if (!is.null(col.sideColors))
             col.sideColors = as.matrix(col.sideColors[colInd, ])
         }
         #-- calling the image.map function ------------------------------------#
-        
-        
-        
+
+
+
         #-- output ------------------------------------------------------------#
         #----------------------------------------------------------------------#
         res = list(mat = object, row.names = row.names, col.names = col.names,
         row.sideColors = row.sideColors, col.sideColors = col.sideColors)
-        
+
         if ((cluster == "both") || (cluster == "row")) {
             res$rowInd = rowInd
             res$ddr = ddr
         }
-        
+
         if ((cluster == "both") || (cluster == "column")) {
             res$colInd = colInd
             res$ddc = ddc
         }
-        
+
         class(res) = "cim_default"
-        
+
     }
     #--------------------------------------------------------------------------#
     opar = par(no.readonly = TRUE)
-    
+
     imageMap(object,
     color = color,
     row.names = row.names,
@@ -1691,14 +1692,14 @@ name.save = NULL)
         if(any(class.object %in%  c("mixo_splsda","mixo_plsda")))
         {
             if (is.null(legend$legend)) legend$legend = mat$names$colnames$Y
-            
+
             #-- col
             if (is.null(legend$col)) {
                 if (!is.null(sample.sideColors))
                 legend$col = unique(as.matrix(sample.sideColors[order(
                 map(mat$ind.mat)), 1]))
             }
-            
+
         }
         else if(any(class.object %in%  c("mixo_mlsplsda")))
         {
@@ -1740,14 +1741,14 @@ name.save = NULL)
         }
         if (is.null(legend$legend))
         stop("argument \"legend$legend\" is missing, with no default")
-        
+
         #-- fill
         if (is.null(legend$fill)) legend$fill = legend$col
-        
-        
+
+
         par(mar = c(0, 0, 0, 0), new = TRUE)
         plot(0, 0, axes = FALSE, type = "n", xlab = "", ylab = "")
-        
+
         if (!is.null(legend$title))
         {
             legend(x = legend$x, y = legend$y, legend = legend$legend,
@@ -1758,18 +1759,18 @@ name.save = NULL)
             col = legend$col, fill = legend$fill, bty = legend$bty,
             cex=legend$cex)
         }
-        
-        
+
+
     }
     if (any(class.object %in% object.list) & !any(class.object %in%
     object.pca) & mapping =="XY")
     res$mat.cor=object
-    
+
     par(opar)
-    
+
     if (!is.null(save))
     dev.off()
-    
+
     return(invisible(res))
 }
 
