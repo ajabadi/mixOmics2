@@ -229,46 +229,46 @@ pls_methods_helper <- function(Expect, formals,...)({
 })
 
 
-## ----------- default - both matrices (Y can be numeric)
+# # ## ----------- default - both matrices (Y can be numeric)
 setMethod("pls", signature("ANY"), definition = function(X,Y, formula, data,...){
-    stop_custom("args_conflict", "incorrect input format to 'spls'. Read the documenation for valid inputs for each method")
+    stop_custom("invalid_signature", "incorrect input format to 'spls'. Read ?spls for supported signatures")
 })
 
 ## ----------- default - both matrices (Y can be numeric)
-setMethod("pls", signature(X="matrix", Y="matrix"), definition = function(X,Y, formula=NULL, data=NULL,...){
-    mc <- as.list(match.call(expand.dots = FALSE)[-1])
-    do.call(pls_methods_helper, args = list(Expect="xy", formals=mc,...))
+setMethod("pls", signature(X="matrix", Y="matrix", formula="missing", data="missing"), definition = function(X,Y, formula=NULL, data=NULL,...){
+   mc <- as.list(match.call()[-1])
+   mc$method.mode="xy"
+   do.call(pls_methods_wrapper, mc)
 })
 
 
 ## ----------- formula = Y_numeric ~ X_matrix
 #' @export
 #' @rdname pls
-setMethod("pls", signature(formula="formula"), definition = function(X=NULL,Y=NULL, formula, data=NULL,...){
-    args.default <- c(X=NULL, y=NULL, formula=NULL, data=NULL)
-    mc <- match.call(expand.dots = FALSE)[-1]
-    mc <- match(c("X","Y",))
-    args.g <- args.default
-    args.g[names(args.list)] <- args.list
-    args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
-    do.call(pls_methods_helper, args = list(Expect="formula", formals=args.g,...))
+setMethod("pls", signature(X="missing", Y="missing", formula="formula", data="missing"), definition = function(X=NULL,Y=NULL, formula, data=NULL,...){
+    message(eval.parent(formula_assay))
+    mc <- as.list(match.call()[-1])
+    mc$method.mode="formula"
+    do.call(pls_methods_wrapper, mc)
 })
 
 ## ----------- if formula=assay ~ phenotype/assay and data=MAE is provided
 #' @export
 #' @rdname pls
-setMethod("pls", signature(formula="formula", data="MultiAssayExperiment"), definition = function(X=NULL,Y=NULL, formula, data,...){
-    ## making sure there are no missing arguments
-    args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
-    do.call(pls_methods_helper, args = list(Expect="formula_mae", formals=args.g,...))
+setMethod("pls", signature(X="missing", Y="missing", formula="formula", data="MultiAssayExperiment"), definition = function(X=NULL,Y=NULL, formula, data,...){
+    message(eval.parent(formula_assay))
+    mc <- as.list(match.call()[-1])
+    mc$method.mode="formula_mae"
+    do.call(pls_methods_wrapper, mc)
 })
 
 ## ----------- if X=X_assay, Y=Y_assay/Y_colData and data=MAE is provided
 #' @export
 #' @rdname pls
-setMethod("pls", signature(X="character", Y="character", data="MultiAssayExperiment"), definition = function(X,Y, formula=NULL, data,...){
-    args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
-    do.call(pls_methods_helper, args = list(Expect="xy_mae", formals=args.g,...))
+setMethod("pls", signature(X="ANY", Y="ANY", formula="missing", data="MultiAssayExperiment"), definition = function(X,Y, formula=NULL, data,...){
+    mc <- as.list(match.call()[-1])
+    mc$method.mode="xy_mae"
+    do.call(pls_methods_wrapper, mc)
 })
 
 #############################################################

@@ -74,7 +74,7 @@ Y_mae_check <- function(Y_char, data){
     ## assay case
   } else if(Y_char %in% names(assays(data))){
     Y <- as.matrix(assay(data, Y_char))
-  } else {stop_custom("invalid_XY", paste0(Y_char, " is not an assay or colData from ", args.list[["data"]] ))}
+  } else {stop_custom("invalid_assay", paste0(Y_char, " is not an assay or colData from ", args.list[["data"]] ))}
   return(Y)
 }
 
@@ -82,50 +82,48 @@ Y_mae_check <- function(Y_char, data){
 
 X_mae_check <- function(X_char, data){
   args.list <- match.call()[-1]
-  if(!X_char %in% names(assays(data))) stop_custom("invalid_XY", paste0(X_char, " is not a valid assay from ", args.list[["data"]]))
+  if(!X_char %in% names(assays(data))) stop_custom("invalid_assay", paste0(X_char, " is not a valid assay from ", args.list[["data"]]))
   X <- as.matrix(assay(data, X_char))
   return(X)
 }
 
 ##------------------------------------------
-## ----- function to get X, Y, formula, and data, check for validity, and return matrix/numeric X and Y for internal
-check_generic_args <- function(X,Y,formula,data, Expect=c("xy", "formula", "formula_mae", "xy_mae")){
-  args.list <- match.call()[-1]
-  ## expect 'Expect' to match given values
-  Expect <- match.arg(Expect)
-  ##------- if only matrix X and matrix/numeric Y expected
-  if(Expect=="xy"){
-    if(class(try(formula))!="NULL") stop_custom("args_conflict", message = "when formula is provided, X and Y must be NULL")
-    if(class(try(data))!="NULL") stop_custom("args_conflict", message = "numeric X and Y provided with MultiAssayExperiment object 'data'. Either data should be NULL or X and Y must be assay/colData names from 'data'")
+## ----- function to spls methods arguments plus the methods call mode and create internal level arguments
+pls_methods_wrapper <- function(method.mode=c("xy", "formula", "formula_mae", "xy_mae"),...){
+  formals(eval.parent)$n <- 2 ## within this function evluate formals 2 stacks higher in parent as it is a second level function
+  ## eventually, mc must have all arguments required for internal - including the dots
+  mc <- as.list(match.call()[-c(1,2)])
+  match.arg(method.mode)
+  ##------- if xy and y are provided no further work needed
+  ##------- if only formula provided
+  if(method.mode=="formula"){
+    fterms <- as.list(eval.parent(mc$formula))[-1]
+    if(length(fterms)!=2) stop_custom("invalid_formula", "The supplied formula must be of form Y~X")
+    mc$X <- eval.parent(fterms[[2]])
+    mc$Y <- eval.parent(fterms[[1]])
+    mc$formula <- NULL
   }
-  ##------- if only formula expected
-  else if(Expect=="formula"){
-    if(class(try(X))!="NULL" | class(try(Y))!="NULL") stop_custom("args_conflict", message = "when formula is provided, X and Y must be NULL")
-    if(class(try(data))!="NULL") stop_custom("args_conflict", message = "when X and Y are matrices data should be NULL, or X and Y have to be assay name from data.")
-
-    fterms <- as.list(formula)[-1]
-    X=eval(fterms[[2]], envir = parent.frame())
-    Y=eval(fterms[[1]], envir = parent.frame())
-  }
-  ##------- if formula = coldata/assay ~ assay and data=MAE expected
-  else if(Expect=="formula_mae"){
-    if(class(try(X))!="NULL" | class(try(Y))!="NULL") stop_custom("args_conflict", message = "when formula is provided, X and Y must be NULL")
-    # if(class(try(data))!="MultiAssayExperiment") stop_custom("invalid_class", message = "''data' must be a MultiAssayExperiment object")
-    fterms <- as.list(formula)[-1]
+  ##------- if formula = coldata/assay ~ assay and data=MAE provided
+  else if(method.mode=="formula_mae"){
+    mc$data <- eval.parent(mc$data)
+    ## so that formula can also be stored in a variable - makes testing easier as well
+    mc$formula <- eval.parent(mc$formula)
+    fterms <- as.list(mc$formula)[-1]
     X_char <- as.character(fterms[[2]])
     Y_char <- as.character(fterms[[1]])
-    X <- X_mae_check(X_char = X_char, data=data)
-    Y <- Y_mae_check(Y_char = Y_char, data = data)
+    mc$X <- X_mae_check(X_char = X_char, data=mc$data)
+    mc$Y <- Y_mae_check(Y_char = Y_char, data = mc$data)
+    mc$formula <- mc$data <-  NULL
   }
-  ##------- if X=assay (symbol or char), Y=assay/colData (symbol or char) and data=MAE expected
-  else if(Expect=="xy_mae"){
-    if(class(try(formula))!="NULL") stop_custom("args_conflict", message = "when formula is provided, X and Y must be NULL")
-    X_char <- as.character(substitute(X))
-    Y_char <- as.character(substitute(Y))
-    X <- X_mae_check(X_char = X_char, data=data)
-    Y <- Y_mae_check(Y_char = Y_char, data = data)
-
+  ##------- if X=assay (symbol or char), Y=assay/colData (symbol or char) and data=MAE provided
+  else if(method.mode=="xy_mae"){
+    mc$data <- eval.parent(mc$data)
+    ## so X and Y can be variables
+    mc$X <- eval.parent(mc$X)
+    mc$Y <- eval.parent(mc$Y)
+    mc$X <- X_mae_check(X_char = mc$X, data=mc$data)
+    mc$Y <- Y_mae_check(Y_char = mc$Y, data = mc$data)
+    mc$data <-  NULL
   }
-  return(list(X=X, Y=Y))
+  do.call(.pls, mc)
 }
-
