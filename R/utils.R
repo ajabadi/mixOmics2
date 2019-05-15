@@ -74,7 +74,7 @@ Y_mae_check <- function(Y_char, data){
     ## assay case
   } else if(Y_char %in% names(assays(data))){
     Y <- as.matrix(assay(data, Y_char))
-  } else {stop_custom("invalid_Y", paste0(Y_char, " is not an assay or colData from ", args.list[["data"]] ))}
+  } else {stop_custom("invalid_XY", paste0(Y_char, " is not an assay or colData from ", args.list[["data"]] ))}
   return(Y)
 }
 
@@ -82,7 +82,7 @@ Y_mae_check <- function(Y_char, data){
 
 X_mae_check <- function(X_char, data){
   args.list <- match.call()[-1]
-  if(!X_char %in% names(assays(data))) stop_custom("invalid_X", paste0(X_char, " is not a valid assay from ", args.list[["data"]]))
+  if(!X_char %in% names(assays(data))) stop_custom("invalid_XY", paste0(X_char, " is not a valid assay from ", args.list[["data"]]))
   X <- as.matrix(assay(data, X_char))
   return(X)
 }
@@ -96,7 +96,7 @@ check_generic_args <- function(X,Y,formula,data, Expect=c("xy", "formula", "form
   ##------- if only matrix X and matrix/numeric Y expected
   if(Expect=="xy"){
     if(class(try(formula))!="NULL") stop_custom("args_conflict", message = "when formula is provided, X and Y must be NULL")
-    if(class(try(data))!="NULL") stop_custom("args_conflict", message = "X and Y should be assay/colData names from data, or data should be NULL")
+    if(class(try(data))!="NULL") stop_custom("args_conflict", message = "numeric X and Y provided with MultiAssayExperiment object 'data'. Either data should be NULL or X and Y must be assay/colData names from 'data'")
   }
   ##------- if only formula expected
   else if(Expect=="formula"){

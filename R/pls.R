@@ -218,65 +218,173 @@ all.outputs = TRUE)
 #############################################################
 ## S4 method definitions.
 #############################################################
+## get an expectation for the methods explicit arguments and the arguments, creates numeric X and Y and runs internal pls
 
-## ----------- default - both matrices (Y can be numeric)
-#' @export
-#' @importFrom SummarizedExperiment assay
-#' @importFrom MultiAssayExperiment MultiAssayExperiment
-setMethod("pls", signature("matrix", "matrix"), definition = function(X,Y, formula, data,...){
-    ## making sure there are no missing arguments
-    args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
-    ## add 'Expect' formal for internal - 'xy' since the call matches these two only but we
-    ## want to make sure other unused arguments are NULL so the user is not confused
-    args.g$Expect="xy"
-    XY.list <- do.call(check_generic_args,args = args.g, envir = parent.frame())
+pls_methods_helper <- function(Expect, formals,...)({
+    formals$Expect <- Expect
+    XY.list <- do.call(check_generic_args,args = formals, envir = parent.frame(n=2))
     X <- XY.list$X
     Y <- XY.list$Y
     .pls(X,Y,...)
 })
 
+
+## ----------- default - both matrices (Y can be numeric)
+setMethod("pls", signature("ANY"), definition = function(X,Y, formula, data,...){
+    stop_custom("args_conflict", "incorrect input format to 'spls'. Read the documenation for valid inputs for each method")
+})
+
+## ----------- default - both matrices (Y can be numeric)
+setMethod("pls", signature(X="matrix", Y="matrix"), definition = function(X,Y, formula=NULL, data=NULL,...){
+    mc <- as.list(match.call(expand.dots = FALSE)[-1])
+    do.call(pls_methods_helper, args = list(Expect="xy", formals=mc,...))
+})
+
+
 ## ----------- formula = Y_numeric ~ X_matrix
 #' @export
 #' @rdname pls
-setMethod("pls", signature("ANY", "ANY", "formula"), definition = function(X,Y, formula, data,...){
-    ## making sure there are no missing arguments
+setMethod("pls", signature(formula="formula"), definition = function(X=NULL,Y=NULL, formula, data=NULL,...){
+    args.default <- c(X=NULL, y=NULL, formula=NULL, data=NULL)
+    mc <- match.call(expand.dots = FALSE)[-1]
+    mc <- match(c("X","Y",))
+    args.g <- args.default
+    args.g[names(args.list)] <- args.list
     args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
-    ## add 'Expect' formal for internal - 'xy' since the call matches these two only but we
-    ## want to make sure other unused arguments are NULL so the user is not confused
-    args.g$Expect="formula"
-    XY.list <- do.call(check_generic_args,args = args.g, envir = parent.frame())
-    X <- XY.list$X
-    Y <- XY.list$Y
-    .pls(X,Y,...)
+    do.call(pls_methods_helper, args = list(Expect="formula", formals=args.g,...))
 })
 
 ## ----------- if formula=assay ~ phenotype/assay and data=MAE is provided
 #' @export
 #' @rdname pls
-setMethod("pls", signature("ANY", "ANY", "formula", "MultiAssayExperiment"), definition = function(X,Y, formula, data,...){
+setMethod("pls", signature(formula="formula", data="MultiAssayExperiment"), definition = function(X=NULL,Y=NULL, formula, data,...){
     ## making sure there are no missing arguments
     args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
-    ## add 'Expect' formal for internal - 'formula' since the call matches these two only but we
-    ## want to make sure other unused arguments are NULL so the user is not confused
-    args.g$Expect="formula_mae"
-    XY.list <- do.call(check_generic_args,args = args.g, envir = parent.frame())
-    X <- XY.list$X
-    Y <- XY.list$Y
-    .pls(X,Y,...)
+    do.call(pls_methods_helper, args = list(Expect="formula_mae", formals=args.g,...))
 })
 
 ## ----------- if X=X_assay, Y=Y_assay/Y_colData and data=MAE is provided
 #' @export
 #' @rdname pls
-setMethod("pls", signature("ANY", "ANY", "ANY", "MultiAssayExperiment"), definition = function(X,Y, formula, data,...){
-    ## making sure there are no missing arguments
+setMethod("pls", signature(X="character", Y="character", data="MultiAssayExperiment"), definition = function(X,Y, formula=NULL, data,...){
     args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
-    # args.g[c("X","Y")] <- as.character(substitute(args.g[c("X","Y")]))
-    ## add 'Expect' formal for internal - 'formula' since the call matches these two only but we
-    ## want to make sure other unused arguments are NULL so the user is not confused
-    args.g$Expect="xy_mae"
-    XY.list <- do.call(check_generic_args,args = args.g, envir = parent.frame())
-    X <- XY.list$X
-    Y <- XY.list$Y
-    .pls(X,Y,...)
+    do.call(pls_methods_helper, args = list(Expect="xy_mae", formals=args.g,...))
 })
+
+#############################################################
+## S4 method definitions.
+#############################################################
+
+#' ## ----------- default - both matrices (Y can be numeric)
+#' setMethod("pls", signature("ANY"), definition = function(X=NULL,Y=NULL, formula=NULL, data=NULL,...){
+#'     stop_custom("args_conflict", "incorrect input format to 'spls'. Read the documenation for valid inputs for each method")
+#' })
+#'
+#' ## ----------- default - both matrices (Y can be numeric)
+#' setMethod("pls", signature(X="matrix", Y="matrix", formula="NULL", data="NULL"), definition = function(X,Y, formula=NULL, data=NULL,...){
+#'
+#'     args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
+#'     do.call(pls_methods_helper, args = list(Expect="xy", formals=args.g,...))
+#' })
+#'
+#'
+#' ## ----------- formula = Y_numeric ~ X_matrix
+#' #' @export
+#' #' @rdname pls
+#' setMethod("pls", signature(formula="formula"), definition = function(X=NULL,Y=NULL, formula, data=NULL,...){
+#'     args.default <- c(X=NULL, y=NULL, formula=NULL, data=NULL)
+#'     mc <- match.call(expand.dots = FALSE)[-1]
+#'     mc <- match(c("X","Y",))
+#'     args.g <- args.default
+#'     args.g[names(args.list)] <- args.list
+#'     args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
+#'     do.call(pls_methods_helper, args = list(Expect="formula", formals=args.g,...))
+#' })
+#'
+#' ## ----------- if formula=assay ~ phenotype/assay and data=MAE is provided
+#' #' @export
+#' #' @rdname pls
+#' setMethod("pls", signature(formula="formula", data="MultiAssayExperiment"), definition = function(X=NULL,Y=NULL, formula, data,...){
+#'     ## making sure there are no missing arguments
+#'     args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
+#'     do.call(pls_methods_helper, args = list(Expect="formula_mae", formals=args.g,...))
+#' })
+#'
+#' ## ----------- if X=X_assay, Y=Y_assay/Y_colData and data=MAE is provided
+#' #' @export
+#' #' @rdname pls
+#' setMethod("pls", signature(X="character", Y="character", data="MultiAssayExperiment"), definition = function(X,Y, formula=NULL, data,...){
+#'     args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
+#'     do.call(pls_methods_helper, args = list(Expect="xy_mae", formals=args.g,...))
+#' })
+
+
+#'
+#' #############################################################
+#' ## S4 method definitions.
+#' #############################################################
+#' ## ----------- default - both matrices (Y can be numeric)
+#' setMethod("pls", signature(X="matrix", Y="matrix"), definition = function(X,Y, formula, data,...){
+#'     ## making sure there are no missing arguments
+#'     # args.default <- c(X=NULL, y=NULL, formula=NULL, data=NULL)
+#'     # args.list <- as.list(match.call(expand.dots = FALSE)[-1])
+#'     args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
+#'     ## add 'Expect' formal for internal - 'xy' since the call matches these two only but we
+#'     ## want to make sure other unused arguments are NULL so the user is not confused
+#'     args.g$Expect="xy"
+#'     args.g
+#'     # args.list
+#'     XY.list <- do.call(check_generic_args,args = args.g, envir = parent.frame())
+#'     XY.list
+#'     # X <- XY.list$X
+#'     # Y <- XY.list$Y
+#'     # .pls(X,Y,...)
+#' })
+#'
+#'
+#' ## ----------- formula = Y_numeric ~ X_matrix
+#' #' @export
+#' #' @rdname pls
+#' setMethod("pls", signature(formula="formula", data="NULL"), definition = function(X,Y, formula, data,...){
+#'     message("formula")
+#'     ## making sure there are no missing arguments
+#'     args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
+#'     ## add 'Expect' formal for internal - 'xy' since the call matches these two only but we
+#'     ## want to make sure other unused arguments are NULL so the user is not confused
+#'     args.g$Expect="formula"
+#'     XY.list <- do.call(check_generic_args,args = args.g, envir = parent.frame())
+#'     X <- XY.list$X
+#'     Y <- XY.list$Y
+#'     .pls(X,Y,...)
+#' })
+#'
+#' ## ----------- if formula=assay ~ phenotype/assay and data=MAE is provided
+#' #' @export
+#' #' @rdname pls
+#' setMethod("pls", signature(formula="formula", data="MultiAssayExperiment"), definition = function(X,Y, formula, data,...){
+#'     ## making sure there are no missing arguments
+#'     args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
+#'     ## add 'Expect' formal for internal - 'formula' since the call matches these two only but we
+#'     ## want to make sure other unused arguments are NULL so the user is not confused
+#'     args.g$Expect="formula_mae"
+#'     XY.list <- do.call(check_generic_args,args = args.g, envir = parent.frame())
+#'     X <- XY.list$X
+#'     Y <- XY.list$Y
+#'     .pls(X,Y,...)
+#' })
+#'
+#' ## ----------- if X=X_assay, Y=Y_assay/Y_colData and data=MAE is provided
+#' #' @export
+#' #' @rdname pls
+#' setMethod("pls", signature(formula="NULL", data="MultiAssayExperiment"), definition = function(X,Y, formula, data,...){
+#'     ## making sure there are no missing arguments
+#'     args.g <- mget(names(formals()),sys.frame(sys.nframe()))[c("X", "Y","formula", "data")]
+#'     # args.g[c("X","Y")] <- as.character(substitute(args.g[c("X","Y")]))
+#'     ## add 'Expect' formal for internal - 'formula' since the call matches these two only but we
+#'     ## want to make sure other unused arguments are NULL so the user is not confused
+#'     args.g$Expect="xy_mae"
+#'     XY.list <- do.call(check_generic_args,args = args.g, envir = parent.frame())
+#'     X <- XY.list$X
+#'     Y <- XY.list$Y
+#'     .pls(X,Y,...)
+#' })
