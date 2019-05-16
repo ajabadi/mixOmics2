@@ -3,27 +3,27 @@
 \docType{methods}
 \name{pls}
 \alias{pls}
-\alias{pls,ANY,ANY,formula,ANY-method}
-\alias{pls,ANY,ANY,formula,MultiAssayExperiment-method}
-\alias{pls,ANY,ANY,ANY,MultiAssayExperiment-method}
+\alias{pls,missing,missing,formula,missing-method}
+\alias{pls,missing,missing,formula,MultiAssayExperiment-method}
+\alias{pls,ANY,ANY,missing,MultiAssayExperiment-method}
 \title{Partial Least Squares (PLS) Regression}
 \usage{
 \S4method{pls}{ANY}(X, Y, ncomp = 2, scale = TRUE, mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"), multilevel = NULL, all.outputs = TRUE)
 
-\S4method{pls}{ANY,ANY,formula,ANY}(X = NULL, Y = NULL,
+\S4method{pls}{missing,missing,formula,missing}(X = NULL, Y = NULL,
   formula = NULL, data = NULL, ncomp = 2, scale = TRUE,
   mode = c("regression", "canonical", "invariant", "classic"),
   tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
   logratio = "none", multilevel = NULL, all.outputs = TRUE, ...)
 
-\S4method{pls}{ANY,ANY,formula,MultiAssayExperiment}(X = NULL,
+\S4method{pls}{missing,missing,formula,MultiAssayExperiment}(X = NULL,
   Y = NULL, formula = NULL, data = NULL, ncomp = 2, scale = TRUE,
   mode = c("regression", "canonical", "invariant", "classic"),
   tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
   logratio = "none", multilevel = NULL, all.outputs = TRUE, ...)
 
-\S4method{pls}{ANY,ANY,ANY,MultiAssayExperiment}(X = NULL, Y = NULL,
-  formula = NULL, data = NULL, ncomp = 2, scale = TRUE,
+\S4method{pls}{ANY,ANY,missing,MultiAssayExperiment}(X = NULL,
+  Y = NULL, formula = NULL, data = NULL, ncomp = 2, scale = TRUE,
   mode = c("regression", "canonical", "invariant", "classic"),
   tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
   logratio = "none", multilevel = NULL, all.outputs = TRUE, ...)
