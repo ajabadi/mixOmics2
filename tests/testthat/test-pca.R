@@ -13,6 +13,6 @@ test_that('pca results for nutrimouse are the same when using either list or MAE
 
 test_that('pca returns error for invalid assay',{
   ## expect error
-  expect_error(pca(X = nutrimouse.mae, Assay = "lipidz"), class = "invalid_assay")
-  expect_error(pca(X = nutrimouse.mae, Assay = 800), class = "invalid_assay")
+  expect_error(pca(X = nutrimouse.mae, Assay = "lipidz"), class = "inv_xy")
+  expect_error(pca(X = nutrimouse.mae, Assay = 800), class = "inv_xy")
 })
