@@ -1,82 +1,76 @@
 context("pls")
 
 
-##TODO works
-## pls works for matrix-matrix/numeric
-## pls fails when xy and formula given - args_conflict
-## pls fails when numeric xy and MAE data - args_conflict
-## pls fails in formula_mae with non-NULL xy - args_conflict
-## pls fails when formula/single X is not a valid assay (symbol or char) from data  - invalid_X - but works otherwise
-##
+##TODO w
+
+## pls gives inv_xy when Y coldata is not numeric or facor, but works when it is a factor
 ## Do we wanna accept data.frames as well?
 ## pls works for
+## pls fails with non-valid formula RHS/LHS
 
-library(MultiAssayExperiment)
-## ------- test data
-mae_data <- miniACC
-X_index <- 1 ## RNASeq2GeneNorm
-Y_index_assay <- 2 ## gistict
-Y_index_coldata <- 2 ## "years_to_birth" - must be numeric
-## -------
+## ----------------------------------------------------- test data, this is the only section that needs input - you can replicate using new test data
 
-X_assay_name <- names(assays(mae_data))[X_index]
-X_assay_mat <- assay(mae_data, X_assay_name)
-Y_assay_name <- names(assays(mae_data))[Y_index_assay]
-Y_assay_matrix <- assay(mae_data,Y_assay_name)
-Y_colData_name <- names(colData(mae_data))[Y_index_coldata]
-Y_colData_num <-  colData(mae_data)[,Y_colData_name]
-
-formula_assay<- as.formula(paste0(Y_assay_name, " ~ ", X_assay_name))
-formula_coldata <- as.formula(paste0(Y_colData_name, " ~ ", X_assay_name))
-## ------
-
-test_that("pls produces identical 'mixo_pls' classes for designated valid signatures",{
+## ------ pls works with numeric ~ matrix
+test_that("pls produces identical 'mixo_pls' classes for designated valid signatures when Y is a column data",{
   ## suppress NZV warnings
-  pls.res.xy <-          suppressWarnings(pls(X =X_assay_mat, Y=Y_assay_matrix))
-  pls.res.formula <-     suppressWarnings(pls(formula = Y_assay_matrix~X_assay_mat))
-  pls.res.formula.mae <- suppressWarnings(pls(formula = formula_assay, data = mae_data))
-  pls.res.xy.mae <-      suppressWarnings(pls(X=X_assay_name , Y=Y_assay_name, data = mae_data))
-
-  expect_identical(pls.res.xy[-1] ,pls.res.formula[-1],pls.res.formula.mae[-1], pls.res.xy.mae[-1] )
-  expect_true(class( pls.res.xy)=="mixo_pls")
-})
-## pls_methods_wrapper
-test_that("pls works if Y is an assay or colData",{
-  ## suppress NZV warnings
-  pls.y.assay <-          suppressWarnings(pls(X =X, Y=Y))
-  pls.y.oldata<-     suppressWarnings(pls(formula = Y~X))
-  pls.res.formula.mae <- suppressWarnings(pls(formula = gistict ~ RNASeq2GeneNorm, data = mae_data))
-  pls.res.xy.mae <-      suppressWarnings(pls(X=X_assay_name , Y=Y_assay_name, data = mae_data))
+  suppressMessages({
+    pls.res.xy <-          pls(X =Xm_Yc, Y=Ycn )
+    pls.res.formula <-     pls(formula =Ycn ~ Xm_Yc)
+    pls.res.formula.mae <- pls(formula = f_Yc, data = mae_data)
+    pls.res.xy.mae <-      pls(X=X , Y=Yc , data = mae_data)
+    })
 
   expect_identical(pls.res.xy[-1] ,pls.res.formula[-1],pls.res.formula.mae[-1], pls.res.xy.mae[-1] )
   expect_true(class( pls.res.xy)=="mixo_pls")
 })
 
+## ------ pls works with matrix ~ matrix
+test_that("pls produces identical 'mixo_pls' classes for designated valid signatures when Y is an assay",{
+  ## suppress NZV warnings
+  suppressMessages({
+    pls.res.xy <-          pls(X =Xm_Ya, Y=Yam)
+    pls.res.formula <-     pls(formula =Yam ~ Xm_Ya)
+    pls.res.formula.mae <- pls(formula = f_Ya, data = mae_data)
+    pls.res.xy.mae <-      pls(X=X , Y=Ya , data = mae_data)
+  })
+
+  expect_identical(pls.res.xy[-1] ,pls.res.formula[-1],pls.res.formula.mae[-1], pls.res.xy.mae[-1] )
+  expect_true(class( pls.res.xy)=="mixo_pls")
+})
+
+## ------ correct error with invalid signature combination for X,Y, formula, data
 test_that("pls fails with invalid signature and produces appropriate error",{
 
-  expect_condition(pls(X=X, Y=Y,formula = Y~X ), class = "invalid_signature")
-  expect_condition(pls(X=Y~Z ), class = "invalid_signature")
+  expect_condition(pls(X=Xm_Ya, Y=Ycn,formula = Y~X ), class = "inv_signature")
+  expect_condition(pls(X=Y~Z ), class = "inv_signature")
 })
 
+## ------ correct error with invalid assays
 test_that("pls fails with invalid assay is chosen and produces appropriate error",{
 
   ##---- "xy"
-  expect_condition(pls(formula = Y~X, data = mae_data ), class = "invalid_assay")
-  expect_condition(pls(X = "invalidX", Y="invalidY", data = mae_data ), class = "invalid_assay")
+  expect_condition(pls(formula = Y~X, data = mae_data ), class = "inv_xy")
+  expect_condition(pls(X = "invalidX", Y="invalidY", data = mae_data ), class = "inv_xy")
 
-  expect_condition(pls(X=X, Y=Y,data = mae_data), class = "invalid_signature")
+  expect_condition(pls(X=Xm_Ya, Y=Yam,data = mae_data), class = "inv_signature")
   ##---- "formula"
-  expect_condition(pls(formula = Y~X, data = mae_data ), class = "invalid_assay")
+  expect_condition(pls(formula = Y~X, data = mae_data ), class = "inv_xy")
   ##---- 'formula_mae'
-  expect_condition(pls(X=NULL, Y=Y,formula = RNASeq2GeneNorm ~ gistict, data = mae_data ), class = "args_conflict")
+  expect_condition(pls(X=NULL, Y=Yam,formula = RNASeq2GeneNorm ~ gistict, data = mae_data ), class = "inv_signature")
 })
 
+## ------ correct error with invalid formula format
 test_that("pls fails with invalid formula formats and produces expected errors",{
-
-  ##---- "xy"
-  expect_condition(pls(formula = Y~X+Y), class = "invalid_formula")
-
+  expect_condition(pls(formula = Y~X+Y), class = "inv_formula")
+  expect_condition(pls(formula = Y+U~X), class = "inv_formula")
 })
 
-##TODO
-## invalid formula length
+## ------ correct error with invalid formula elements
+test_that("pls fails with invalid formula formats and produces expected errors",{
+  expect_condition(pls(formula = Y~U), class = "simpleError")
+})
+
+## ------ correct error with non-numeric/factor Y coldata
+test_that("pls fails with invalid Y",{
+  expect_condition(pls(X=X , Y=Y_inv , data = mae_data), class = "inv_xy")
+})
