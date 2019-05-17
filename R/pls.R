@@ -261,7 +261,7 @@ setMethod("pls", signature(X="missing", Y="missing", formula="formula", data="Mu
 ## ----------- if X=X_assay, Y=Y_assay/Y_colData and data=MAE is provided
 #' @export
 #' @rdname pls
-setMethod("pls", signature(X="ANY", Y="ANY", formula="missing", data="MultiAssayExperiment"), definition = function(X,Y, formula=NULL, data,...){
+setMethod("pls", signature(X="character", Y="character", formula="missing", data="MultiAssayExperiment"), definition = function(X,Y, formula=NULL, data,...){
     if( !("character" %in% class(tryCatch(X, error = function(e) e)) & "character" %in% class(tryCatch(Y, error = function(e) e)))){
         stop_custom("inv_signature", "X must be an assay name from 'data' and Y must be either an assay or colData name")
     }
