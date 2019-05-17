@@ -34,6 +34,10 @@
 \item{Y}{numeric vector or matrix of responses (for multi-response models).
 \code{NA}s are allowed.}
 
+\item{formula}{formula of form \code{dependent_data/group_membership (Y) ~ independent_data (X)}.}
+
+\item{data}{A \code{MultiAssayExperiment} dataset with at least 2 assays or one assay and one numeric \code{colData}.}
+
 \item{ncomp}{the number of components to include in the model. Default to 2.}
 
 \item{scale}{boleean. If scale = TRUE, each block is standardized to zero

@@ -153,7 +153,7 @@
 #' @usage \S4method{pls}{ANY}(formula=Y~X, ncomp = 2, scale = TRUE, mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"), multilevel = NULL, all.outputs = TRUE)
 ## arguemnts must be copied from internal to both @usage and setGeneric plus the '...' in generic so the methods can add arguments - if we only include X, RStudio won't suggest the rest automatically for autofill
 #' @export
-setGeneric("pls", def = function(X=NULL, Y=NULL, formula=NULL, data=NULL, ncomp = 2, scale = TRUE,
+setGeneric("pls", def = function(X, Y, formula, data, ncomp = 2, scale = TRUE,
                                  mode = c("regression", "canonical", "invariant", "classic"),
                                  tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = "none",
                                  multilevel = NULL, all.outputs = TRUE,...) standardGeneric("pls"))
@@ -239,8 +239,9 @@ setMethod("pls", signature(X="matrix", Y="numeric", formula="missing", data="mis
 })
 
 ## ----------- formula = Y_numeric ~ X_matrix
-#' @export
 #' @rdname pls
+#' @param formula formula of form \code{dependent_data/group_membership (Y) ~ independent_data (X)}.
+#' @export
 setMethod("pls", signature(X="missing", Y="missing", formula="formula", data="missing"), definition = function(X=NULL,Y=NULL, formula, data=NULL,...){
     mc <- as.list(match.call()[-1])
     mc$method.mode="formula"
@@ -248,8 +249,9 @@ setMethod("pls", signature(X="missing", Y="missing", formula="formula", data="mi
 })
 
 ## ----------- if formula=assay ~ phenotype/assay and data=MAE is provided
-#' @export
 #' @rdname pls
+#' @param data A \code{MultiAssayExperiment} dataset with at least 2 assays or one assay and one numeric \code{colData}.
+#' @export
 setMethod("pls", signature(X="missing", Y="missing", formula="formula", data="MultiAssayExperiment"), definition = function(X=NULL,Y=NULL, formula, data,...){
     mc <- as.list(match.call()[-1])
     mc$method.mode="formula_mae"

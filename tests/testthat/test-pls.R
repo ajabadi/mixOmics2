@@ -41,18 +41,18 @@ test_that("pls produces identical 'mixo_pls' classes for designated valid signat
 ## ------ correct error with invalid signature combination for X,Y, formula, data
 test_that("pls fails with invalid signature and produces appropriate error",{
 
-  expect_condition(pls(X=Xm_Ya, Y=Ycn,formula = Y~X ), class = "inv_signature")
+  expect_condition(pls(X=Xm_Ya, Y=Ycn,formula = Y~X ),  class = "inv_signature")
   expect_condition(pls(X=Y~Z ), class = "inv_signature")
 })
 
 ## ------ correct error with invalid assays
-test_that("pls fails with invalid assay is chosen and produces appropriate error",{
+test_that("pls fails with invalid assay and produces appropriate error",{
 
   ##---- "xy"
   expect_condition(pls(formula = Y~X, data = mae_data ), class = "inv_xy")
   expect_condition(pls(X = "invalidX", Y="invalidY", data = mae_data ), class = "inv_xy")
 
-  expect_condition(pls(X=Xm_Ya, Y=Yam,data = mae_data), class = "inv_signature")
+  expect_condition(pls(X=Xm_Ya, Y=Yam,data = mae_data),  class = "inv_signature")
   ##---- "formula"
   expect_condition(pls(formula = Y~X, data = mae_data ), class = "inv_xy")
   ##---- 'formula_mae'
