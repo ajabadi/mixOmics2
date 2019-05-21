@@ -60,7 +60,7 @@ internal_mae2dm <- function(X, Assay){ ## MAE to data.matrix
 #' @importFrom SummarizedExperiment assays
 #' @importFrom SummarizedExperiment assay
 
-names2mat <- function(mc)({
+names2mat <- function(mc)({ ## mc is list(data=MAE, X=X_name, Y=Y_name)
   tryCatch({
     if(any(class(c(mc$X, mc$Y))!="character")) stop("mc must have character X and Y", call. = FALSE)
   }, error=function(e) message("class(mc$X/mc$Y) produced error"))
@@ -99,14 +99,18 @@ names2mat <- function(mc)({
 
 ##------------------------------------------
 ## ----- function to spls methods arguments plus the methods call mode and create internal level arguments
-pls_methods_wrapper <- function(method.mode=c("xy", "formula", "formula_mae", "xy_mae"),...){
+pls_methods_wrapper <- function(mc=mc){
   formals(eval.parent)$n <- 2 ## within this function evluate formals 2 stacks higher in parent as it is a second level function
   ## eventually, mc must have all arguments required for internal - including the dots
-  mc <- as.list(match.call()[-c(1,2)])
-  match.arg(method.mode)
-  ##------- if xy and y are provided no further work needed
+  mm <- mc$method.mode
+  if(!mm %in% c("xy", "formula", "formula_mae", "xy_mae")) stop_custom("internal", "mc$method.mode not valid")
   ##------- if only formula provided
-  if(method.mode=="formula"){
+  if(mm =="xy"){
+    ## passes to internal check.entry
+    mc$X <- eval.parent(mc$X)
+    mc$Y <- as.matrix(eval.parent(mc$Y))
+  }
+  else if(mm =="formula"){
     fterms <- as.list(eval.parent(mc$formula))[-1]
     if(any(sapply(as.list(mc$formula), length)!=1)) stop_custom("inv_formula", "formula must be of form: Y~X")
     mc$X <- eval.parent(fterms[[2]])
@@ -114,7 +118,7 @@ pls_methods_wrapper <- function(method.mode=c("xy", "formula", "formula_mae", "x
     mc$formula <- NULL
   }
   ##------- if formula = coldata/assay ~ assay and data=MAE provided
-  else if(method.mode=="formula_mae"){
+  else if(mm =="formula_mae"){
     mc$data <- eval.parent(mc$data)
     mc$formula <- eval.parent(mc$formula)
     fterms <- as.list(mc$formula)[-1]
@@ -126,7 +130,7 @@ pls_methods_wrapper <- function(method.mode=c("xy", "formula", "formula_mae", "x
     mc$formula <- mc$data <-  NULL
   }
   ##------- if X=assay (symbol or char), Y=assay/colData (symbol or char) and data=MAE provided
-  else if(method.mode=="xy_mae"){
+  else if(mm =="xy_mae"){
     mc$data <- eval.parent(mc$data)
     ## if X and Y are variables
     mc$X <- eval.parent(mc$X)
@@ -134,5 +138,6 @@ pls_methods_wrapper <- function(method.mode=c("xy", "formula", "formula_mae", "x
     mc <- names2mat(mc = mc)
     mc$data <-  NULL
   }
+  mc$method.mode <- NULL
   do.call(.pls, mc)
 }
