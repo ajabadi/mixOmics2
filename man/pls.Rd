@@ -3,40 +3,39 @@
 \docType{methods}
 \name{pls}
 \alias{pls}
-\alias{pls,missing,missing,formula,missing-method}
-\alias{pls,missing,missing,formula,MultiAssayExperiment-method}
-\alias{pls,ANY,ANY,missing,MultiAssayExperiment-method}
+\alias{pls,formula,missing-method}
+\alias{pls,formula,MultiAssayExperiment-method}
+\alias{pls,missing,MultiAssayExperiment-method}
 \title{Partial Least Squares (PLS) Regression}
 \usage{
 \S4method{pls}{ANY}(X, Y, ncomp = 2, scale = TRUE, mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"), multilevel = NULL, all.outputs = TRUE)
 
-\S4method{pls}{missing,missing,formula,missing}(X = NULL, Y = NULL,
-  formula = NULL, data = NULL, ncomp = 2, scale = TRUE,
-  mode = c("regression", "canonical", "invariant", "classic"),
-  tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
+\S4method{pls}{formula,missing}(formula, data, X, Y, ncomp = 2,
+  scale = TRUE, mode = c("regression", "canonical", "invariant",
+  "classic"), tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
   logratio = "none", multilevel = NULL, all.outputs = TRUE, ...)
 
-\S4method{pls}{missing,missing,formula,MultiAssayExperiment}(X = NULL,
-  Y = NULL, formula = NULL, data = NULL, ncomp = 2, scale = TRUE,
-  mode = c("regression", "canonical", "invariant", "classic"),
-  tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
-  logratio = "none", multilevel = NULL, all.outputs = TRUE, ...)
+\S4method{pls}{formula,MultiAssayExperiment}(formula, data, X, Y,
+  ncomp = 2, scale = TRUE, mode = c("regression", "canonical",
+  "invariant", "classic"), tol = 1e-06, max.iter = 100,
+  near.zero.var = FALSE, logratio = "none", multilevel = NULL,
+  all.outputs = TRUE, ...)
 
-\S4method{pls}{ANY,ANY,missing,MultiAssayExperiment}(X = NULL,
-  Y = NULL, formula = NULL, data = NULL, ncomp = 2, scale = TRUE,
-  mode = c("regression", "canonical", "invariant", "classic"),
-  tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
-  logratio = "none", multilevel = NULL, all.outputs = TRUE, ...)
+\S4method{pls}{missing,MultiAssayExperiment}(formula, data, X, Y,
+  ncomp = 2, scale = TRUE, mode = c("regression", "canonical",
+  "invariant", "classic"), tol = 1e-06, max.iter = 100,
+  near.zero.var = FALSE, logratio = "none", multilevel = NULL,
+  all.outputs = TRUE, ...)
 }
 \arguments{
+\item{formula}{formula of form \code{dependent_data/group_membership (Y) ~ independent_data (X)}.}
+
+\item{data}{A \code{MultiAssayExperiment} dataset with at least 2 assays or one assay and one numeric \code{colData}.}
+
 \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
 
 \item{Y}{numeric vector or matrix of responses (for multi-response models).
 \code{NA}s are allowed.}
-
-\item{formula}{formula of form \code{dependent_data/group_membership (Y) ~ independent_data (X)}.}
-
-\item{data}{A \code{MultiAssayExperiment} dataset with at least 2 assays or one assay and one numeric \code{colData}.}
 
 \item{ncomp}{the number of components to include in the model. Default to 2.}
 
