@@ -153,7 +153,7 @@
 #' @usage \S4method{pls}{ANY}(formula=Y~X, ncomp = 2, scale = TRUE, mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"), multilevel = NULL, all.outputs = TRUE)
 ## arguemnts must be copied from internal to both @usage and setGeneric plus the '...' in generic so the methods can add arguments - if we only include X, RStudio won't suggest the rest automatically for autofill
 #' @export
-setGeneric("pls", def = function(X, Y, formula, data, ncomp = 2, scale = TRUE,
+setGeneric("pls", def = function(formula, data, X, Y, ncomp = 2, scale = TRUE,
                                  mode = c("regression", "canonical", "invariant", "classic"),
                                  tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = "none",
                                  multilevel = NULL, all.outputs = TRUE,...) standardGeneric("pls"))
@@ -220,53 +220,77 @@ all.outputs = TRUE)
 #############################################################
 
 # # ## ----------- wrong signature
-setMethod("pls", signature("ANY"), definition = function(X,Y, formula, data,...){
+setMethod("pls", signature("ANY"), definition = function(formula, data,...){
     stop_custom("inv_signature", "incorrect input format to 'spls'. Read ?spls for supported signatures")
 })
 
-## ----------- default - both matrices (Y can be numeric)
-setMethod("pls", signature(X="matrix", Y="matrix", formula="missing", data="missing"), definition = function(X,Y, formula=NULL, data=NULL,...){
-   mc <- as.list(match.call()[-1])
-   mc$method.mode="xy"
-   do.call(pls_methods_wrapper, mc)
-})
-
-setMethod("pls", signature(X="matrix", Y="numeric", formula="missing", data="missing"), definition = function(X,Y, formula=NULL, data=NULL,...){
+## ----------- default - both matrices (Y can be numeric) - rest missing
+setMethod("pls", signature(formula="missing", data="missing"), definition = function(formula=NULL, data=NULL,...){
     mc <- as.list(match.call()[-1])
-    mc$Y <- as.matrix(eval.parent(mc$Y)) ## make Y matrix
-    mc$method.mode="xy"
-    do.call(pls_methods_wrapper, mc)
+    mc
+    # if(!all(c("X", "Y") %in% names(mc))) stop_custom("inv_xy", " 'X' and'Y' muast be both provided")mc[c[1,2]] <- mc[c("X","Y")] ## ensure X is the first one
+    # mc$X <- eval.parent(mc[[1]])
+    # mc$Y <- as.matrix(eval.parent(mc[[2]]))
+    # do.call(.pls, mc)
 })
 
 ## ----------- formula = Y_numeric ~ X_matrix
 #' @rdname pls
 #' @param formula formula of form \code{dependent_data/group_membership (Y) ~ independent_data (X)}.
 #' @export
-setMethod("pls", signature(X="missing", Y="missing", formula="formula", data="missing"), definition = function(X=NULL,Y=NULL, formula, data=NULL,...){
+setMethod("pls", signature(formula="formula", data="missing"), definition = function(formula, data=NULL,...){
     mc <- as.list(match.call()[-1])
-    mc$method.mode="formula"
-    do.call(pls_methods_wrapper, mc)
+
+    fterms <- as.list(eval.parent(mc$formula))[-1]
+    if(any(sapply(as.list(mc$formula), length)!=1)) stop_custom("inv_formula", "formula must be of form: Y~X")
+    mc$X <- eval.parent(fterms[[2]])
+    mc$Y <- as.matrix(eval.parent(fterms[[1]]))
+    mc$formula <- NULL
+
+    do.call(.pls, mc)
 })
 
 ## ----------- if formula=assay ~ phenotype/assay and data=MAE is provided
 #' @rdname pls
 #' @param data A \code{MultiAssayExperiment} dataset with at least 2 assays or one assay and one numeric \code{colData}.
 #' @export
-setMethod("pls", signature(X="missing", Y="missing", formula="formula", data="MultiAssayExperiment"), definition = function(X=NULL,Y=NULL, formula, data,...){
+setMethod("pls", signature(formula="formula", data="MultiAssayExperiment"), definition = function(formula, data,...){
     mc <- as.list(match.call()[-1])
-    mc$method.mode="formula_mae"
-    do.call(pls_methods_wrapper, mc)
+
+    mc$data <- eval.parent(mc$data)
+    mc$formula <- eval.parent(mc$formula)
+    fterms <- as.list(mc$formula)[-1]
+    ## if the length of each of the formula elements (LHS and RHS) is anything other than 1, stop
+    if(any(sapply(fterms, length)!=1)) stop_custom("inv_formula", "formula must be of form: Y~X")
+    ## so that formula can also be stored in a variable - makes testing easier as well
+    mc[c("Y","X")] <- as.character(fterms)
+    mc <- names2mat(mc = mc)
+    mc$formula <- mc$data <-  NULL
+
+    do.call(.pls, mc)
 })
 
 ## ----------- if X=X_assay, Y=Y_assay/Y_colData and data=MAE is provided
 #' @export
 #' @rdname pls
-setMethod("pls", signature(X="character", Y="character", formula="missing", data="MultiAssayExperiment"), definition = function(X,Y, formula=NULL, data,...){
-    if( !("character" %in% class(tryCatch(X, error = function(e) e)) & "character" %in% class(tryCatch(Y, error = function(e) e)))){
-        stop_custom("inv_signature", "X must be an assay name from 'data' and Y must be either an assay or colData name")
-    }
-
+setMethod("pls", signature(formula="missing", data="MultiAssayExperiment"), definition = function(formula=NULL, data,...){
     mc <- as.list(match.call()[-1])
-    mc$method.mode="xy_mae"
-    do.call(pls_methods_wrapper, mc)
+    mc$data <- eval.parent(data)
+    ## ensure there's X and Y in arguments
+    if(!all(c("X", "Y") %in% names(mc))) stop_custom("inv_xy", " assay names 'X' and/or 'Y' not provided")
+    ## if they are not class character, they can be objects or names
+    if((class(try(mc$X)) != "character") | (class(try(mc$Y)) !="character")){
+        if(class(try(eval.parent(mc$X)))=="character"){ ## X stored in an abject
+            mc$X <- eval.parent(mc$X)
+        }
+        if(class(try(eval.parent(mc$Y)))=="character"){
+            mc$Y <- eval.parent(mc$Y)
+        }
+        ## in case they are names
+        mc$X <- as.character(mc$X)
+        mc$Y <- as.character(mc$Y)
+    }
+    mc <- names2mat(mc = mc)
+    mc$data <-  NULL
+    do.call(.pls, mc)
 })
