@@ -219,19 +219,41 @@ all.outputs = TRUE)
 ## S4 method definitions.
 #############################################################
 
-# # ## ----------- wrong signature
+# # ## ----------- wrong signature - anything but the following methods
 setMethod("pls", signature("ANY"), definition = function(formula, data,...){
-    stop_custom("inv_signature", "incorrect input format to 'spls'. Read ?spls for supported signatures")
+    stop_custom("inv_signature", "incorrect input format to 'spls'. See ?spls for supported signatures")
+})
+## ----------- backward compatibility - in case X and Y are provided as first arguments and are not named
+## we rename them from 'formula' and 'data' to 'X' and 'Y' and pass to the genertic with a message
+setMethod("pls", signature("matrix", "matrix"), definition = function(formula=NULL, data=NULL,...){
+    mc <- as.list(match.call()[-1])
+    if(!(typeof(eval.parent(mc[[1]]))=="double") & typeof(eval.parent(mc[[2]]))=="double")
+        stop_custom("inv_signature", "incorrect input format to 'pls'. See ?pls for supported signatures")
+    warning_custom("arg_change", message = "Evaluating the first two arguments as (X,Y) instead of (formula,data) for backward compatiblity, see ?pls for more info on pls methods and modify arguments accordingly. \n")
+    mc$X <- eval.parent(mc$formula)
+    mc$Y <- as.matrix(eval.parent(mc$data))
+    mc$formula <- mc$data <- NULL
+    do.call(.pls, mc)
+})
+
+setMethod("pls", signature("matrix", "numeric"), definition = function(formula=NULL, data=NULL,...){
+    mc <- as.list(match.call()[-1])
+    if(!(typeof(eval.parent(mc[[1]]))=="double" & typeof(eval.parent(mc[[2]]))=="double"))
+        stop_custom("inv_xy", " 'X' and'Y' muast be numeric matrices")
+    warning_custom("arg_change", message = "Evaluating the first two arguments as (X,Y) instead of (formula,data) for backward compatiblity, see ?pls for more info on pls methods and modify arguments accordingly. \n")
+    mc$X <- eval.parent(mc$formula)
+    mc$Y <- as.matrix(eval.parent(mc$data))
+    mc$formula <- mc$data <- NULL
+    do.call(.pls, mc)
 })
 
 ## ----------- default - both matrices (Y can be numeric) - rest missing
 setMethod("pls", signature(formula="missing", data="missing"), definition = function(formula=NULL, data=NULL,...){
     mc <- as.list(match.call()[-1])
-    mc
-    # if(!all(c("X", "Y") %in% names(mc))) stop_custom("inv_xy", " 'X' and'Y' muast be both provided")mc[c[1,2]] <- mc[c("X","Y")] ## ensure X is the first one
-    # mc$X <- eval.parent(mc[[1]])
-    # mc$Y <- as.matrix(eval.parent(mc[[2]]))
-    # do.call(.pls, mc)
+    if(!all(c("X", "Y") %in% names(mc))) stop_custom("inv_signature", " 'X' and'Y' muast be both provided")
+    mc$X <- eval.parent(mc$X)
+    mc$Y <- as.matrix(eval.parent(mc$Y))
+    do.call(.pls, mc)
 })
 
 ## ----------- formula = Y_numeric ~ X_matrix
@@ -256,7 +278,8 @@ setMethod("pls", signature(formula="formula", data="missing"), definition = func
 #' @export
 setMethod("pls", signature(formula="formula", data="MultiAssayExperiment"), definition = function(formula, data,...){
     mc <- as.list(match.call()[-1])
-
+    if(!all(sapply(mc[c("X", "Y")], is.null)))
+        stop_custom("inv_signature", "When data and formula are provided, X and Y must be NULL")
     mc$data <- eval.parent(mc$data)
     mc$formula <- eval.parent(mc$formula)
     fterms <- as.list(mc$formula)[-1]
@@ -265,9 +288,9 @@ setMethod("pls", signature(formula="formula", data="MultiAssayExperiment"), defi
     ## so that formula can also be stored in a variable - makes testing easier as well
     mc[c("Y","X")] <- as.character(fterms)
     mc <- names2mat(mc = mc)
-    mc$formula <- mc$data <-  NULL
-
-    do.call(.pls, mc)
+    # mc$formula <- mc$data <-  NULL
+    #
+    # do.call(.pls, mc)
 })
 
 ## ----------- if X=X_assay, Y=Y_assay/Y_colData and data=MAE is provided
@@ -290,7 +313,8 @@ setMethod("pls", signature(formula="missing", data="MultiAssayExperiment"), defi
         mc$X <- as.character(mc$X)
         mc$Y <- as.character(mc$Y)
     }
+    mc
     mc <- names2mat(mc = mc)
-    mc$data <-  NULL
-    do.call(.pls, mc)
+    # mc$data <-  NULL
+    # do.call(.pls, mc)
 })
