@@ -12,27 +12,35 @@ test_that("pls produces identical 'mixo_pls' classes for designated valid signat
   ## suppress NZV warnings
   suppressMessages({
     pls.res.xy <-          pls(X =Xm_Yc, Y=Ycn )
-    pls.res.formula <-     pls(formula =Ycn ~ Xm_Yc)
-    pls.res.formula.mae <- pls(formula = f_Yc, data = mae_data)
-    pls.res.xy.mae <-      pls(X=X , Y=Yc , data = mae_data)
-    })
+    expect_true(class( pls.res.xy)=="mixo_pls")
 
-  expect_identical(pls.res.xy[-1] ,pls.res.formula[-1],pls.res.formula.mae[-1], pls.res.xy.mae[-1] )
-  expect_true(class( pls.res.xy)=="mixo_pls")
+    pls.res.formula <-     pls(formula =Ycn ~ Xm_Yc)
+    expect_equal(pls.res.xy[-1] ,pls.res.formula[-1])
+
+    pls.res.formula.mae <- pls(formula = f_Yc, data = mae_data)
+    expect_equal(pls.res.xy[-1] ,pls.res.formula.mae[-1])
+
+    pls.res.xy.mae <-      pls(X=X , Y=Yc , data = mae_data)
+    expect_equal(pls.res.formula.mae[-1] , pls.res.xy.mae[-1] )
+    })
 })
 
 ## ------ pls works with matrix ~ matrix
 test_that("pls produces identical 'mixo_pls' classes for designated valid signatures when Y is an assay",{
   ## suppress NZV warnings
   suppressMessages({
-    pls.res.xy <-          pls(X =Xm_Ya, Y=Yam)
-    pls.res.formula <-     pls(formula =Yam ~ Xm_Ya)
-    pls.res.formula.mae <- pls(formula = f_Ya, data = mae_data)
-    pls.res.xy.mae <-      pls(X=X , Y=Ya , data = mae_data)
-  })
+    pls.res.xy <-          pls(X =Xm_Ya, Y=Yam )
+    expect_true(class( pls.res.xy)=="mixo_pls")
 
-  expect_identical(pls.res.xy[-1] ,pls.res.formula[-1],pls.res.formula.mae[-1], pls.res.xy.mae[-1] )
-  expect_true(class( pls.res.xy)=="mixo_pls")
+    pls.res.formula <-     pls(formula =Yam ~ Xm_Ya)
+    expect_equal(pls.res.xy[-1] ,pls.res.formula[-1])
+
+    pls.res.formula.mae <- pls(formula = f_Ya, data = mae_data)
+    expect_equal(pls.res.xy[-1] ,pls.res.formula.mae[-1])
+
+    pls.res.xy.mae <-      pls(X=X , Y=Ya , data = mae_data)
+    expect_equal(pls.res.formula.mae[-1] , pls.res.xy.mae[-1] )
+  })
 })
 
 ## ------ correct error with invalid signature combination for X,Y, formula, data
