@@ -15,7 +15,7 @@
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful, 
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -29,49 +29,50 @@
 #----------------------------------------------------------------------------------------------------------#
 #-- Includes plotIndiv rGCCA, sGCCA, sGCCDA --#
 #----------------------------------------------------------------------------------------------------------#
-
-plotIndiv.sgcca = 
-plotIndiv.rgcca = 
+#'@export plotIndiv.sgcca
+#'@export plotIndiv.rgcca
+plotIndiv.sgcca =
+plotIndiv.rgcca =
 #plotIndiv.sgccda =   #because sgcca
 
-function(object, 
-comp = NULL, 
+function(object,
+comp = NULL,
 blocks = NULL, # to choose which block data to plot, when using GCCA module
-ind.names = TRUE, 
+ind.names = TRUE,
 group, # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
-col.per.group, 
+col.per.group,
 style = "ggplot2", # can choose between graphics, 3d, lattice or ggplot2
-ellipse = FALSE, 
-ellipse.level = 0.95, 
-centroid = FALSE, 
-star = FALSE, 
-title = NULL, 
-subtitle, 
-legend = FALSE, 
-X.label = NULL, 
-Y.label = NULL, 
-Z.label = NULL, 
-abline = FALSE, 
-xlim = NULL, 
-ylim = NULL, 
-col, 
-cex, 
-pch, 
+ellipse = FALSE,
+ellipse.level = 0.95,
+centroid = FALSE,
+star = FALSE,
+title = NULL,
+subtitle,
+legend = FALSE,
+X.label = NULL,
+Y.label = NULL,
+Z.label = NULL,
+abline = FALSE,
+xlim = NULL,
+ylim = NULL,
+col,
+cex,
+pch,
 pch.levels,
 alpha = 0.2,
-axes.box = "box", 
-layout = NULL, 
-size.title = rel(2), 
-size.subtitle = rel(1.5), 
-size.xlabel = rel(1), 
-size.ylabel = rel(1), 
-size.axis = rel(0.8), 
-size.legend = rel(1), 
-size.legend.title = rel(1.1), 
+axes.box = "box",
+layout = NULL,
+size.title = rel(2),
+size.subtitle = rel(1.5),
+size.xlabel = rel(1),
+size.ylabel = rel(1),
+size.axis = rel(0.8),
+size.legend = rel(1),
+size.legend.title = rel(1.1),
 legend.title = "Legend",
 legend.title.pch = "Legend",
 legend.position = "right",
-point.lwd = 1, 
+point.lwd = 1,
 ...
 )
 {
@@ -81,11 +82,11 @@ point.lwd = 1,
 
     if(any(class(object)%in%c("mint.block.pls", "mint.block.spls", "mint.block.plsda", "mint.block.splsda")))
     stop("No plotIndiv for the following functions at this stage: mint.block.pls, mint.block.spls, mint.block.plsda, mint.block.splsda.")
-    
+
     #-- rep.space
     rep.space = "multi" # rep.space is not used afterwards, put to "multi" to plot all blocks
-    
-    
+
+
     if (is.null(blocks))
     {
         blocks = names(object$X)#names$blocks
@@ -99,12 +100,12 @@ point.lwd = 1,
     }
     #object$variates = object$variates[names(object$variates) %in% blocks] # reduce the variate to the 'blocks' we are looking at
     object$variates = object$variates[match(blocks, names(object$variates))] # reduce the variate to the 'blocks' we are looking at
-    
+
     if (any(object$ncomp[blocks] ==  1))
     stop(paste("The number of components for one selected block '", paste(blocks, collapse = " - "), "' is 1. The number of components must be superior or equal to 2."), call. = FALSE)
     ncomp = object$ncomp[blocks]
 
-    
+
     if(length(blocks)!= length(unique(blocks)))
     stop("Duplicate in 'blocks' not allowed")
 
@@ -117,9 +118,9 @@ point.lwd = 1,
 
 
     #-- check inputs
-    check = check.input.plotIndiv(object = object, comp = comp, blocks = blocks, ind.names = ind.names, 
-    style = style, ellipse = ellipse, ellipse.level = ellipse.level, centroid = centroid, 
-    star = star, legend = legend, X.label = X.label, Y.label = Y.label, Z.label = Z.label, abline = abline, 
+    check = check.input.plotIndiv(object = object, comp = comp, blocks = blocks, ind.names = ind.names,
+    style = style, ellipse = ellipse, ellipse.level = ellipse.level, centroid = centroid,
+    star = star, legend = legend, X.label = X.label, Y.label = Y.label, Z.label = Z.label, abline = abline,
     xlim = xlim, ylim = ylim, alpha = alpha, axes.box = axes.box, plot_parameters = plot_parameters)
     #-- retrieve outputs from the checks
     axes.box = check$axes.box
@@ -143,9 +144,9 @@ point.lwd = 1,
     n = nrow(object$X[[1]])
 
     # create data frame df that contains (almost) all the ploting information
-    out = shape.input.plotIndiv(object = object, n = n, blocks = blocks, x = x, y = y, z = z, ind.names = ind.names, group, col.per.group = col.per.group, 
-    style = style, study = "global", ellipse = ellipse, ellipse.level = ellipse.level, 
-    centroid = centroid, star = star, title = title, xlim = xlim, ylim = ylim, 
+    out = shape.input.plotIndiv(object = object, n = n, blocks = blocks, x = x, y = y, z = z, ind.names = ind.names, group, col.per.group = col.per.group,
+    style = style, study = "global", ellipse = ellipse, ellipse.level = ellipse.level,
+    centroid = centroid, star = star, title = title, xlim = xlim, ylim = ylim,
     col = col, cex = cex, pch = pch, pch.levels = pch.levels, display.names = display.names, plot_parameters = plot_parameters)
     #-- retrieve outputs
     df = out$df
@@ -169,7 +170,7 @@ point.lwd = 1,
         if(ellipse)
         df.ellipse$Block = factor(df.ellipse$Block, labels = subtitle)
     }
-    
+
     #call plot module (ggplot2, lattice, graphics, 3d)
     res = internal_graphicModule(df = df, centroid = centroid, col.per.group = col.per.group, title = title, X.label = X.label,
     Y.label = Y.label, Z.label = Z.label, xlim = xlim, ylim = ylim, class.object = class(object), display.names = display.names, legend = legend,

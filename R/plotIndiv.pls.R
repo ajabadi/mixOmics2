@@ -16,7 +16,7 @@
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful, 
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -30,49 +30,51 @@
 #----------------------------------------------------------------------------------------------------------#
 #-- Includes plotIndiv for PLS, sPLS, PLS-DA, SPLS-DA,  --#
 #----------------------------------------------------------------------------------------------------------#
-
+#'@export plotIndiv.mixo_pls
+#'@export plotIndiv.mixo_spls
+#'@export plotIndiv.rcc
 plotIndiv.mixo_pls =
-plotIndiv.mixo_spls = 
+plotIndiv.mixo_spls =
 #plotIndiv.plsda =      # because pls too
 #plotIndiv.mlpls =      # because pls too
 #plotIndiv.mlplsda =    # because pls too
 #plotIndiv.splsda =     # because spls too
 #plotIndiv.mlspls =     # because spls too
 #plotIndiv.mlsplsda =   # because spls too
-plotIndiv.rcc = 
+plotIndiv.rcc =
 
-function(object, 
-comp  = NULL, 
-rep.space  = NULL, 
-ind.names  = TRUE, 
+function(object,
+comp  = NULL,
+rep.space  = NULL,
+ind.names  = TRUE,
 group, # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
-col.per.group, 
+col.per.group,
 style = "ggplot2", # can choose between graphics, 3d, lattice or ggplot2
 ellipse  = FALSE, #ellipse
 ellipse.level  = 0.95,
 centroid = FALSE,  # centroid
 star = FALSE, # star
 title = NULL, #title
-subtitle, 
-legend = FALSE, 
-X.label  = NULL, 
-Y.label  = NULL, 
-Z.label  = NULL, 
+subtitle,
+legend = FALSE,
+X.label  = NULL,
+Y.label  = NULL,
+Z.label  = NULL,
 abline  = FALSE, #abline
-xlim  = NULL, 
-ylim  = NULL, 
-col, 
-cex, 
+xlim  = NULL,
+ylim  = NULL,
+col,
+cex,
 pch,
 pch.levels,
 alpha = 0.2, # used in shade3d
-axes.box  = "box", 
-layout = NULL, 
-size.title = rel(2), 
-size.subtitle = rel(1.5), 
-size.xlabel = rel(1), 
-size.ylabel = rel(1), 
-size.axis = rel(0.8), 
+axes.box  = "box",
+layout = NULL,
+size.title = rel(2),
+size.subtitle = rel(1.5),
+size.xlabel = rel(1),
+size.ylabel = rel(1),
+size.axis = rel(0.8),
 size.legend = rel(1), #size.legend
 size.legend.title = rel(1.1), #size.legend.title
 legend.title = "Legend",
@@ -89,7 +91,7 @@ background = NULL,
 
     if (is(object, c("mint.block.pls", "mint.block.spls", "mint.block.plsda", "mint.block.splsda")))
     stop("No plotIndiv for the following functions at this stage: mint.block.pls, mint.block.spls, mint.block.plsda, mint.block.splsda.")
-    
+
     #-- choose rep.space
     if (is.null(rep.space) && is(object, "DA"))#"splsda", "plsda", "mlsplsda")))
     {
@@ -105,19 +107,19 @@ background = NULL,
         blocks = c("X", "Y")
         object$variates  = object$variates[names(object$variates) %in% blocks]
     }
-    
+
     if (rep.space  == "X-variate")
     {
         object$variates  = object$variates["X"]
         blocks  = "X"
     }
-    
+
     if (rep.space  == "Y-variate")
     {
         object$variates  = object$variates["Y"]
         blocks  = "Y"
     }
-    
+
     if (rep.space  == "XY-variate")
     {
         object$variates$XYvariates  = (object$variates$X + object$variates$Y)/2
@@ -133,14 +135,14 @@ background = NULL,
         if (length(subtitle)!= length(blocks) | length(subtitle)!= length(unique(subtitle)))
         stop("'subtitle' indicates the subtitle of the plot for each 'blocks'; it needs to be the same length as 'blocks' and duplicate are not allowed.")
     }
-    
+
     if(!is.null(background) &&  !is(background, "background.predict"))
     stop("'background' must have been obtained with the 'background.predict' function")
 
     #-- check inputs
-    check  = check.input.plotIndiv(object = object, comp  = comp , blocks  = blocks, ind.names  = ind.names, 
-    style = style, ellipse  = ellipse, ellipse.level  = ellipse.level, centroid = centroid, 
-    star = star, legend = legend, X.label  = X.label, Y.label  = Y.label, Z.label  = Z.label, abline  = abline, 
+    check  = check.input.plotIndiv(object = object, comp  = comp , blocks  = blocks, ind.names  = ind.names,
+    style = style, ellipse  = ellipse, ellipse.level  = ellipse.level, centroid = centroid,
+    star = star, legend = legend, X.label  = X.label, Y.label  = Y.label, Z.label  = Z.label, abline  = abline,
     xlim  = xlim, ylim  = ylim, alpha = alpha, axes.box  = axes.box, plot_parameters = plot_parameters)
     #-- retrieve outputs from the checks
     axes.box = check$axes.box
@@ -160,13 +162,13 @@ background = NULL,
     X.label = variate$X.label
     Y.label = variate$Y.label
     Z.label = variate$Z.label
-    
+
     n = nrow(object$X)
 
     # create data frame df that contains (almost) all the ploting information
     out = shape.input.plotIndiv(object = object, n = n, blocks  = blocks, x = x, y = y, z = z, ind.names  = ind.names, group = group,
     col.per.group = col.per.group, style = style, study = "global", ellipse  = ellipse, ellipse.level  = ellipse.level,
-    centroid = centroid, star = star, title = title, xlim  = xlim, ylim  = ylim, 
+    centroid = centroid, star = star, title = title, xlim  = xlim, ylim  = ylim,
     col = col, cex = cex, pch = pch, pch.levels = pch.levels, display.names = display.names, plot_parameters = plot_parameters)
     #-- retrieve outputs
     df = out$df
@@ -189,14 +191,14 @@ background = NULL,
         if (ellipse)
         df.ellipse$Block = factor(df.ellipse$Block, labels = subtitle)
     }
-    
+
     # match background color to col.per.group, the color of the groups
     if(!is.null(background))
     {
         ind.match = match(names(background), levels(df$group))
         names(background) = adjustcolor(col.per.group[ind.match],alpha.f=0.1)
     }
-    
+
     #save(list = ls(), file = "temp.Rdata")
 
     #call plot module (ggplot2, lattice, graphics, 3d)

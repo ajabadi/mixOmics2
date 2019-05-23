@@ -23,35 +23,47 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #############################################################################################################
+#' Plot the explained variances from a pca object
+#'
+#' Creates a scree plot of explained variance by the study PCs.
+#'
+#'@title plot
+#'@param x a \code{pca} object obtained from \code{pca} function.
+#'@param ncomp number of PCs to show.
+#'@param type type of the plot, either "barplot" or argument passed to \code{type} in base \code{plot}.
+#'@param explained.var logical. Whether to show proportion of variance explained (TRUE) or the total variance (FALSE).
+#'@param ... other arguments passed to \code{plot}.
+#'
+#'@rdname plot
+#'@method plot pca
+#'@S3method plot pca
 
-
-plot.pca  = #plot.spca <- plot.ipca <- plot.sipca <-
-function(   x,
+plot.pca <-  function(x,
             ncomp = min(10, length(x$sdev)),
             type = "barplot", # either barplot or any other type available in plot, as "l","b","p",..
             explained.var=TRUE,
             ...)
 {
-    
+
     #-- checking general input parameters --------------------------------------#
     #---------------------------------------------------------------------------#
-    
+
     #-- ncomp
     if (is.null(ncomp) || !is.numeric(ncomp) || ncomp < 1 || !is.finite(ncomp))
     stop("invalid value for 'ncomp'.", call. = FALSE)
-    
+
     ncomp = round(ncomp)
-    
+
     if (ncomp > length(x$sdev))
     stop("'ncomp' must be lower or equal than ", length(x$sdev), ".",
     call. = FALSE)
-    
+
     #-- end checking --#
     #------------------#
-    
+
     #-- scree plot -------------------------------------------------------------#
     #---------------------------------------------------------------------------#
-    
+
     variances = (x$sdev^2)[1:ncomp] # relative variance
     ylab = "Variance"
     if(explained.var==TRUE)
@@ -69,7 +81,7 @@ function(   x,
         axis(1, at = 1:ncomp)
         axis(2)
     }
-    
+
 }
 
 
