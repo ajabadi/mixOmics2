@@ -8,7 +8,7 @@
 \alias{pls,missing,MultiAssayExperiment-method}
 \title{Partial Least Squares (PLS) Regression}
 \usage{
-\S4method{pls}{ANY}(X, Y, ncomp = 2, scale = TRUE, mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"), multilevel = NULL, all.outputs = TRUE)
+\S4method{pls}{ANY}(formula=NULL, data=NULL, X, Y, ncomp = 2, scale = TRUE, mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"), multilevel = NULL, all.outputs = TRUE)
 
 \S4method{pls}{formula,missing}(formula, data, X, Y, ncomp = 2,
   scale = TRUE, mode = c("regression", "canonical", "invariant",
@@ -28,14 +28,16 @@
   all.outputs = TRUE, ...)
 }
 \arguments{
-\item{formula}{formula of form \code{dependent_data/group_membership (Y) ~ independent_data (X)}.}
+\item{formula}{formula of form \code{Y~X} (names of objects without quotations) where Y and X are
+numeric matrices. \code{X} aand \code{Y} can also be an assay names from \code{data}.
+Y can also be a \code{colData} name from \code{data}.}
 
-\item{data}{A \code{MultiAssayExperiment} dataset with at least 2 assays or one assay and one numeric \code{colData}.}
+\item{data}{A \code{MultiAssayExperiment} object.}
 
-\item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
+\item{X}{numeric matrix of predictors, or name of such an assay from \code{data} . \code{NA}s are allowed.}
 
-\item{Y}{numeric vector or matrix of responses (for multi-response models).
-\code{NA}s are allowed.}
+\item{Y}{numeric vector or matrix of responses (for multi-response models), or name of such an \code{assay} or
+\code{colData} from \code{data}. \code{NA}s are allowed.}
 
 \item{ncomp}{the number of components to include in the model. Default to 2.}
 
@@ -140,6 +142,8 @@ internal pre-processing step, through \code{\link{logratio.transfo}} and
 \code{\link{withinVariation}} respectively.
 }
 \examples{
+library(mixOmics.data)
+
 X <- linnerud$exercise
 Y <- linnerud$physiological
 linn.pls <- pls(X, Y, mode = "classic")
@@ -149,6 +153,13 @@ linn.pls <- pls(X, Y, mode = "classic")
   Y <- liver.toxicity$clinic
   toxicity.pls <- pls(X, Y, ncomp = 3)
 }
+
+## ---- example with formula
+
+linn.pls.form <- pls(formula = Y~X)
+
+## --- example with MultiAssayExperiment:
+
 }
 \references{
 Tenenhaus, M. (1998). \emph{La regression PLS: theorie et

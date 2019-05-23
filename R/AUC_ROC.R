@@ -33,14 +33,14 @@
 
 #' Area Under the Curve (AUC) and Receiver Operating Characteristic (ROC)
 #' curves for supervised classification
-#' 
+#'
 #' Calculates the AUC and plots ROC for supervised objects from s/plsda,
 #' mint.s/plsda and block.plsda, block.splsda or wrapper.sgccda.
-#' 
+#'
 #' For more than two classes in the categorical outcome Y, the AUC is
 #' calculated as one class vs. the other and the ROC curves one class vs. the
 #' others are output.
-#' 
+#'
 #' The ROC and AUC are calculated based on the predicted scores obtained from
 #' the \code{predict} function applied to the multivariate methods
 #' (\code{predict(object)$predict}). Our multivariate supervised methods
@@ -49,21 +49,21 @@
 #' and ROC are not needed to estimate the performance of the model (see
 #' \code{perf}, \code{tune} that report classification error rates). We provide
 #' those outputs as complementary performance measures.
-#' 
+#'
 #' The pvalue is from a Wilcoxon test between the predicted scores between one
 #' class vs the others.
-#' 
+#'
 #' External independent data set (\code{newdata}) and outcome
 #' (\code{outcome.test}) can be input to calculate AUROC. The external data set
 #' must have the same variables as the training data set (\code{object$X}).
-#' 
+#'
 #' If \code{newdata} is not provided, AUROC is calculated from the training
 #' data set, and may result in overfitting (too optimistic results).
-#' 
+#'
 #' Note that for mint.plsda and mint.splsda objects, if \code{roc.study} is
 #' different from "global", then \code{newdata}), \code{outcome.test} and
 #' \code{sstudy.test} are not used.
-#' 
+#'
 #' @aliases auroc auroc.mixo_plsda auroc.mixo_splsda auroc.mint.plsda
 #' auroc.mint.splsda auroc.sgccda
 #' @param object Object of class inherited from one of the following supervised
@@ -99,69 +99,8 @@
 #' @seealso \code{\link{tune}}, \code{\link{perf}}, and http://www.mixOmics.org
 #' for more details.
 #' @keywords regression multivariate
-#' @examples
-#' 
-#' ## example with PLSDA, 2 classes
-#' # ----------------
-#' data(breast.tumors)
-#' X <- breast.tumors$gene.exp
-#' Y <- breast.tumors$sample$treatment
-#' 
-#' plsda.breast <- plsda(X, Y, ncomp = 2)
-#' auc.plsda.breast = auroc(plsda.breast, ncomp = 1)
-#' 
-#' \dontrun{
-#' ## example with sPLSDA
-#' # -----------------
-#' splsda.breast <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
-#' auroc(plsda.breast, plot = FALSE)
-#' 
-#' 
-#' ## example with sPLSDA with 4 classes
-#' # -----------------
-#' data(liver.toxicity)
-#' X <- as.matrix(liver.toxicity$gene)
-#' # Y will be transformed as a factor in the function,
-#' # but we set it as a factor to set up the colors.
-#' Y <- as.factor(liver.toxicity$treatment[, 4])
-#' 
-#' splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
-#' auc.splsda.liver = auroc(splsda.liver, ncomp = 1)
-#' 
-#' 
-#' ## example with mint.plsda
-#' # -----------------
-#' data(stemcells)
-#' 
-#' res = mint.plsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3,
-#' study = stemcells$study)
-#' auc.mint.pslda = auroc(res, plot = FALSE)
-#' 
-#' ## example with mint.splsda
-#' # -----------------
-#' res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3, keepX = c(10, 5, 15),
-#' study = stemcells$study)
-#' auc.mint.spslda = auroc(res, plot = TRUE, roc.comp = 3)
-#' 
-#' 
-#' ## example with block.plsda
-#' # ------------------
-#' data(nutrimouse)
-#' data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
-#' # with this design, all blocks are connected
-#' design = matrix(c(0,1,1,0), ncol = 2, nrow = 2,
-#' byrow = TRUE, dimnames = list(names(data), names(data)))
-#' 
-#' block.plsda.nutri = block.plsda(X = data, Y = nutrimouse$diet)
-#' auc.block.plsda.nutri = auroc(block.plsda.nutri, block = 'lipid')
-#' 
-#' ## example with block.splsda
-#' # ---------------
-#' list.keepX = list(gene = rep(10, 2), lipid = rep(5,2))
-#' block.splsda.nutri = block.splsda(X = data, Y = nutrimouse$diet, keepX = list.keepX)
-#' auc.block.splsda.nutri = auroc(block.splsda.nutri, block = 1)
-#' }
-#' 
+#' @example examples/auroc.R
+
 #' @export auroc
 auroc = function(object, ...)
 UseMethod("auroc")
@@ -169,7 +108,7 @@ UseMethod("auroc")
 
 # PLSDA object
 # ----------------------
-auroc.mixo_plsda = auroc.mixo_splsda = function(
+auroc.mixo_plsda <-  auroc.mixo_splsda <-  function(
 object,
 newdata = object$input.X,
 outcome.test = as.factor(object$Y),
@@ -181,15 +120,15 @@ roc.comp = 1,
     if(dim(newdata)[[1]] != length(outcome.test))
     stop("Factor outcome.test must be a factor with ",dim(newdata)[[1]],
     " elements.",call. = FALSE)
-    
+
     data = list()
     statauc = graph = list()
     data$outcome=factor(outcome.test)
-    
+
     # note here: the dist does not matter as we used the predicted scores only
     res.predict = predict.mixo_spls(object, newdata = newdata,
     dist = "max.dist", multilevel = multilevel)$predict
-    
+
     for (i in seq_len(object$ncomp))
     {
         data$data=res.predict[,,i]
@@ -220,40 +159,40 @@ roc.study = "global",
     if(length(roc.study) != 1)
     stop("`roc.study' must be a single entry,
     either `global' or one of levels(object$study)")
-    
+
     if(roc.study == "global"){
         if(dim(newdata)[[1]] != length(outcome.test))
         stop("Factor outcome.test must be a factor with ",dim(newdata)[[1]],
         " elements.",call. = FALSE)
-        
+
         if(dim(newdata)[[1]]!=length(study.test))
         stop("Factor study.test must be a factor with ",dim(newdata)[[1]],
         " elements.",call. = FALSE)
         study.test=factor(study.test)
         title.temp = NULL
-        
+
     } else {
-        
+
         # check study
         if (!roc.study%in%c(levels(object$study)))
         stop("'roc.study' must be one of 'levels(object$study)'")
-        
+
         ind.study = object$study == roc.study
         newdata = object$X[ind.study, ]
         outcome.test = as.factor(object$Y[ind.study])
         study.test = factor(object$study[ind.study])
         title.temp = paste0(", Study ", roc.study)
-        
+
     }
-    
+
     data=list()
     statauc = graph = list()
     data$outcome=factor(outcome.test)
-    
+
     # note here: the dist does not matter as we used the predicted scores only
     res.predict = predict.mixo_spls(object, newdata = newdata, dist = "max.dist",
     multilevel = multilevel, study.test = study.test)$predict
-    
+
     for (i in seq_len(object$ncomp))
     {
         data$data=res.predict[,,i]
@@ -265,7 +204,7 @@ roc.study = "global",
     }
     print(statauc)
     return(invisible(c(statauc,graph=graph)))
-    
+
 }
 
 
@@ -281,17 +220,17 @@ roc.block = 1,
 roc.comp = 1,
 ...)
 {
-    
+
     data=list()
     auc.mean = graph=list()
     data$outcome=factor(outcome.test)
-    
+
     # note here: the dist does not matter as we used the predicted scores only
     res.predict  =  predict.block.spls(object, newdata = newdata,
         dist = "max.dist", multilevel = multilevel)$predict
     block.all = names(res.predict)
     block.temp = names(res.predict[roc.block])
-    
+
     for(j in seq_len(length(res.predict)))
     {
         for (i in seq_len(object$ncomp[j]))
@@ -299,7 +238,7 @@ roc.comp = 1,
             data$data=res.predict[[j]][,,i]
             title=paste("ROC Curve\nBlock: ", names(res.predict)[j],
                 ", comp: ",i, sep="")
-            
+
             plot.temp =
                 ifelse(i%in%roc.comp && names(res.predict)[j]%in%block.temp,
                 plot, FALSE)
@@ -308,7 +247,7 @@ roc.comp = 1,
                 temp[[1]]
             graph[[names(res.predict)[j]]][[paste0("comp",i,sep = "")]] =
                 temp$graph
-            
+
         }
         out = c(auc.mean,graph=graph)
     }
@@ -318,7 +257,7 @@ roc.comp = 1,
 
 # mint.block.splsda object
 # ----------------------
-auroc.mint.block.splsda=auroc.mint.block.plsda = function(
+auroc.mint.block.splsda <- auroc.mint.block.plsda <-  function(
 object,
 newdata = object$X,
 
@@ -330,18 +269,18 @@ roc.block = 1,
 roc.comp = 1,
 ...)
 {
-    
+
     data=list()
     auc.mean = graph=list()
     data$outcome=factor(outcome.test)
     study.test=factor(study.test)
-    
+
     # note here: the dist does not matter as we used the predicted scores only
     res.predict  =  predict.mixo_spls(object, newdata = newdata,
     study.test=study.test,dist = "max.dist", multilevel = multilevel)$predict
     block.all = names(res.predict)
     block.temp = names(res.predict[roc.block])
-    
+
     for(j in seq_len(length(res.predict)))
     {
         for (i in seq_len(object$ncomp[j]))
@@ -349,7 +288,7 @@ roc.comp = 1,
             data$data=res.predict[[j]][,,i]
             title=paste("ROC Curve\nBlock: ", names(res.predict)[j],
             ", comp: ",i, sep="")
-            
+
             plot.temp =
                 ifelse(i%in%roc.comp && names(res.predict)[j]%in%block.temp,
                 plot, FALSE)
@@ -358,7 +297,7 @@ roc.comp = 1,
                 temp[[1]]
             graph[[names(res.predict)[j]]][[paste0("comp",i,sep = "")]] =
                 temp$graph
-            
+
         }
         out = c(auc.mean,graph=graph)
     }

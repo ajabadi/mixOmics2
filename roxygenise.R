@@ -36,7 +36,7 @@ Y_char.vec <- colData(mae_data)[,Y_index_char_coldata]
 
 devtools::test()
 ############# test examples
-# devtools::run_examples()
+devtools::run_examples()
 ## path to Rd files - will let you know if there are any errors/warnings
 # testthat::test_example("man/parent_base_ext.Rd")
 ############# manual tests
