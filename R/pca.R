@@ -68,38 +68,38 @@
 #'
 ## --------------------------------------------------------------------------------------- arguments
 #'
-#' @param X a numeric matrix (or data frame) which provides the data for the
-#' principal components analysis. It can contain missing values. Alternatively, a \code{MultiAssayExperiment} object.
-#' @param Assay if \code{X} is a \code{MultiAssayExperiment} object, name of an assay from X (string or symbol).
-#' @param ncomp integer, if data is complete \code{ncomp} decides the number of
+#'@param X a numeric matrix (or data frame) which provides the data for the
+#' principal components analysis. It can contain missing values. Alternatively, a \code{MultiAssay-/Summarized-/SingleCellExperiment} object.
+#'@param assay name or index of an assay from \code{X}.
+#'@param ncomp integer, if data is complete \code{ncomp} decides the number of
 #' components and associated eigenvalues to display from the \code{pcasvd}
 #' algorithm and if the data has missing values, \code{ncomp} gives the number
 #' of components to keep to perform the reconstitution of the data using the
 #' NIPALS algorithm. If \code{NULL}, function sets \code{ncomp = min(nrow(X),
 #' ncol(X))}
-#' @param center a logical value indicating whether the variables should be
+#'@param center a logical value indicating whether the variables should be
 #' shifted to be zero centered. Alternately, a vector of length equal the
 #' number of columns of \code{X} can be supplied. The value is passed to
 #' \code{\link{scale}}.
-#' @param scale a logical value indicating whether the variables should be
+#'@param scale a logical value indicating whether the variables should be
 #' scaled to have unit variance before the analysis takes place. The default is
 #' \code{FALSE} for consistency with \code{prcomp} function, but in general
 #' scaling is advisable. Alternatively, a vector of length equal the number of
 #' columns of \code{X} can be supplied. The value is passed to
 #' \code{\link{scale}}.
-#' @param max.iter integer, the maximum number of iterations in the NIPALS
+#'@param max.iter integer, the maximum number of iterations in the NIPALS
 #' algorithm.
-#' @param tol a positive real, the tolerance used in the NIPALS algorithm.
-#' @param logratio one of ('none','CLR','ILR'). Specifies the log ratio
+#'@param tol a positive real, the tolerance used in the NIPALS algorithm.
+#'@param logratio one of ('none','CLR','ILR'). Specifies the log ratio
 #' transformation to deal with compositional values that may arise from
 #' specific normalisation in sequencing data. Default to 'none'
-#' @param ilr.offset When logratio is set to 'ILR', an offset must be input to
+#'@param ilr.offset When logratio is set to 'ILR', an offset must be input to
 #' avoid infinite value after the logratio transform, default to 0.001.
-#' @param V Matrix used in the logratio transformation id provided.
-#' @param multilevel sample information for multilevel decomposition for repeated measurements.
-#' @param ... arguments passed to methods.
+#'@param V Matrix used in the logratio transformation id provided.
+#'@param multilevel sample information for multilevel decomposition for repeated measurements.
+
 ## --------------------------------------------------------------------------------------- value
-#' @return \code{pca} returns a list with class \code{"pca"} and
+#'@return \code{pca} returns a list with class \code{"pca"} and
 #' \code{"prcomp"} containing the following components: \item{ncomp}{the number
 #' of principal components used.} \item{sdev}{the eigenvalues of the
 #' covariance/correlation matrix, though the calculation is actually done with
@@ -113,11 +113,11 @@
 #' used, or \code{FALSE}.} \item{explained_variance}{explained variance from
 #' the multivariate model, used for plotIndiv}
 ## ---------------------------------------------------------------------------------------
-#' @author Florian Rohart, Kim-Anh Lê Cao, Ignacio González, Al J Abadi
-#' @seealso \code{\link{nipals}}, \code{\link{prcomp}}, \code{\link{biplot}},
+#'@author Florian Rohart, Kim-Anh Lê Cao, Ignacio González, Al J Abadi
+#'@seealso \code{\link{nipals}}, \code{\link{prcomp}}, \code{\link{biplot}},
 #' \code{\link{plotIndiv}}, \code{\link{plotVar}} and http://www.mixOmics.org
 #' for more details.
-#' @references On log ratio transformations: Filzmoser, P., Hron, K., Reimann,
+#'@references On log ratio transformations: Filzmoser, P., Hron, K., Reimann,
 #' C.: Principal component analysis for compositional data with outliers.
 #' Environmetrics 20(6), 621-632 (2009) Lê Cao K.-A., Costello ME, Lakis VA,
 #' Bartolo, F,Chua XY, Brazeilles R, Rondeau P. MixMC: Multivariate insights
@@ -128,56 +128,48 @@
 #' Thiebaut, R.: A novel approach for biomarker selection and the integration
 #' of repeated measures experiments from two assays. BMC bioinformatics 13(1),
 #' 325 (2012)
-#' @keywords algebra
+#'@keywords algebra
 ## --------------------------------------------------------------------------------------- examples
-#' @example examples/pca-example.R
+#'@example examples/pca-example.R
 
-#############################################################
-## generic function
-#############################################################
-#' @usage \S4method{pca}{ANY}(X, ncomp = 2, center = TRUE, scale = FALSE, max.iter = 500, tol = 1e-09, logratio = c('none','CLR','ILR'), ilr.offset = 0.001, V = NULL, multilevel = NULL)
 ## arguemnts must be copied from internal to both @usage and setGeneric plus the '...' in generic so the methods can add arguments - if we only include X, RStudio won't suggest the rest automatically for autofill
-
-
 ## --------------- the importFrom section for automation of NAMESPACE which should ideally be distrbuted to corresponding function files that import them
-#' @import MASS lattice igraph ggplot2 corpcor parallel RColorBrewer
-#' @importFrom grDevices as.graphicsAnnot chull col2rgb colorRamp colorRampPalette colors dev.cur dev.new dev.off dev.prev dev.set devAskNewPage graphics.off gray gray.colors heat.colors rgb jpeg pdf tiff x11 adjustcolor rainbow
-#' @importFrom graphics abline arrows axis barplot box image layout legend lines locator mtext par plot plot.default points polygon rect segments strheight strwidth symbols text title Axis boxplot rasterImage matplot
-#' @importFrom stats as.dendrogram as.dist coefficients cor cov dist hclust lm lsfit median na.omit order.dendrogram predict quantile reorder var sd pnorm aggregate t.test
-#' @importFrom utils setTxtProgressBar txtProgressBar packageDescription relist download.file
-#' @importFrom ellipse ellipse
-#' @importFrom methods hasArg is
-#' @importFrom dplyr group_by mutate summarise arrange row_number filter n
-#' @importFrom tidyr gather
-#' @importFrom reshape2 melt dcast
-#' @importFrom rARPACK svds
-#' @importFrom gridExtra grid.arrange
+#'@import MASS lattice igraph ggplot2 corpcor parallel RColorBrewer
+#'@importFrom grDevices as.graphicsAnnot chull col2rgb colorRamp colorRampPalette colors dev.cur dev.new dev.off dev.prev dev.set devAskNewPage graphics.off gray gray.colors heat.colors rgb jpeg pdf tiff x11 adjustcolor rainbow
+#'@importFrom graphics abline arrows axis barplot box image layout legend lines locator mtext par plot plot.default points polygon rect segments strheight strwidth symbols text title Axis boxplot rasterImage matplot
+#'@importFrom stats as.dendrogram as.dist coefficients cor cov dist hclust lm lsfit median na.omit order.dendrogram predict quantile reorder var sd pnorm aggregate t.test
+#'@importFrom utils setTxtProgressBar txtProgressBar packageDescription relist download.file
+#'@importFrom ellipse ellipse
+#'@importFrom methods hasArg is
+#'@importFrom dplyr group_by mutate summarise arrange row_number filter n
+#'@importFrom tidyr gather
+#'@importFrom reshape2 melt dcast
+#'@importFrom rARPACK svds
+#'@importFrom gridExtra grid.arrange
 
-#' @export
-setGeneric("pca", def = function( X, Assay=NULL, ncomp = 2, center = TRUE, scale = FALSE, max.iter = 500, tol = 1e-09,
-                                  logratio = 'none', ilr.offset = 0.001, V = NULL, multilevel = NULL,...) standardGeneric("pca"))
+#'@export
+pca <- function(X, assay=if(is(X, "SingleCellExperiment")) "logcounts" else NULL, ncomp = 2, center = TRUE, scale = FALSE, max.iter = 500, tol = 1e-09,
+                 logratio = 'none', ilr.offset = 0.001, V = NULL, multilevel = NULL){
 
-#############################################################
-## internal function
-#############################################################
-.pca <- function( X,
-                  ncomp = 2,
-                  center = TRUE,
-                  scale = FALSE,
-                  max.iter = 500,
-                  tol = 1e-09,
-                  logratio = 'none',# one of ('none','CLR','ILR')
-                  ilr.offset = 0.001,
-                  V = NULL,
-                  multilevel = NULL) {
   #-- checking general input parameters --------------------------------------#
   #---------------------------------------------------------------------------#
+  if(class(X) %in% c("MultiAssayExperiment", "SingleCellExperiment", "SummarizedExperiment")){
+    ## assay
+    nsa <- !any(c("character", "numeric", "integer", "null")) %in% class(tryCatch(assay, error=function(e) e))
+    if(nsa){
+      assay <- as.character(substitute(assay))
+    }
+      ## get all inputs so you can refer to provided names
+      X <- internal_mae2dm(X = X, assay = assay)
+  }
+
+
 
   #-- check that the user did not enter extra arguments
   arg.call = match.call()
   user.arg = names(arg.call)[-1]
-
-  err = tryCatch(mget(names(formals()), sys.frame(sys.nframe())),
+## ensure everything can be evaluated, except for assay which we allow non-standard
+  err = tryCatch(mget(names(formals())[names(formals())!="assay"], sys.frame(sys.nframe())),
                  error = function(e) e)
 
   if ("simpleError" %in% class(err))
@@ -380,27 +372,5 @@ setGeneric("pca", def = function( X, Assay=NULL, ncomp = 2, center = TRUE, scale
   result$cum.var = cumsum(result$explained_variance)
 
   return(invisible(result))
+
 }
-
-
-#############################################################
-## S4 method definitions.
-#############################################################
-
-## ---- X: ANY (input handlers will expect matrix or data.frame) ----
-#' @export
-setMethod("pca", "ANY", function(X, Assay=NULL,...) .pca(X,...))
-
-## ---- X: MultiAssayExperiment ----
-#' @rdname pca
-#' @importFrom SummarizedExperiment assay
-#' @importFrom MultiAssayExperiment MultiAssayExperiment
-#' @export
-setMethod("pca","MultiAssayExperiment", function(X, Assay,...) {
-  try_res <- tryCatch(Assay, error = function(e) e)
-  if("simpleError" %in% class(try_res)){
-    Assay <- as.character(substitute(Assay)) ## internal_mae2dm will check if it is valid
-  }
-  ## get all inputs so you can refer to provided names
-  X <- internal_mae2dm(X = X, Assay = Assay)
-  .pca(X=X,...) } )
