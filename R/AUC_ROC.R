@@ -25,12 +25,6 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ###############################################################################
 
-
-
-
-
-
-
 #' Area Under the Curve (AUC) and Receiver Operating Characteristic (ROC)
 #' curves for supervised classification
 #'
@@ -99,23 +93,24 @@
 #' @seealso \code{\link{tune}}, \code{\link{perf}}, and http://www.mixOmics.org
 #' for more details.
 #' @keywords regression multivariate
-#' @example examples/auroc.R
+#' @example examples/auroc-example.R
 
 #' @export auroc
 auroc = function(object, ...)
 UseMethod("auroc")
 
-
 # PLSDA object
 # ----------------------
-auroc.mixo_plsda <-  auroc.mixo_splsda <-  function(
-object,
-newdata = object$input.X,
-outcome.test = as.factor(object$Y),
-multilevel = NULL,
-plot = TRUE,
-roc.comp = 1,
-...)
+#'@rdname auroc
+#'@export
+auroc.mixo_plsda <- function(
+    object,
+    newdata = object$input.X,
+    outcome.test = as.factor(object$Y),
+    multilevel = NULL,
+    plot = TRUE,
+    roc.comp = 1,
+    ...)
 {
     if(dim(newdata)[[1]] != length(outcome.test))
     stop("Factor outcome.test must be a factor with ",dim(newdata)[[1]],
@@ -142,10 +137,15 @@ roc.comp = 1,
     return(invisible(c(statauc,graph=graph)))
 }
 
+#'@rdname auroc
+#'@export
+auroc.mixo_splsda <- function(object,...) auroc.mixo_plsda(object, ...)
 
 # MINT object
 # ----------------------
-auroc.mint.plsda = auroc.mint.splsda = function(
+#'@rdname auroc
+#'@export
+auroc.mint.plsda <- function(
 object,
 newdata = object$X,
 outcome.test = as.factor(object$Y),
@@ -207,9 +207,14 @@ roc.study = "global",
 
 }
 
+#'@rdname auroc
+#'@export
+auroc.mint.splsda <-  function(object,...) auroc.mint.plsda(object,...)
 
 # block.splsda object
 # ----------------------
+#'@rdname auroc
+#'@export
 auroc.sgccda = function(
 object,
 newdata = object$X,
@@ -257,17 +262,19 @@ roc.comp = 1,
 
 # mint.block.splsda object
 # ----------------------
-auroc.mint.block.splsda <- auroc.mint.block.plsda <-  function(
-object,
-newdata = object$X,
+#'@rdname auroc
+#'@export
+auroc.mint.block.splsda <- function(
+    object,
+    newdata = object$X,
 
-study.test = object$study,
-outcome.test = as.factor(object$Y),
-multilevel = NULL,
-plot = TRUE,
-roc.block = 1,
-roc.comp = 1,
-...)
+    study.test = object$study,
+    outcome.test = as.factor(object$Y),
+    multilevel = NULL,
+    plot = TRUE,
+    roc.block = 1,
+    roc.comp = 1,
+    ...)
 {
 
     data=list()
@@ -305,3 +312,6 @@ roc.comp = 1,
     return(invisible(out))
 }
 
+#'@rdname auroc
+#'@export
+auroc.mint.block.plsda <-  function(object,...) UseMethod("auroc", object = )
