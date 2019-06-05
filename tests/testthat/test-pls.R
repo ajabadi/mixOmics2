@@ -1,14 +1,13 @@
 context("pls")
+## the tests are parameterised so we can try different datasets if need be, and also to cope with object inputs (e.g. formyla stored in a variable)
 
 
 ##TODO
 
-## pls gives inv_xy when Y coldata is not numeric or facor (may be characters should be accepted too?), but works when it is a factor with a warning
-## character Y assay with common values for samples is converted to a named numeric and returned in pls result for reference
-## ----------------------------------------------------- test data, this is the only section that needs input - you can replicate using new test data
 
 ## ------ pls works with numeric ~ matrix
 test_that("pls produces identical 'mixo_pls' classes for designated valid signatures when Y is a column data",{
+
   ## suppress NZV warnings
   suppressMessages({
     pls.res.xy <-          pls(X =Xm_Yc, Y=Ycn )
