@@ -67,16 +67,13 @@
 #' @example examples/sipca-example.R
 
 #############################################################
-## generic function
+## S3 generic
 #############################################################
-#' @usage \S4method{sipca}{ANY}(X, ncomp = 3, mode = c("deflation","parallel"), fun = c("logcosh", "exp"), scale = FALSE, max.iter = 200, tol = 1e-04, keepX = rep(50,ncomp), w.init = NULL)
-## arguemnts must be copied from internal to both @usage and setGeneric plus the '...' in generic so the methods can add arguments - if we only include X, RStudio won't suggest the rest automatically for autofill
-#' @export
-setGeneric("sipca", def = function(X, ncomp  = 3, mode = c("deflation","parallel"),
-                                   fun = c("logcosh", "exp"),
-                                   scale = FALSE, max.iter = 200,
-                                   tol = 1e-04, keepX = rep(50,ncomp),
-                                   w.init = NULL,...) standardGeneric("sipca"))
+#'@rdname sipca
+#'@usage {sipca}{default}(X, assay=NULL, ncomp = 3, mode = c("deflation","parallel"), fun = c("logcosh", "exp"), scale = FALSE, max.iter = 200, tol = 1e-04, keepX = rep(50,ncomp), w.init = NULL)
+#'@export
+sipca <- function(X, assay, ...) UseMethod("sipca")
+
 
 #############################################################
 ## internal function
@@ -195,23 +192,32 @@ setGeneric("sipca", def = function(X, ncomp  = 3, mode = c("deflation","parallel
   }
 
 #############################################################
-## S4 method definitions.
+## S3 methods
 #############################################################
+## --------------------------------------------------------------------------------------- default
+#'@export
+sipca.default <- function(X, assay=NULL,...) {
+  .sipca(X,...)
+}
 
-## ---- X: ANY (input handlers will expect matrix or data.frame) ----
-#' @export
-setMethod("sipca", "ANY", function(X, Assay=NULL,...) .sipca(X,...))
-
-## ---- X: MultiAssayExperiment ----
-#' @rdname sipca
-#' @importFrom SummarizedExperiment assay
-#' @importFrom MultiAssayExperiment MultiAssayExperiment
-#' @export
-setMethod("sipca","MultiAssayExperiment", function(X, Assay,...) {
-  try_res <- tryCatch(Assay, error = function(e) e)
+## --------------------------------------------------------------------------------------- MultiAssayExperiment
+#'@rdname sipca
+#'@importFrom SummarizedExperiment assay
+#'@export
+sipca.MultiAssayExperiment <-   function(X, assay, ...){
+  try_res <- tryCatch(assay, error = function(e) e)
   if("simpleError" %in% class(try_res)){
-    Assay <- as.character(substitute(Assay)) ## internal_mae2dm will check if it is valid
+    assay <- as.character(substitute(assay)) ## internal_mae2dm will check if it is valid
   }
   ## get all inputs so you can refer to provided names
-  X <- internal_mae2dm(X = X, Assay = Assay)
-  .sipca(X=X,...) } )
+  X <- internal_mae2dm(X = X, Assay = assay)
+  .sipca(X=X,...)
+}
+## --------------------------------------------------------------------------------------- SingleCellExperiment
+#'@rdname sipca
+#'@export
+sipca.SingleCellExperiment <- function(X, assay="logcounts", ...) sipca.MultiAssayExperiment
+## --------------------------------------------------------------------------------------- SummarizedExperiment
+#'@rdname sipca
+#'@export
+sipca.SummarizedExperiment <- function(X, assay, ...) sipca.MultiAssayExperiment

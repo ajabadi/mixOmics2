@@ -95,13 +95,14 @@
 ## --------------------------------------------------------------------------------------- examples
 #' @example examples/ipca-example.R
 
+
 #############################################################
-## generic function
+## S3 generic
 #############################################################
-#' @usage \S4method{ipca}{ANY}(X, ncomp = 2, mode = "deflation", fun = "logcosh", scale = FALSE, w.init = NULL, max.iter = 200, tol = 1e-04)
-## arguemnts must be copied from internal to both @usage and setGeneric plus the '...' in generic so the methods can add arguments - if we only include X, RStudio won't suggest the rest automatically for autofill
-#' @export
-setGeneric("ipca", def = function(X, ncomp = 2, mode = "deflation", fun = "logcosh", scale = FALSE, w.init = NULL, max.iter = 200, tol = 1e-04,...) standardGeneric("ipca"))
+#'@rdname ipca
+#'@usage {ipca}{default}(X, assay=NULL, mode = "deflation", fun = "logcosh", scale = FALSE, w.init = NULL, max.iter = 200, tol = 1e-04)
+#'@export
+ipca <- function(X, assay, ...) UseMethod("ipca")
 
 #############################################################
 ## internal function
@@ -281,23 +282,32 @@ setGeneric("ipca", def = function(X, ncomp = 2, mode = "deflation", fun = "logco
 }
 
 #############################################################
-## S4 method definitions.
+## S3 methods
 #############################################################
+## --------------------------------------------------------------------------------------- default
+#'@export
+ipca.default <- function(X, assay=NULL,...) {
+  .ipca(X,...)
+}
 
-## ---- X: ANY (input handlers will expect matrix or data.frame) ----
-#' @export
-setMethod("ipca", "ANY", function(X, Assay=NULL,...) .ipca(X,...))
-
-## ---- X: MultiAssayExperiment ----
-#' @rdname ipca
-#' @importFrom SummarizedExperiment assay
-#' @importFrom MultiAssayExperiment MultiAssayExperiment
-#' @export
-setMethod("ipca","MultiAssayExperiment", function(X, Assay,...) {
-  try_res <- tryCatch(Assay, error = function(e) e)
+## --------------------------------------------------------------------------------------- MultiAssayExperiment
+#'@rdname ipca
+#'@importFrom SummarizedExperiment assay
+#'@export
+ipca.MultiAssayExperiment <-   function(X, assay, ...){
+  try_res <- tryCatch(assay, error = function(e) e)
   if("simpleError" %in% class(try_res)){
-    Assay <- as.character(substitute(Assay)) ## internal_mae2dm will check if it is valid
+    assay <- as.character(substitute(assay)) ## internal_mae2dm will check if it is valid
   }
   ## get all inputs so you can refer to provided names
-  X <- internal_mae2dm(X = X, Assay = Assay)
-  .ipca(X=X,...) } )
+  X <- internal_mae2dm(X = X, Assay = assay)
+  .ipca(X=X,...)
+}
+## --------------------------------------------------------------------------------------- SingleCellExperiment
+#'@rdname ipca
+#'@export
+ipca.SingleCellExperiment <- function(X, assay="logcounts", ...) ipca.MultiAssayExperiment
+## --------------------------------------------------------------------------------------- SummarizedExperiment
+#'@rdname ipca
+#'@export
+ipca.SummarizedExperiment <- function(X, assay, ...) ipca.MultiAssayExperiment

@@ -35,9 +35,7 @@
 #'@param ... other arguments passed to \code{plot}.
 #'
 #'@rdname plot
-#'@method plot pca
-#'@S3method plot pca
-
+#'@export
 plot.pca <-  function(x,
             ncomp = min(10, length(x$sdev)),
             type = "barplot", # either barplot or any other type available in plot, as "l","b","p",..

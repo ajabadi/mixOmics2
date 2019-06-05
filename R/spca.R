@@ -82,13 +82,14 @@
 ## --------------------------------------------------------------------------------------- examples
 #' @example examples/spca-example.R
 
+
 #############################################################
-## generic function
+## S3 generic
 #############################################################
-#' @usage \S4method{spca}{ANY}(X, ncomp = 2, center = TRUE, scale = TRUE, keepX = rep(ncol(X), ncomp), max.iter = 500, tol = 1e-06, logratio = c('none', 'CLR'), multilevel = NULL)
-## arguemnts must be copied from internal to obth @usage and setGeneric plus the '...' in generic so the methods can add arguments - if we only include X, RStudio won't suggest the rest automatically for autofill
-#' @export
-setGeneric("spca", def = function(X, Assay=NULL, ncomp = 2, center = TRUE, scale = TRUE, keepX = rep(ncol(X), ncomp), max.iter = 500, tol = 1e-06, logratio = 'none', multilevel = NULL,...) standardGeneric("spca"))
+#'@rdname spca
+#'@usage {spca}{default}(X, assay=NULL, ncomp = 2, center = TRUE, scale = TRUE, keepX = rep(ncol(X), ncomp), max.iter = 500, tol = 1e-06, logratio = 'none', multilevel = NULL)
+#'@export
+spca <- function(X, assay, ...) UseMethod("spca")
 
 #############################################################
 ## internal function
@@ -360,23 +361,32 @@ setGeneric("spca", def = function(X, Assay=NULL, ncomp = 2, center = TRUE, scale
 
 
 #############################################################
-## S4 method definitions.
+## S3 methods
 #############################################################
+## --------------------------------------------------------------------------------------- default
+#'@export
+spca.default <- function(X, assay=NULL,...) {
+  .spca(X,...)
+}
 
-## ---- X: ANY (input handlers will expect matrix or data.frame) ----
-#' @export spca
-setMethod("spca", "ANY", function(X, Assay=NULL,...) .spca(X,...))
-
-## ---- X: MultiAssayExperiment ----
-#' @rdname spca
-#' @importFrom SummarizedExperiment assay
-#' @importFrom MultiAssayExperiment MultiAssayExperiment
-#' @export
-setMethod("spca","MultiAssayExperiment", function(X, Assay,...) {
-  try_res <- tryCatch(Assay, error = function(e) e)
+## --------------------------------------------------------------------------------------- MultiAssayExperiment
+#'@rdname spca
+#'@importFrom SummarizedExperiment assay
+#'@export
+spca.MultiAssayExperiment <-   function(X, assay, ...){
+  try_res <- tryCatch(assay, error = function(e) e)
   if("simpleError" %in% class(try_res)){
-    Assay <- as.character(substitute(Assay)) ## internal_mae2dm will check if it is valid
+    assay <- as.character(substitute(assay)) ## internal_mae2dm will check if it is valid
   }
   ## get all inputs so you can refer to provided names
-  X <- internal_mae2dm(X = X, Assay = Assay)
-  .spca(X=X,...) } )
+  X <- internal_mae2dm(X = X, Assay = assay)
+  .spca(X=X,...)
+}
+## --------------------------------------------------------------------------------------- SingleCellExperiment
+#'@rdname spca
+#'@export
+spca.SingleCellExperiment <- function(X, assay="logcounts", ...) spca.MultiAssayExperiment
+## --------------------------------------------------------------------------------------- SummarizedExperiment
+#'@rdname spca
+#'@export
+spca.SummarizedExperiment <- function(X, assay, ...) spca.MultiAssayExperiment
