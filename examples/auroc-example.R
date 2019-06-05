@@ -1,14 +1,14 @@
 
 ## example with PLSDA, 2 classes
 # ----------------
-data(breast.tumors)
+# \dontrun{
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
 plsda.breast <- plsda(X, Y, ncomp = 2)
 auc.plsda.breast = auroc(plsda.breast, ncomp = 1)
 
-\dontrun{
+
   ## example with sPLSDA
   # -----------------
   splsda.breast <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
@@ -17,7 +17,6 @@ auc.plsda.breast = auroc(plsda.breast, ncomp = 1)
 
   ## example with sPLSDA with 4 classes
   # -----------------
-  data(liver.toxicity)
   X <- as.matrix(liver.toxicity$gene)
   # Y will be transformed as a factor in the function,
   # but we set it as a factor to set up the colors.
@@ -29,7 +28,6 @@ auc.plsda.breast = auroc(plsda.breast, ncomp = 1)
 
   ## example with mint.plsda
   # -----------------
-  data(stemcells)
 
   res = mint.plsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3,
                    study = stemcells$study)
@@ -58,4 +56,4 @@ auc.plsda.breast = auroc(plsda.breast, ncomp = 1)
   list.keepX = list(gene = rep(10, 2), lipid = rep(5,2))
   block.splsda.nutri = block.splsda(X = data, Y = nutrimouse$diet, keepX = list.keepX)
   auc.block.splsda.nutri = auroc(block.splsda.nutri, block = 1)
-}
+# }
