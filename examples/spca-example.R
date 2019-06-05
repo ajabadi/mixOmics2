@@ -1,22 +1,21 @@
-data(liver.toxicity)
+library(mixOmics.data)
 spca.rat <- spca(liver.toxicity$gene, ncomp = 3, keepX = rep(50, 3))
 spca.rat
 
 ## variable representation
-plotVar(spca.rat, cex = 0.5)
-\dontrun{
+plotVar(spca.rat, cex=2)
+# \dontrun{
   plotVar(spca.rat,style="3d")
-}
+# }
 
 # example with MultiAssayExperiment class
 # --------------------------------
 
-data(liver.toxicity.mae)
 spca.rat <- spca(liver.toxicity.mae, Assay='gene', ncomp = 3, keepX = rep(50, 3))
 spca.rat
 
 
-\dontrun{
+# \dontrun{
 
 
   ## samples representation
@@ -36,5 +35,5 @@ spca.rat
   plotIndiv(pca.res, ind.names = FALSE, group = diverse.16S$bodysite, title = '16S diverse data',
             legend=TRUE)
 
-}
+# }
 

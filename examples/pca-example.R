@@ -1,6 +1,6 @@
+library(mixOmics.data)
 # example with missing values where NIPALS is applied
 # --------------------------------
-data(multidrug)
 pca.res <- pca(multidrug$ABC.trans, ncomp = 4, scale = TRUE)
 plot(pca.res)
 print(pca.res)
@@ -9,7 +9,6 @@ biplot(pca.res, xlabs = multidrug$cell.line$Class, cex = 0.7)
 # example with MultiAssayExperiment class
 # --------------------------------
 
-data(multidrug.mae)
 pca.res <- pca(multidrug.mae, Assay='ABC.trans', ncomp = 4, scale = TRUE)
 plot(pca.res)
 print(pca.res)
@@ -35,7 +34,6 @@ biplot(pca.res, xlabs = multidrug$cell.line$Class, cex = 0.7)
   # example with multilevel decomposition and CLR log ratio transformation (ILR longer to run)
   # ----------------
 
-  data("diverse.16S")
   pca.res = pca(X = diverse.16S$data.TSS, ncomp = 5,
                 logratio = 'CLR', multilevel = diverse.16S$sample)
   plot(pca.res)
