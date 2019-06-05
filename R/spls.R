@@ -63,7 +63,7 @@
 #' approach is unsupervised, i.e. no prior knowledge about the sample groups is
 #' included.
 ## --------------------------------------------------------------------------------------- parameters
-#' @inheritParams spls
+#' @inheritParams pls
 #' @param keepX numeric vector of length \code{ncomp}, the number of variables
 #' to keep in \eqn{X}-loadings. By default all variables are kept in the model.
 #' @param keepY numeric vector of length \code{ncomp}, the number of variables

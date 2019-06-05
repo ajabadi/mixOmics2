@@ -4,6 +4,8 @@ X <- linnerud$exercise
 Y <- linnerud$physiological
 linn.pls <- pls(X, Y, mode = "classic")
 
+plotVar(linn.pls)
+
 \dontrun{
   X <- liver.toxicity$gene
   Y <- liver.toxicity$clinic

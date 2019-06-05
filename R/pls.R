@@ -77,10 +77,6 @@
 #' internal pre-processing step, through \code{\link{logratio.transfo}} and
 #' \code{\link{withinVariation}} respectively.
 ## --------------------------------------------------------------------------------------- parameters
-#' @param formula formula of form \code{Y~X} (names of objects without quotations) where Y and X are
-#' numeric matrices. \code{X} aand \code{Y} can also be an assay names from \code{data}.
-#' Y can also be a \code{colData} name from \code{data}.
-#' @param data A \code{MultiAssayExperiment} object.
 #' @param X numeric matrix of predictors, or name of such an assay from \code{data} . \code{NA}s are allowed.
 #' @param Y numeric vector or matrix of responses (for multi-response models), or name of such an \code{assay} or
 #' \code{colData} from \code{data}. \code{NA}s are allowed.
@@ -104,6 +100,10 @@
 #' columns indicate those factors. See examples in \code{?spls}).
 #' @param all.outputs boolean. Computation can be faster when some specific
 #' (and non-essential) outputs are not calculated. Default = \code{TRUE}.
+#' @param formula formula of form \code{Y~X} (names of objects without quotations) where Y and X are
+#' numeric matrices. \code{X} and \code{Y} can also be an assay names from \code{data}. \code{Y} can also be a column data.
+#' Y can also be a \code{colData} name from \code{data}.
+#' @param data A \code{MultiAssayExperiment} object.
 ## --------------------------------------------------------------------------------------- value
 #' @return \code{pls} returns an object of class \code{"pls"}, a list that
 #' contains the following components:
@@ -131,7 +131,7 @@
 #' X-variates, to be used internally by \code{predict}.}
 #' \item{defl.matrix}{residual matrices X for each dimension.}
 ## ---------------------------------------------------------------------------------------
-#' @author Sébastien Déjean and Ignacio González and Kim-Anh Lê Cao.
+#' @author Sébastien Déjean, Ignacio González, Kim-Anh Lê Cao, Al J Abadi.
 #' @seealso \code{\link{spls}}, \code{\link{summary}}, \code{\link{plotIndiv}},
 #' \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and
 #' http://www.mixOmics.org for more details.
@@ -148,17 +148,6 @@
 #' @keywords regression multivariate
 ## --------------------------------------------------------------------------------------- examples
 #' @example examples/pls-example.R
-#'
-
-#############################################################
-## generic function
-#############################################################
-#'
-# setGeneric("pls", def = function(X, Y,..., data, formula) standardGeneric("pls"))
-
-#############################################################
-## internal function
-#############################################################
 #' @importFrom matrixStats colSds
 #' @importFrom matrixStats colVars
 #' @export pls
