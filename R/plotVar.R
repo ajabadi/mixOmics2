@@ -39,10 +39,10 @@
 
 
 #' Plot of Variables
-#' 
+#'
 #' This function provides variables representation for (regularized) CCA,
 #' (sparse) PLS regression, PCA and (sparse) Regularized generalised CCA.
-#' 
+#'
 #' \code{plotVar} produce a "correlation circle", i.e. the correlations between
 #' each variable and the selected components are plotted as scatter plot, with
 #' concentric circles of radius one et radius given by \code{rad.in}. Each
@@ -52,13 +52,13 @@
 #' \eqn{X}-variates. If mode is canonical, the components for \eqn{X} and
 #' \eqn{Y} variables correspond to the \eqn{X}- and \eqn{Y}-variates
 #' respectively.
-#' 
+#'
 #' For \code{plsda} and \code{splsda} objects, only the \eqn{X} variables are
 #' represented.
-#' 
+#'
 #' For \code{spls} and \code{splsda} objects, only the \eqn{X} and \eqn{Y}
 #' variables selected on dimensions \code{comp} are represented.
-#' 
+#'
 #' The arguments \code{col}, \code{pch}, \code{cex} and \code{font} can be
 #' either vectors of length two or a list with two vector components of length
 #' \eqn{p} and \eqn{q} respectively, where \eqn{p} is the number of
@@ -70,7 +70,7 @@
 #' component of the list correspond to the \eqn{X} attributs and the second
 #' component correspond to the \eqn{Y} attributs. Default values exist for this
 #' arguments.
-#' 
+#'
 #' @aliases plotVar plotVar.rcc plotVar.pls plotVar.spls plotVar.plsda
 #' plotVar.splsda plotVar.pca plotVar.spca plotVar.sgcca plotVar.rgcca
 #' @param object object of class inheriting from \code{"rcc"}, \code{"pls"},
@@ -138,125 +138,119 @@
 #' 5:19. \url{http://www.biodatamining.org/content/5/1/19/abstract}
 #' @keywords multivariate hplot dplot
 #' @examples
-#' 
+#'
 #' ## variable representation for objects of class 'rcc'
 #' # ----------------------------------------------------
-#' data(nutrimouse)
 #' X <- nutrimouse$lipid
 #' Y <- nutrimouse$gene
 #' nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
-#' 
+#'
 #' plotVar(nutri.res) #(default)
-#' 
-#' 
+#'
+#'
 #' plotVar(nutri.res, comp = c(1,3), cutoff = 0.5)
-#' 
+#'
 #' \dontrun{
 #' ## variable representation for objects of class 'pls' or 'spls'
 #' # ----------------------------------------------------
-#' data(liver.toxicity)
 #' X <- liver.toxicity$gene
 #' Y <- liver.toxicity$clinic
 #' toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50),
 #' keepY = c(10, 10, 10))
-#' 
+#'
 #' plotVar(toxicity.spls, cex = c(1,0.8))
-#' 
+#'
 #' # with a customized legend
 #' plotVar(toxicity.spls, legend = c("block 1", "my block 2"),
 #' legend.title="my legend")
-#' 
+#'
 #' ## variable representation for objects of class 'splsda'
 #' # ----------------------------------------------------
-#' 
-#' data(liver.toxicity)
 #' X <- liver.toxicity$gene
 #' Y <- as.factor(liver.toxicity$treatment[, 4])
-#' 
+#'
 #' ncomp <- 2
 #' keepX <- rep(20, ncomp)
-#' 
+#'
 #' splsda.liver <- splsda(X, Y, ncomp = ncomp, keepX = keepX)
 #' plotVar(splsda.liver)
-#' 
+#'
 #' ## variable representation for objects of class 'sgcca' (or 'rgcca')
 #' # ----------------------------------------------------
 #' ## see example in ??wrapper.sgcca
-#' data(nutrimouse)
 #' # need to unmap the Y factor diet
 #' Y = unmap(nutrimouse$diet)
 #' # set up the data as list
 #' data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
-#' 
+#'
 #' # set up the design matrix:
 #' # with this design, gene expression and lipids are connected to the diet factor
 #' # design = matrix(c(0,0,1,
 #' #                   0,0,1,
 #' #                   1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
-#' 
+#'
 #' # with this design, gene expression and lipids are connected to the diet factor
 #' # and gene expression and lipids are also connected
 #' design = matrix(c(0,1,1,
 #' 1,0,1,
 #' 1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
-#' 
-#' 
+#'
+#'
 #' #note: the penalty parameters will need to be tuned
 #' wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.3, 1),
 #' ncomp = 2,
 #' scheme = "centroid")
 #' wrap.result.sgcca
-#' 
+#'
 #' #variables selected on component 1 for each block
 #' selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'gene'$name
 #' selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'lipid'$name
-#' 
+#'
 #' #variables selected on component 2 for each block
 #' selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'gene'$name
 #' selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'lipid'$name
-#' 
+#'
 #' plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(1,1),
 #' title = c('Variables selected on component 1 only'))
-#' 
-#' 
+#'
+#'
 #' plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(2,2),
 #' title = c('Variables selected on component 2 only'))
-#' 
+#'
 #' # -> this one shows the variables selected on both components
 #' plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2),
 #' title = c('Variables selected on components 1 and 2'))
-#' 
+#'
 #' ## variable representation for objects of class 'rgcca'
 #' # ----------------------------------------------------
-#' 
-#' data(nutrimouse)
+#'
 #' # need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
 #' Y = unmap(nutrimouse$diet)
-#' 
+#'
 #' data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 #' # with this design, all blocks are connected
 #' design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
 #' byrow = TRUE, dimnames = list(names(data), names(data)))
-#' 
+#'
 #' nutrimouse.rgcca <- wrapper.rgcca(X = data,
 #' design = design,
 #' tau = "optimal",
 #' ncomp = 2,
 #' scheme = "centroid")
-#' 
+#'
 #' plotVar(nutrimouse.rgcca, comp = c(1,2), block = c(1,2), cex = c(1.5, 1.5))
-#' 
-#' 
+#'
+#'
 #' plotVar(nutrimouse.rgcca, comp = c(1,2), block = c(1,2))
-#' 
-#' 
+#'
+#'
 #' # set up the data as list
 #' data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y =Y)
 #' # with this design, gene expression and lipids are connected to the diet factor
 #' # design = matrix(c(0,0,1,
 #' #                   0,0,1,
 #' #                   1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
-#' 
+#'
 #' # with this design, gene expression and lipids are connected to the diet factor
 #' # and gene expression and lipids are also connected
 #' design = matrix(c(0,1,1,
@@ -268,9 +262,9 @@
 #' scheme = "centroid")
 #' #wrap.result.rgcca
 #' plotVar(wrap.result.rgcca, comp = c(1,2), block = c(1,2))
-#' 
+#'
 #' }
-#' 
+#'
 #' @export plotVar
 plotVar <-
 function(object,
@@ -297,26 +291,26 @@ overlap = TRUE,
 axes.box = "all",
 label.axes.box = "both"  )
 {
-    
+
     class.object = class(object)
     object.pls=c("mixo_pls","mixo_spls","mixo_mlspls","mixo_mlsplsda","rcc")
     object.pca=c("ipca","sipca","pca","spca")
     object.blocks=c("sgcca","rgcca")
-    
+
     #-- check that the user did not enter extra arguments
     arg.call = match.call()
     user.arg = names(arg.call)[-1]
-    
+
     err = tryCatch(mget(names(formals()), sys.frame(sys.nframe())),
     error = function(e) e)
-    
+
     if ("simpleError" %in% class(err))
     stop(err[[1]], ".", call. = FALSE)
-    
+
     #-- style
     if (!style %in% c("ggplot2", "lattice", "graphics","3d"))
     stop("'style' must be one of 'ggplot2', '3d' , lattice' or 'graphics'.", call. = FALSE)
-    
+
     #-- plot
     if (length(plot) > 1)
     stop("'plot' must be single logical value.", call. = FALSE)
@@ -325,27 +319,27 @@ label.axes.box = "both"  )
     if(!plot)
     {
         style="N"}
-    
+
     #-- axes.box
     if(style=="3d")
     {
         choices = c("axes", "box", "bbox", "all")
         axes.box = choices[pmatch(axes.box, choices)]
-        
+
         if (is.na(axes.box))
         stop("'axes.box' should be a subset of {'axes', 'box', 'bbox', 'all'}.",
         call. = FALSE)
-        
+
         #-- label.axes.box
         choices = c("axes", "box", "both")
         label.axes.box = choices[pmatch(label.axes.box, choices)]
-        
+
         if (is.na(label.axes.box))
         stop("'label.axes.box' should be one of 'axes', 'box' or 'both'.",
         call. = FALSE)}
-    
-    
- 
+
+
+
     ### Start: Validation of arguments
     ncomp = object$ncomp
     if (any(class.object %in% object.blocks))
@@ -357,10 +351,10 @@ label.axes.box = "both"  )
         if (is.null(blocks))
         {
             blocks = names(object$X)#names$blocks
-            
+
             if (any(class.object == "DA"))
             blocks = names(object$X)#blocks[-object$indY]
-            
+
         } else if (is.numeric(blocks) & min(blocks) > 0 &  max(blocks) <= length(object$names$blocks)) {
             blocks = object$names$blocks[blocks]
         } else if (is.character(blocks)) {
@@ -372,7 +366,7 @@ label.axes.box = "both"  )
         object$variates = object$variates[names(object$variates) %in% blocks]
         object$names$colnames = object$names$colnames[names(object$names$colnames) %in% blocks]
         object$blocks = object$X[names(object$X) %in% blocks]
-        
+
         if (any(object$ncomp[blocks] == 1))
         {
             stop(paste("The number of components for one selected block '", paste(blocks, collapse = " - "),"' is 1. The number of components must be superior or equal to 2."), call. = FALSE)
@@ -382,7 +376,7 @@ label.axes.box = "both"  )
         #-- legend: logical or a name for X and Y
         if ( ! (length(legend) == 1 & is.logical(legend) || (length(legend)==2)))
         stop("'legend' must be a logical value or a vector of 2 names for X and Y.", call. = FALSE)
-        
+
         if(length(legend)==2){
             blocks=legend
             legend=TRUE
@@ -394,7 +388,7 @@ label.axes.box = "both"  )
         #-- legend: logical or a name for X
         if (length(legend) != 1 )
         stop("'legend' must be a logical value or a vector of 1 name for X.", call. = FALSE)
-        
+
         if(is.logical(legend)){
             blocks = "X"
         }else{
@@ -409,11 +403,11 @@ label.axes.box = "both"  )
     #-- ellipse.level
     if (!is.numeric(rad.in) | (rad.in > 1) | (rad.in < 0))
     stop("The value taken by 'rad.in' must be between 0 and 1", call. = FALSE)
-    
+
     #-- cutoff correlation
     if (!is.numeric(cutoff) | (cutoff > 1) | (cutoff < 0))
     stop("The value taken by 'cutoff' must be between 0 and 1", call. = FALSE)
-    
+
     #-- comp
     if(is.null(comp))
     {
@@ -430,30 +424,30 @@ label.axes.box = "both"  )
     } else if(length(comp) != 3 && (style=="3d")) {
         stop("'comp' must be a numeric vector of length 3.", call. = FALSE)
     }
-    
+
     if (!is.numeric(comp))
     stop("Invalid vector for 'comp'.")
-    
+
     if (any(ncomp < max(comp)) || min(comp) <= 0)
     stop("Each element of 'comp' must be positive smaller or equal than ", min(object$ncomp), ".", call. = FALSE)
-    
+
     comp1 = round(comp[1])
     comp2 = round(comp[2])
     if (style=="3d")
     comp3 = round(comp[3])
-    
+
     #-- comp.select
     if (!is.null(comp.select))
     {
         if (!is.numeric(comp.select))
         stop("Invalid vector for 'comp'.", call. = FALSE)
-        
+
         if (any(ncomp < max(comp.select)) || min(comp.select) <= 0)
         stop("Each element of 'comp.select' must be positive and smaller or equal than ", max(object$ncomp), ".", call. = FALSE)
     } else {
         comp.select = comp
     }
-    
+
     #-- abline
     if (length(abline) > 1)
     {
@@ -461,7 +455,7 @@ label.axes.box = "both"  )
     }else if (!is.logical(abline)) {
         stop("'abline' must be logical.", call. = FALSE)
     }
-    
+
     #-- Start: Retrieve variates from object
     cord.X = sample.X = ind.var.sel = list()
     if(style=="3d")
@@ -473,16 +467,16 @@ label.axes.box = "both"  )
                 cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2, comp3)] + object$variates$Y[, c(comp1, comp2, comp3)], use = "pairwise")
                 cord.X[[2]] = cor(object$Y, object$variates$X[, c(comp1, comp2, comp3)] + object$variates$Y[, c(comp1, comp2, comp3)], use = "pairwise")
                 sample.X = lapply(cord.X, function(x){seq_len(nrow(x))})
-                
+
             } else if (any(class.object %in% "mixo_plsda")) {
                 cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2, comp3)], use = "pairwise")
                 sample.X = lapply(cord.X, function(x){seq_len(nrow(x))})
-                
+
             } else if (any(class.object %in%  "mixo_pls")) {
                 cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2, comp3)], use = "pairwise")
                 cord.X[[2]] = cor(object$Y, if(object$mode ==  "canonical"){object$variates$Y[, c(comp1, comp2, comp3)]} else {object$variates$X[, c(comp1, comp2, comp3)]}, use = "pairwise")
                 sample.X = lapply(cord.X, function(x){seq_len(nrow(x))})
-                
+
             } else if (any(class.object %in%  c("mixo_splsda", "mixo_mlsplsda"))) {
                 cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(unique(c(comp1, comp2, comp3, comp.select)), function(x){selectVar(object, comp = x)$name})))], # variables selected at least once on unique(comp1, comp2, comp3 and comp.select
                 object$variates$X[, c(comp1, comp2, comp3, comp.select)], use = "pairwise")
@@ -492,7 +486,7 @@ label.axes.box = "both"  )
                     cord.X[[1]] = cord.X[[1]][row.names(cord.X[[1]]) %in% unique(unlist(lapply(comp.select, function(x) {selectVar(object, comp = x)$name}))), ,drop = FALSE]
                 }
                 ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
-                
+
             } else if (any(class.object %in%  c("mixo_spls", "mixo_mlspls"))) {
                 cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(c(comp1, comp2, comp3), function(x){selectVar(object, comp = x)$X$name})))],
                 object$variates$X[, c(comp1, comp2, comp3)], use = "pairwise")
@@ -518,7 +512,7 @@ label.axes.box = "both"  )
             }
         } else if (any(class.object %in%  object.pca)) {
             if (any(class.object %in%  c("sipca", "spca"))){
-                
+
                 cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(c(comp1, comp2, comp3), function(x){selectVar(object, comp = x)$name})))],
                 object$x[, c(comp1, comp2, comp3)], use = "pairwise")
                 ind.var.sel[[1]] = sample.X[[1]] = seq_len(length(colnames(object$X)))
@@ -527,7 +521,7 @@ label.axes.box = "both"  )
                 }
                 ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
             } else {
-                
+
                 cord.X[[1]] = cor(object$X, object$x[, c(comp1, comp2, comp3)], use = "pairwise")
                 ind.var.sel[[1]] = sample.X[[1]] = seq_len(length(colnames(object$X)))
             }
@@ -540,16 +534,16 @@ label.axes.box = "both"  )
                 cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2)] + object$variates$Y[, c(comp1, comp2)], use = "pairwise")
                 cord.X[[2]] = cor(object$Y, object$variates$X[, c(comp1, comp2)] + object$variates$Y[, c(comp1, comp2)], use = "pairwise")
                 sample.X = lapply(cord.X, function(x){seq_len(nrow(x))})
-                
+
             } else if (any(class.object %in% "mixo_plsda")) {
                 cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2)], use = "pairwise")
                 sample.X = lapply(cord.X, function(x){seq_len(nrow(x))})
-                
+
             } else if (any(class.object %in%  "mixo_pls")) {
                 cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2)], use = "pairwise")
                 cord.X[[2]] = cor(object$Y, if(object$mode ==  "canonical"){object$variates$Y[, c(comp1, comp2)]} else {object$variates$X[, c(comp1, comp2)]}, use = "pairwise")
                 sample.X = lapply(cord.X, function(x){seq_len(nrow(x))})
-                
+
             } else if (any(class.object %in%  c("mixo_splsda", "mixo_mlsplsda"))) {
                 cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$name}))), drop = FALSE],
                 object$variates$X[, unique(c(comp1, comp2))], use = "pairwise")
@@ -558,7 +552,7 @@ label.axes.box = "both"  )
                 #   cord.X[[1]] = cord.X[[1]][row.names(cord.X[[1]]) %in% unique(unlist(lapply(comp.select, function(x) {selectVar(object, comp = x)$name}))), ,drop = FALSE]
                 #}
                 ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
-                
+
             } else if (any(class.object %in%  c("mixo_spls", "mixo_mlspls"))) {
                 cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$X$name}))), drop = FALSE],
                 object$variates$X[, c(comp1, comp2)], use = "pairwise")
@@ -579,7 +573,7 @@ label.axes.box = "both"  )
                 #}
                 ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
                 ind.var.sel[[2]] = which(colnames(object$Y) %in% rownames(cord.X[[2]]))
-                
+
             } else { #block object
                 cord.X = lapply(blocks, function(x){cor(object$blocks[[x]], object$variates[[x]][, c(comp1, comp2)], use = "pairwise")})
                 ind.var.sel = sample.X = lapply(object$blocks, function(x){seq_len(ncol(x))})
@@ -594,7 +588,7 @@ label.axes.box = "both"  )
             }
         } else if (any(class.object %in%  object.pca)) {
             if (any(class.object %in%  c("sipca", "spca"))){
-                
+
                 cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$name}))), drop = FALSE],
                 object$x[, c(comp1, comp2)], use = "pairwise")
                 #ind.var.sel[[1]] =
@@ -617,23 +611,23 @@ label.axes.box = "both"  )
         if(any(sapply(corX, function(j){any(j < 0)})))
         warning("We detected negative correlation between the variates of some blocks, which means that some clusters of variables observed on the correlation circle plot are not necessarily positively correlated.")
     }
-    
+
     if (any(sapply(cord.X, nrow) == 0))
     stop("No variable selected on at least one block")
-    
+
     #-- End: Retrieve variates from object
-    
+
     #-- Names of labels X and Y
     if (is.null(X.label)) X.label = paste("Component ", comp1)
     if (is.null(Y.label)) Y.label = paste("Component ", comp2)
     if (is.null(Z.label) && style=="3d") Z.label = paste("Component ", comp3)
-    
+
     if (!is.character(X.label))
     stop("'X.label' must be a character.", call. = FALSE)
     if (!is.character(Y.label))
     stop("'Y.label' must be a character.", call. = FALSE)
-    
-    
+
+
     #-- pch argument
     missing.pch = FALSE
     if (missing(pch))
@@ -645,7 +639,7 @@ label.axes.box = "both"  )
         } else {
             pch = unlist(lapply(seq_len(length(cord.X)), function(x){rep(seq_len(20)[x], sum(sapply(cord.X[x], nrow)))}))
         }
-        
+
     } else if (((is.vector(pch, mode = "double") || is.vector(pch, mode = "integer")) && !(style=="3d"))
     || (is.vector(pch, mode = "character") && style=="3d")) {
         if (length(pch) != length(sample.X))
@@ -665,7 +659,7 @@ label.axes.box = "both"  )
     else {
         stop.message('pch', sample.X)
     }
-        
+
     #-- col argument
     if (missing(col)) {
         if (length(cord.X) < 10) {
@@ -686,7 +680,7 @@ label.axes.box = "both"  )
     } else {
         stop.message('col', sample.X)
     }
-    
+
     #-- cex argument
     if (missing(cex)){
         if (style == "ggplot2"){
@@ -707,7 +701,7 @@ label.axes.box = "both"  )
     } else {
         stop.message('cex', sample.X)
     }
-    
+
     #-- font argument
     if (missing(font)) {
         font = rep(1, sum(sapply(cord.X, nrow)))
@@ -724,7 +718,7 @@ label.axes.box = "both"  )
     } else {
         stop.message('font', sample.X)
     }
-    
+
     #-- var.names
     ind.group = cumsum(c(0, sapply(cord.X, nrow)))
     if (is.null(var.names)){
@@ -744,7 +738,7 @@ label.axes.box = "both"  )
     } else if (is.list(var.names)) {
         if (length(var.names) != length(cord.X))
         stop.message('var.names', sample.X)
-        
+
         if (sum(sapply(seq_len(length(var.names)), function(x){if(!lapply(var.names, is.logical)[[x]]){
             if(is.null(ind.var.sel[[x]])){
                 length(var.names[[x]])
@@ -755,7 +749,7 @@ label.axes.box = "both"  )
         sum(sapply(seq_len(length(var.names)), function(x){if(!lapply(var.names, is.logical)[[x]]){nrow(cord.X[[x]])}else {0}}))){
             stop.message('var.names', sample.X)
         }
-        
+
         var.names.list = unlist(sapply(seq_len(length(var.names)), function(x){if(lapply(var.names, is.logical)[[x]]){
             if (var.names[[x]]) {
                 row.names(cord.X[[x]])
@@ -774,28 +768,28 @@ label.axes.box = "both"  )
     } else {
         stop.message('var.names', sample.X)
     }
-    
+
     #-- Start: Computation ellipse
     circle = list()
     circle[[1]] = ellipse(0, levels = 1, t = 1)
     circle[[2]] = ellipse(0, levels = 1, t = rad.in)
     circle = data.frame(do.call("rbind", circle), "Circle" = c(rep("Main circle", 100), rep("Inner circle", 100)))
     #-- End: Computation ellipse
-    
+
     #-- Start: data set
     df = data.frame(do.call(rbind, cord.X), "Block" = paste0("Block: ", unlist(lapply(seq_len(length(cord.X)), function(z){rep(blocks[z], nrow(cord.X[[z]]))}))))
     if (style=="3d")
     names(df)[seq_len(3)] = c("x", "y","z")
     else
     names(df)[seq_len(2)] = c("x", "y")
-    
+
     df$names = as.vector(var.names.list)
-    
+
     df$pch = pch; df$cex = cex; df$col = col; df$font = font
-    
+
     if(missing.pch)
     df$pch=1
-    
+
     if (overlap)
     {
         df$Overlap = title
@@ -807,7 +801,7 @@ label.axes.box = "both"  )
         if(style %in%c("ggplot2","lattice"))
         df$Block = factor(unlist(lapply(seq_len(length(cord.X)), function(z){rep(blocks[z], nrow(cord.X[[z]]))})))
     }
-    
+
     if (cutoff != 0){
         if(style=="3d")
         df = df[abs(df$x) > cutoff | abs(df$y) > cutoff | abs(df$z) > cutoff, ,drop = FALSE]
@@ -815,7 +809,7 @@ label.axes.box = "both"  )
         df = df[abs(df$x) > cutoff | abs(df$y) > cutoff, ,drop = FALSE]
         ind.group = c(0, cumsum(table(df$Block)[unique(df$Block)])) # add unique to have names of cumsum matching the order of the blocks in df
     }
-    
+
     if (nrow(df) == 0)
     stop("Cutoff value very high for the components ", comp1, " and ", comp2, ".No variable was selected.")
 
@@ -830,14 +824,14 @@ label.axes.box = "both"  )
         # according to http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when
         # one hack is to set to NULL first.
         x = y = Circle = NULL
-        
+
         #-- Initialise ggplot2
         p = ggplot(df, aes(x = x, y = y, color = Block)) +
         labs(title = title, x = X.label, y = Y.label) + theme_bw()
-        
+
         for (i in levels(df$Block))
         p = p + geom_point(data = subset(df, df$Block == i), size = 0, shape = 0)
-        
+
         #-- Display sample or var.names
         for (i in seq_len(length(var.names))){
             if (var.names[i]) {
@@ -853,12 +847,12 @@ label.axes.box = "both"  )
                 color = df[c((ind.group[i] + 1) : ind.group[i + 1]), "col"])
             }
         }
-        
+
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
         p = p + scale_colour_manual(values = unique(col)[match(levels(factor(as.character(df$Block))), levels(df$Block))], name = legend.title, breaks = levels(df$Block))
         p = p + scale_x_continuous(limits = c(-1, 1)) + scale_y_continuous(limits = c(-1, 1))
         p = p + facet_wrap(~ Overlap, ncol = 2, as.table = TRUE)
-        
+
         #-- Legend
         if (!legend)
         {
@@ -867,7 +861,7 @@ label.axes.box = "both"  )
             p = p + guides(colour = guide_legend(override.aes = list(shape = 19,
             size = unique(df$cex))))
         }
-        
+
 
 
         #-- abline
@@ -875,35 +869,35 @@ label.axes.box = "both"  )
         p = p + geom_vline(aes(xintercept = 0), linetype = 2,
         colour = "darkgrey") + geom_hline(aes(yintercept = 0),linetype = 2,
         colour = "darkgrey")
-        
+
         #-- circle correlation
         for (i in c("Main circle", "Inner circle")){
             p = p + geom_path(data = subset(circle, Circle == i),
             aes_string(x = "x", y = "y"), color = "Black")
         }
-        
+
         print(p)
     }
     #-- End: ggplot2
-    
+
     #-- Start: Lattice
     if(style == "lattice" )
     {
         legend.lattice = list(space = "right", title = legend.title, cex.title = 1.25,
         points=list(col=unique(df$col),cex = unique(df$cex),pch = unique(df$pch)),
         text = list(blocks))
-        
+
         if (overlap) {
             p = xyplot(y ~ x | Overlap, data = df, xlab = X.label, ylab = Y.label, main = title,
             scales = list(x = list(relation = "free", limits = c(-1, 1)),
             y = list(relation = "free", limits = c(-1, 1))),
             key=if (legend) {legend.lattice} else {NULL},
             panel = function(x, y, ...) {
-                
+
                 #-- Abline
                 if (abline) {panel.abline(v = 0, lty = 2, col = "darkgrey")
                     panel.abline(h = 0, lty = 2, col = "darkgrey")}
-                
+
                 #-- Display sample or row.names
                 for (i in seq_len(length(var.names))){
                     if (var.names[i]) {
@@ -923,7 +917,7 @@ label.axes.box = "both"  )
                 }
             })
             print(p)
-            
+
             panels = trellis.currentLayout(which = "panel")
             ind = which(panels == 1, arr.ind = TRUE)
             trellis.focus("panel",ind[2], ind[1],highlight = FALSE)
@@ -941,12 +935,12 @@ label.axes.box = "both"  )
             key=if (legend) {legend.lattice} else {NULL},
             )
             print(p)
-            
+
             panels = trellis.currentLayout(which = "panel")
             for (k in seq_len(length(cord.X))) {
                 ind = which(panels == k, arr.ind = TRUE)
                 trellis.focus("panel",ind[2], ind[1],highlight = FALSE)
-                
+
                 if (var.names[k]){
                     panel.text(x = df[c((ind.group[k] + 1) : ind.group[k + 1]), "x"],
                     y = df[c((ind.group[k] + 1) : ind.group[k + 1]), "y"],
@@ -961,7 +955,7 @@ label.axes.box = "both"  )
                     cex = df[c((ind.group[k] + 1) : ind.group[k + 1]), "cex"],
                     pch = df[c((ind.group[k] + 1) : ind.group[k + 1]), "pch"])
                 }
-                
+
                 for (i in seq_len(length(c("Main circle", "Inner circle")))){
                     panel.lines(x = circle[circle$Circle %in% c("Main circle", "Inner circle")[i], "x"],
                     y = circle[circle$Circle %in% c("Main circle", "Inner circle")[i], "y"],
@@ -970,25 +964,25 @@ label.axes.box = "both"  )
             }
             trellis.unfocus()
         }
-        
+
     }
     #-- End: Lattice
-    
+
     #-- Start: graphics
     if(style=="graphics" )
     {
-        
-        
+
+
         if (overlap)
         {
-            
+
             if(legend){
                 opar = par(no.readonly = TRUE)
                 par(mai=c( 1.360000, 1.093333, 1.093333,max(strwidth("Legend","inches"),max(strwidth(blocks,"inches"))+0.3)+0.2),xpd=TRUE)
             }
-            
+
             plot(df$x, df$y, type = "n", xlab = X.label, ylab = Y.label, main = "", xlim = c(-1, 1), ylim = c(-1, 1))
-            
+
             #-- Display sample or row.names
             for (i in seq_len(length(var.names))){
                 if (var.names[i]) {
@@ -1006,7 +1000,7 @@ label.axes.box = "both"  )
                     pch = df[c((ind.group[i] + 1) : ind.group[i + 1]), "pch"])
                 }
             }
-            
+
             #-- legend
             if (legend)
             legend(x = 1.09, y=0.2,
@@ -1016,20 +1010,20 @@ label.axes.box = "both"  )
             pch = unique(df$pch),
             pt.cex = unique(df$cex),
             bty = "n")
-            
+
             #-- Abline
             if (abline)
             abline(v = 0, h = 0, lty = 2, xpd = FALSE)
-            
+
             #-- Ellipse
             for (i in c("Main circle", "Inner circle")){
                 lines(x = circle[circle$Circle == i, "x"], y = circle[circle$Circle == i, "y"], col = "black")
             }
-            
+
             title(title)#, outer = TRUE, line = -1)
-            
+
             if (legend) par(mai = opar$mai, xpd = opar$xpd)
-            
+
         } else {
             opar <- par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
             #-- Define layout
@@ -1038,7 +1032,7 @@ label.axes.box = "both"  )
                 mat = matrix(rep(mat,each=2),nrow=nrow(mat),byrow=TRUE)
                 mat = cbind(mat,rep(max(mat) + 1, nrow(mat)))
             }
-            
+
             layout(mat)
             for (k in seq_len(length(cord.X))){
                 #-- initialise plot
@@ -1046,7 +1040,7 @@ label.axes.box = "both"  )
                 df[df$Block %in% paste0("Block: ", blocks[k]), "y" ],
                 type = "n", xlab = X.label, ylab = Y.label, main = paste0("Block: ", blocks[k]),
                 xlim = c(-1, 1), ylim = c(-1, 1))
-                
+
                 #-- Display sample or row.names
                 if (var.names[k]) {
                     text(x = df[df$Block %in% paste0("Block: ", blocks[k]), "x"],
@@ -1062,18 +1056,18 @@ label.axes.box = "both"  )
                     cex = df[df$Block %in% paste0("Block: ", blocks[k]), "cex"],
                     pch = df[df$Block %in% paste0("Block: ", blocks[k]), "pch"])
                 }
-                
+
                 #-- Abline
                 if (abline)
                 abline(v = 0, h = 0, lty = 2, xpd = FALSE)
-                
+
                 #-- Ellipse
                 for (i in c("Main circle", "Inner circle")){
                     lines(x = circle[circle$Circle == i, "x"], y = circle[circle$Circle == i, "y"], col = "black")
                 }
             }
-            
-            
+
+
             title(title, outer = TRUE, line = -1)
             if (length(cord.X) != max(mat) & length(cord.X) != 1){
                 for (i in seq_len((max(mat)-length(cord.X)))){
@@ -1088,13 +1082,13 @@ label.axes.box = "both"  )
             pch = unique(df$pch),
             cex = unique(df$cex),
             bty = "n")
-            
+
             par(opar)
         }
-        
+
     }
     #-- End: graphics
-    
+
     #-- Start: 3d
     if(style=="3d") {
         if(requireNamespace("rgl") == FALSE)
@@ -1103,7 +1097,7 @@ label.axes.box = "both"  )
         rgl::open3d()
         rgl::par3d(windowRect = c(500, 30, 1100, 630))
         Sys.sleep(0.5)
-        
+
         if (!is.null(title)) {
             mat = matrix(seq_len(2), 2)
             rgl::layout3d(mat, heights = c(1, 10), model = "inherit")
@@ -1111,13 +1105,13 @@ label.axes.box = "both"  )
             rgl::text3d(0, 0, 0, title)
             rgl::next3d()
         }
-        
+
         rgl::par3d(userMatrix = rgl::rotationMatrix(pi/80, 1, -1/(100*pi), 0))
-        
-        
-        
-        
-        
+
+
+
+
+
         if (legend) {
             rgl::legend3d(x="right",
             legend = blocks,
@@ -1126,11 +1120,11 @@ label.axes.box = "both"  )
             pt.cex = unique(cex),
             bty="n")
         }
-        
+
         if (any(axes.box == "axes") || any(axes.box == "all"))
         rgl::axes3d(c('x','y','z'), pos = c(0, 0, 0), nticks = 2, at = c(-1.2, 1.2),
         tick = FALSE, labels = "")
-        
+
         for (i in seq_len(length(var.names))){
             if (var.names[i]) {
                 rgl::text3d(x = df[c((ind.group[i] + 1) : ind.group[i + 1]), "x"],
@@ -1174,9 +1168,9 @@ label.axes.box = "both"  )
                 size = df[c((ind.group[i] + 1) : ind.group[i + 1]), "cex"]/20))
             }
         }
-        
+
         rgl::par3d(cex = 0.8)
-        
+
         #-- draws axes --#
         if (any(axes.box == "axes") || any(axes.box == "all")) {
             if (any(label.axes.box == "axes") || any(label.axes.box == "both")) {
@@ -1187,29 +1181,29 @@ label.axes.box = "both"  )
             X =  c(1.2, 1.09, 1.09, 1.2, 1.09, 1.09, 1.2, 1.09, 1.09, 1.2, 1.09,  1.09,
             0.0, 0.0,  0.0, 0.0, 0.035, -0.035, 0.0, 0.035*sin(pi/4), -0.035*sin(pi/4), 0.0, 0.035*sin(pi/4), -0.035*sin(pi/4),
             0.0, 0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.035, -0.035, 0.0, 0.035*sin(pi/4), -0.035*sin(pi/4))
-            
+
             Y = c(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.035, -0.035, 0.0, 0.035*sin(pi/4), -0.035*sin(pi/4),
             1.2, 1.09,  1.09, 1.2, 1.09,  1.09, 1.2, 1.09,  1.09, 1.2, 1.09,  1.09,
             0.0, 0.035, -0.035, 0.0, 0.0,  0.0, 0.0, 0.035*sin(pi/4), -0.035*sin(pi/4), 0.0, -0.035*sin(pi/4), 0.035*sin(pi/4))
-            
+
             Z = c(0.0, 0.035, -0.035, 0.0, 0.035, -0.035, 0.0, 0.0,  0.0, 0.0, 0.035*sin(pi/4), -0.035*sin(pi/4),
             0.0, 0.035, -0.035, 0.0, 0.0,  0.0, 0.0, 0.035*sin(pi/4), -0.035*sin(pi/4), 0.0, -0.035*sin(pi/4), 0.035*sin(pi/4),
             1.2, 1.09,  1.09, 1.2, 1.09,  1.09, 1.2, 1.09,  1.09, 1.2, 1.09,  1.09)
             rgl::triangles3d(x = X, y = Y, z = Z, col = "black")
-            
+
         }
-        
+
         rgl::points3d(1.2, 0, 0, size = 0.1, alpha = 0)
         rgl::points3d(0, 1.2, 0, size = 0.1, alpha = 0)
         rgl::points3d(0, 0, 1.2, size = 0.1, alpha = 0)
         rgl::points3d(-1.2, 0, 0, size = 0.1, alpha = 0)
         rgl::points3d(0, -1.2, 0, size = 0.1, alpha = 0)
         rgl::points3d(0, 0, -1.2, size = 0.1, alpha = 0)
-        
+
         #-- draws sphere --#
         rgl::spheres3d(0, 0, 0, radius = rad.in, front = "fill", back = "fill", emission = gray(0.9), alpha = 0.4)
         rgl::spheres3d(0, 0, 0, radius = rad.in, front = "line", back = "line", emission = gray(0.9))
-        
+
         #-- draws axes/box and add axes labels --#
         if (any(axes.box == "box") || any(axes.box == "all")) {
             rgl::axes3d(marklen = 25)
@@ -1220,7 +1214,7 @@ label.axes.box = "both"  )
                 rgl::mtext3d(Z.label, "z+-", line = 1)
             }
         }
-        
+
         if (any(axes.box == "bbox") || any(axes.box == "all")) {
             rgl::bbox3d(color = c("#333377", "black"), emission = gray(0.5),
             specular = gray(0.1), shininess = 5, alpha = 0.8, marklen = 25)
@@ -1230,13 +1224,13 @@ label.axes.box = "both"  )
                 rgl::mtext3d(Z.label, "z+-", line = 1)
             }
         }
-        
-        
+
+
     }
     #-- End: graphics
     if(plot){
         return(invisible(df))}
     else
     return(df)
-    
+
 }

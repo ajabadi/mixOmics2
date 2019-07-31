@@ -104,8 +104,8 @@ Useful graphical outputs are available, e.g. \code{\link{plotIndiv}},
 \code{\link{plotLoadings}}, \code{\link{plotVar}}.
 }
 \examples{
-
-data(stemcells)
+\dontrun{
+library(mixOmics.data)
 
 # for the purpose of this example, we artificially
 # create a continuous response Y by taking gene 1.
@@ -118,7 +118,6 @@ plotIndiv(res)
 #plot study-specific outputs for all studies
 plotIndiv(res, study = "all.partial")
 
-\dontrun{
 #plot study-specific outputs for study "2"
 plotIndiv(res, study = "2", col = 1:3, legend = TRUE)
 }

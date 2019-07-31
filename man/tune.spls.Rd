@@ -109,12 +109,11 @@ adding a component to the model.
 See also \code{?perf} for more details.
 }
 \examples{
-
-data(liver.toxicity)
+\dontrun{
+library(mixOmics.data)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 
-\dontrun{
 tune = tune.spls(X, Y, ncomp=4, test.keepX = c(5,10,15), measure = "MSE",
 nrepeat=3, progressBar = TRUE)
 

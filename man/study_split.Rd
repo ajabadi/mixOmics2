@@ -22,7 +22,6 @@ number of levels of \code{study} tha contains submatrices of \code{data}.
 }
 \examples{
 
-data(stemcells)
 data = stemcells$gene
 exp = stemcells$study
 

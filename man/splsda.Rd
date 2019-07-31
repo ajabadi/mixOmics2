@@ -4,7 +4,10 @@
 \alias{splsda}
 \title{Sparse Partial Least Squares Discriminant Analysis (sPLS-DA)}
 \usage{
-\S4method{splsda}{ANY}(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"), keepX, scale = TRUE, tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"),  multilevel = NULL, all.outputs = TRUE)
+\S4method{splsda}{ANY}(X, Y, ncomp = 2,
+mode = c("regression", "canonical", "invariant", "classic"),
+keepX, scale = TRUE, tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
+logratio = c("none", "CLR"),  multilevel = NULL, all.outputs = TRUE)
 }
 \arguments{
 \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
@@ -87,7 +90,6 @@ More details about the PLS modes in \code{?pls}.
 \examples{
 
 ## First example
-data(breast.tumors)
 X <- breast.tumors$gene.exp
 # Y will be transformed as a factor in the function,
 # but we set it as a factor to set up the colors.
@@ -103,7 +105,6 @@ plotIndiv(res, ind.names = Y, legend = TRUE, ellipse =TRUE)
 ## Second example: one-factor analysis with sPLS-DA, selecting a subset of variables
 # as in the paper Liquet et al.
 #--------------------------------------------------------------
-data(vac18)
 X <- vac18$genes
 Y <- vac18$stimulation
 # sample indicates the repeated measurements
@@ -122,8 +123,6 @@ plotIndiv(res.1level, ind.names = Y, col.per.group = col.stim)
 # as in the paper Liquet et al.
 #--------------------------------------------------------------
 
-data(vac18.simulated) # simulated data
-
 X <- vac18.simulated$genes
 design <- data.frame(sample = vac18.simulated$sample)
 Y = data.frame( stimu = vac18.simulated$stimulation,
@@ -140,7 +139,6 @@ legend = TRUE, style = 'lattice')
 ## Fourth example: with more than two classes
 # ------------------------------------------------
 
-data(liver.toxicity)
 X <- as.matrix(liver.toxicity$gene)
 # Y will be transformed as a factor in the function,
 # but we set it as a factor to set up the colors.

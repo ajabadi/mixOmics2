@@ -92,8 +92,6 @@ Useful graphical outputs are available, e.g. \code{\link{plotIndiv}},
 }
 \examples{
 
-data(stemcells)
-
 res = mint.plsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3,
 study = stemcells$study)
 

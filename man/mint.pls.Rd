@@ -90,8 +90,6 @@ Useful graphical outputs are available, e.g. \code{\link{plotIndiv}},
 }
 \examples{
 
-data(stemcells)
-
 # for the purpose of this example, we artificially
 # create a continuous response Y by taking gene 1.
 

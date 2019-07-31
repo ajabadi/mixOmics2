@@ -51,7 +51,6 @@ maximisation of the correlation between the components from both data sets
 }
 \examples{
 
-data(liver.toxicity)
 # note: we made up those data, pretending they are repeated measurements
 repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
 6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,

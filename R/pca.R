@@ -29,109 +29,6 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #############################################################################################################
 
-#' Principal Components Analysis
-#'
-#' Performs a principal components analysis on the given data matrix that can
-#' contain missing values. If data are complete 'pca' uses Singular Value
-#' Decomposition, if there are some missing values, it uses the NIPALS
-#' algorithm.
-#' The calculation is done either by a singular value decomposition of the
-#' (possibly centered and scaled) data matrix, if the data is complete or by
-#' using the NIPALS algorithm if there is data missing. Unlike
-#' \code{\link{princomp}}, the print method for these objects prints the
-#' results in a nice format and the \code{plot} method produces a bar plot of
-#' the percentage of variance explaned by the principal components (PCs).
-#'
-#' When using NIPALS (missing values), we make the assumption that the first
-#' (\code{min(ncol(X),} \code{nrow(X)}) principal components will account for
-#' 100 \% of the explained variance.
-#'
-#' Note that \code{scale= TRUE} cannot be used if there are zero or constant
-#' (for \code{center = TRUE}) variables.
-#'
-#' Components are omitted if their standard deviations are less than or equal
-#' to \code{comp.tol} times the standard deviation of the first component. With
-#' the default null setting, no components are omitted. Other settings for
-#' \code{comp.tol} could be \code{comp.tol = sqrt(.Machine$double.eps)}, which
-#' would omit essentially constant components, or \code{comp.tol = 0}.
-#'
-#' According to Filzmoser et al., a ILR log ratio transformation is more
-#' appropriate for PCA with compositional data. Both CLR and ILR are valid.
-#'
-#' Logratio transform and multilevel analysis are performed sequentially as
-#' internal pre-processing step, through \code{\link{logratio.transfo}} and
-#' \code{\link{withinVariation}} respectively.
-#'
-#' Logratio can only be applied if the data do not contain any 0 value (for
-#' count data, we thus advise the normalise raw data with a 1 offset). For ILR
-#' transformation and additional offset might be needed.
-#'
-## --------------------------------------------------------------------------------------- arguments
-#'
-#'@param X a numeric matrix (or data frame) which provides the data for the
-#' principal components analysis. It can contain missing values. Alternatively, a \code{MultiAssay-/Summarized-/SingleCellExperiment} object.
-#'@param assay name or index of an assay from \code{X}.
-#'@param ncomp integer, if data is complete \code{ncomp} decides the number of
-#' components and associated eigenvalues to display from the \code{pcasvd}
-#' algorithm and if the data has missing values, \code{ncomp} gives the number
-#' of components to keep to perform the reconstitution of the data using the
-#' NIPALS algorithm. If \code{NULL}, function sets \code{ncomp = min(nrow(X),
-#' ncol(X))}
-#'@param center a logical value indicating whether the variables should be
-#' shifted to be zero centered. Alternately, a vector of length equal the
-#' number of columns of \code{X} can be supplied. The value is passed to
-#' \code{\link{scale}}.
-#'@param scale a logical value indicating whether the variables should be
-#' scaled to have unit variance before the analysis takes place. The default is
-#' \code{FALSE} for consistency with \code{prcomp} function, but in general
-#' scaling is advisable. Alternatively, a vector of length equal the number of
-#' columns of \code{X} can be supplied. The value is passed to
-#' \code{\link{scale}}.
-#'@param max.iter integer, the maximum number of iterations in the NIPALS
-#' algorithm.
-#'@param tol a positive real, the tolerance used in the NIPALS algorithm.
-#'@param logratio one of ('none','CLR','ILR'). Specifies the log ratio
-#' transformation to deal with compositional values that may arise from
-#' specific normalisation in sequencing data. Default to 'none'
-#'@param ilr.offset When logratio is set to 'ILR', an offset must be input to
-#' avoid infinite value after the logratio transform, default to 0.001.
-#'@param V Matrix used in the logratio transformation id provided.
-#'@param multilevel sample information for multilevel decomposition for repeated measurements.
-
-## --------------------------------------------------------------------------------------- value
-#'@return \code{pca} returns a list with class \code{"pca"} and
-#' \code{"prcomp"} containing the following components: \item{ncomp}{the number
-#' of principal components used.} \item{sdev}{the eigenvalues of the
-#' covariance/correlation matrix, though the calculation is actually done with
-#' the singular values of the data matrix or by using NIPALS.}
-#' \item{rotation}{the matrix of variable loadings (i.e., a matrix whose
-#' columns contain the eigenvectors).} \item{loadings}{same as 'rotation' to
-#' keep the mixOmics spirit} \item{x}{the value of the rotated data (the
-#' centred (and scaled if requested) data multiplied by the rotation/loadings
-#' matrix), also called the principal components.} \item{variates}{same as 'x'
-#' to keep the mixOmics spirit} \item{center, scale}{the centering and scaling
-#' used, or \code{FALSE}.} \item{explained_variance}{explained variance from
-#' the multivariate model, used for plotIndiv}
-## ---------------------------------------------------------------------------------------
-#'@author Florian Rohart, Kim-Anh Lê Cao, Ignacio González, Al J Abadi
-#'@seealso \code{\link{nipals}}, \code{\link{prcomp}}, \code{\link{biplot}},
-#' \code{\link{plotIndiv}}, \code{\link{plotVar}} and http://www.mixOmics.org
-#' for more details.
-#'@references On log ratio transformations: Filzmoser, P., Hron, K., Reimann,
-#' C.: Principal component analysis for compositional data with outliers.
-#' Environmetrics 20(6), 621-632 (2009) Lê Cao K.-A., Costello ME, Lakis VA,
-#' Bartolo, F,Chua XY, Brazeilles R, Rondeau P. MixMC: Multivariate insights
-#' into Microbial Communities. PLoS ONE, 11(8): e0160169 (2016). On multilevel
-#' decomposition: Westerhuis, J.A., van Velzen, E.J., Hoefsloot, H.C., Smilde,
-#' A.K.: Multivariate paired data analysis: multilevel plsda versus oplsda.
-#' Metabolomics 6(1), 119-128 (2010) Liquet, B., Lê Cao, K.-A., Hocini, H.,
-#' Thiebaut, R.: A novel approach for biomarker selection and the integration
-#' of repeated measures experiments from two assays. BMC bioinformatics 13(1),
-#' 325 (2012)
-#'@keywords algebra
-## --------------------------------------------------------------------------------------- examples
-#'@example examples/pca-example.R
-
 ## arguemnts must be copied from internal to both @usage and setGeneric plus the '...' in generic so the methods can add arguments - if we only include X, RStudio won't suggest the rest automatically for autofill
 ## --------------- the importFrom section for automation of NAMESPACE which should ideally be distrbuted to corresponding function files that import them
 #'@import MASS lattice igraph ggplot2 corpcor parallel RColorBrewer
@@ -141,26 +38,29 @@
 #'@importFrom utils setTxtProgressBar txtProgressBar packageDescription relist download.file
 #'@importFrom ellipse ellipse
 #'@importFrom methods hasArg is
+#'@importFrom MultiAssayExperiment assays
 #'@importFrom dplyr group_by mutate summarise arrange row_number filter n
 #'@importFrom tidyr gather
 #'@importFrom reshape2 melt dcast
 #'@importFrom rARPACK svds
 #'@importFrom gridExtra grid.arrange
 
-#'@export
-pca <- function(X, assay=if(is(X, "SingleCellExperiment")) "logcounts" else NULL, ncomp = 2, center = TRUE, scale = FALSE, max.iter = 500, tol = 1e-09,
+.pca <- function(X, ncomp = 2, center = TRUE, scale = FALSE, max.iter = 500, tol = 1e-09,
                  logratio = 'none', ilr.offset = 0.001, V = NULL, multilevel = NULL){
 
   #-- checking general input parameters --------------------------------------#
   #---------------------------------------------------------------------------#
   if(class(X) %in% c("MultiAssayExperiment", "SingleCellExperiment", "SummarizedExperiment")){
     ## assay
+    if (!is(tryCatch(assay, error=function(e) e), 'character')){
+      .inv_assay()
+    }
     nsa <- !any(c("character", "numeric", "integer", "null")) %in% class(tryCatch(assay, error=function(e) e))
     if(nsa){
       assay <- as.character(substitute(assay))
     }
-      ## get all inputs so you can refer to provided names
-      X <- internal_mae2dm(X = X, assay = assay)
+    ## get all inputs so you can refer to provided names
+    X <- internal_mae2dm(X, assay)
   }
 
 
@@ -168,7 +68,7 @@ pca <- function(X, assay=if(is(X, "SingleCellExperiment")) "logcounts" else NULL
   #-- check that the user did not enter extra arguments
   arg.call = match.call()
   user.arg = names(arg.call)[-1]
-## ensure everything can be evaluated, except for assay which we allow non-standard
+  ## ensure everything can be evaluated, except for assay which we allow non-standard
   err = tryCatch(mget(names(formals())[names(formals())!="assay"], sys.frame(sys.nframe())),
                  error = function(e) e)
 
@@ -374,3 +274,142 @@ pca <- function(X, assay=if(is(X, "SingleCellExperiment")) "logcounts" else NULL
   return(invisible(result))
 
 }
+
+
+#' Principal Components Analysis
+#'
+#' Performs a principal components analysis on the given data matrix that can
+#' contain missing values. If data are complete 'pca' uses Singular Value
+#' Decomposition, if there are some missing values, it uses the NIPALS
+#' algorithm.
+#' The calculation is done either by a singular value decomposition of the
+#' (possibly centered and scaled) data matrix, if the data is complete or by
+#' using the NIPALS algorithm if there is data missing. Unlike
+#' \code{\link{princomp}}, the print method for these objects prints the
+#' results in a nice format and the \code{plot} method produces a bar plot of
+#' the percentage of variance explaned by the principal components (PCs).
+#'
+#' When using NIPALS (missing values), we make the assumption that the first
+#' (\code{min(ncol(X),} \code{nrow(X)}) principal components will account for
+#' 100 \% of the explained variance.
+#'
+#' Note that \code{scale= TRUE} cannot be used if there are zero or constant
+#' (for \code{center = TRUE}) variables.
+#'
+#' Components are omitted if their standard deviations are less than or equal
+#' to \code{comp.tol} times the standard deviation of the first component. With
+#' the default null setting, no components are omitted. Other settings for
+#' \code{comp.tol} could be \code{comp.tol = sqrt(.Machine$double.eps)}, which
+#' would omit essentially constant components, or \code{comp.tol = 0}.
+#'
+#' According to Filzmoser et al., a ILR log ratio transformation is more
+#' appropriate for PCA with compositional data. Both CLR and ILR are valid.
+#'
+#' Logratio transform and multilevel analysis are performed sequentially as
+#' internal pre-processing step, through \code{\link{logratio.transfo}} and
+#' \code{\link{withinVariation}} respectively.
+#'
+#' Logratio can only be applied if the data do not contain any 0 value (for
+#' count data, we thus advise the normalise raw data with a 1 offset). For ILR
+#' transformation and additional offset might be needed.
+#'
+## --------------------------------------------------------------------------------------- arguments
+#'
+#'@param X a numeric matrix (or data frame) which provides the data for the
+#' principal components analysis. It can contain missing values. Alternatively, a \code{MultiAssay-/Summarized-/SingleCellExperiment} object.
+#'@param assay name or index of an assay from \code{X}.
+#'@param ncomp integer, if data is complete \code{ncomp} decides the number of
+#' components and associated eigenvalues to display from the \code{pcasvd}
+#' algorithm and if the data has missing values, \code{ncomp} gives the number
+#' of components to keep to perform the reconstitution of the data using the
+#' NIPALS algorithm. If \code{NULL}, function sets \code{ncomp = min(nrow(X),
+#' ncol(X))}
+#'@param center a logical value indicating whether the variables should be
+#' shifted to be zero centered. Alternately, a vector of length equal the
+#' number of columns of \code{X} can be supplied. The value is passed to
+#' \code{\link{scale}}.
+#'@param scale a logical value indicating whether the variables should be
+#' scaled to have unit variance before the analysis takes place. The default is
+#' \code{FALSE} for consistency with \code{prcomp} function, but in general
+#' scaling is advisable. Alternatively, a vector of length equal the number of
+#' columns of \code{X} can be supplied. The value is passed to
+#' \code{\link{scale}}.
+#'@param max.iter integer, the maximum number of iterations in the NIPALS
+#' algorithm.
+#'@param tol a positive real, the tolerance used in the NIPALS algorithm.
+#'@param logratio one of ('none','CLR','ILR'). Specifies the log ratio
+#' transformation to deal with compositional values that may arise from
+#' specific normalisation in sequencing data. Default to 'none'
+#'@param ilr.offset When logratio is set to 'ILR', an offset must be input to
+#' avoid infinite value after the logratio transform, default to 0.001.
+#'@param V Matrix used in the logratio transformation id provided.
+#'@param multilevel sample information for multilevel decomposition for repeated measurements.
+#'@param ... Not used.
+## --------------------------------------------------------------------------------------- value
+#'@return \code{pca} returns a list with class \code{"pca"} and
+#' \code{"prcomp"} containing the following components: \item{ncomp}{the number
+#' of principal components used.} \item{sdev}{the eigenvalues of the
+#' covariance/correlation matrix, though the calculation is actually done with
+#' the singular values of the data matrix or by using NIPALS.}
+#' \item{rotation}{the matrix of variable loadings (i.e., a matrix whose
+#' columns contain the eigenvectors).} \item{loadings}{same as 'rotation' to
+#' keep the mixOmics spirit} \item{x}{the value of the rotated data (the
+#' centred (and scaled if requested) data multiplied by the rotation/loadings
+#' matrix), also called the principal components.} \item{variates}{same as 'x'
+#' to keep the mixOmics spirit} \item{center, scale}{the centering and scaling
+#' used, or \code{FALSE}.} \item{explained_variance}{explained variance from
+#' the multivariate model, used for plotIndiv}
+## ---------------------------------------------------------------------------------------
+#'@author Florian Rohart, Kim-Anh Lê Cao, Ignacio González, Al J Abadi
+#'@seealso \code{\link{nipals}}, \code{\link{prcomp}}, \code{\link{biplot}},
+#' \code{\link{plotIndiv}}, \code{\link{plotVar}} and http://www.mixOmics.org
+#' for more details.
+#'@references On log ratio transformations: Filzmoser, P., Hron, K., Reimann,
+#' C.: Principal component analysis for compositional data with outliers.
+#' Environmetrics 20(6), 621-632 (2009) Lê Cao K.-A., Costello ME, Lakis VA,
+#' Bartolo, F,Chua XY, Brazeilles R, Rondeau P. MixMC: Multivariate insights
+#' into Microbial Communities. PLoS ONE, 11(8): e0160169 (2016). On multilevel
+#' decomposition: Westerhuis, J.A., van Velzen, E.J., Hoefsloot, H.C., Smilde,
+#' A.K.: Multivariate paired data analysis: multilevel plsda versus oplsda.
+#' Metabolomics 6(1), 119-128 (2010) Liquet, B., Lê Cao, K.-A., Hocini, H.,
+#' Thiebaut, R.: A novel approach for biomarker selection and the integration
+#' of repeated measures experiments from two assays. BMC bioinformatics 13(1),
+#' 325 (2012)
+#'@keywords algebra
+## --------------------------------------------------------------------------------------- examples
+#'@example examples/pca-example.R
+
+## while X directs the method dispatch, we also keep the \code{ncomp} so RStudio suggests
+## because **only the arguments in the generic are suggested in the IDE**
+## so we will repeat ourselves for essential argumentss and leave the advanced ones to `...`
+#'@export
+setGeneric('pca', function (X, ncomp=2, ...) standardGeneric('pca'))
+
+#' @export
+#' @rdname pca
+setMethod('pca', 'ANY', .pca)
+
+#' @export
+#' @rdname pca
+setMethod('pca', 'MultiAssayExperiment', function(X, ncomp=2,..., assay=NULL){
+  ## if assay is not valid throw appropriate error
+  if(!assay %in% tryCatch(names(assays(X)), error=function(e)e)) .inv_assay()
+  ## match the call and change the call name from '.local' to 'pca' for output
+  ml <- match.call()
+  ml[[1L]] <- quote(pca)
+  ## get a copy to alter the call for internal call's use
+  mli <- ml
+  mli[[1L]] <- quote(.pca)
+  ## get the indices of call args that match the internal args and re-order mc
+  ## by doing this, we delibrately drop the 'assay' or any other non-internal args as well
+  arg.ind <- match(names(formals(.pca)), names(mli), 0L)
+  ## put the internal name in mli call object and sort the args in internal's order
+  mli <- mli[c(1L,arg.ind)]
+  ## change X to the transpose of the assay matrix
+  mli[['X']] <- t(assay(X, assay))
+  ## evaluate the call in the parent.frame and return
+  result <- eval(mli, parent.frame())
+  ## change the 'call' slot in the output list to the method call
+  result[["call"]] <- ml
+  return(result)
+})

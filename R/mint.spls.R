@@ -51,11 +51,11 @@
 
 
 #' P-integration with variable selection
-#' 
+#'
 #' Function to integrate and combine multiple independent studies measured on
 #' the same variables or predictors (P-integration) using variants of
 #' multi-group sparse PLS for variable selection (unsupervised analysis).
-#' 
+#'
 #' \code{mint.spls} fits a vertical sparse PLS-DA models with \code{ncomp}
 #' components in which several independent studies measured on the same
 #' variables are integrated. The aim is to explain the continuous outcome
@@ -63,26 +63,26 @@
 #' and \code{Y}. The \code{study} factor indicates the membership of each
 #' sample in each study. We advise to only combine studies with more than 3
 #' samples as the function performs internal scaling per study.
-#' 
+#'
 #' Multi (continuous)response are supported. \code{X} and \code{Y} can contain
 #' missing values. Missing values are handled by being disregarded during the
 #' cross product computations in the algorithm \code{mint.spls} without having
 #' to delete rows with missing data. Alternatively, missing data can be imputed
 #' prior using the \code{nipals} function.
-#' 
+#'
 #' The type of algorithm to use is specified with the \code{mode} argument.
 #' Four PLS algorithms are available: PLS regression \code{("regression")}, PLS
 #' canonical analysis \code{("canonical")}, redundancy analysis
 #' \code{("invariant")} and the classical PLS algorithm \code{("classic")} (see
 #' References and more details in \code{?pls}).
-#' 
+#'
 #' Variable selection is performed on each component for each block of
 #' \code{X}, and for \code{Y} if specified, via input parameter \code{keepX}
 #' and \code{keepY}.
-#' 
+#'
 #' Useful graphical outputs are available, e.g. \code{\link{plotIndiv}},
 #' \code{\link{plotLoadings}}, \code{\link{plotVar}}.
-#' 
+#'
 #' @param X numeric matrix of predictors combining multiple independent studies
 #' on the same set of predictors. \code{NA}s are allowed.
 #' @param Y Matrix or vector response for a multivariate regression framework.
@@ -109,7 +109,7 @@
 #' (and non-essential) outputs are not calculated. Default = \code{TRUE}.
 #' @return \code{mint.spls} returns an object of class
 #' \code{"mint.spls","spls"}, a list that contains the following components:
-#' 
+#'
 #' \item{X}{numeric matrix of predictors combining multiple independent studies
 #' on the same set of predictors. \code{NA}s are allowed.} \item{Y}{the
 #' centered and standardized original response vector or matrix.}
@@ -138,30 +138,30 @@
 #' MINT: A multivariate integrative approach to identify a reproducible
 #' biomarker signature across multiple experiments and platforms. BMC
 #' Bioinformatics 18:128.
-#' 
+#'
 #' Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms
 #' for multi-group PLS. J. Chemometrics, 28(3), 192-201.
 #' @keywords regression multivariate
 #' @examples
-#' 
-#' data(stemcells)
-#' 
+#' \dontrun{
+#' library(mixOmics.data)
+#'
 #' # for the purpose of this example, we artificially
 #' # create a continuous response Y by taking gene 1.
-#' 
+#'
 #' res = mint.spls(X = stemcells$gene[,-1], Y = stemcells$gene[,1], ncomp = 3,
 #' keepX = c(10, 5, 15), study = stemcells$study)
-#' 
+#'
 #' plotIndiv(res)
-#' 
+#'
 #' #plot study-specific outputs for all studies
 #' plotIndiv(res, study = "all.partial")
-#' 
-#' \dontrun{
+#'
+
 #' #plot study-specific outputs for study "2"
 #' plotIndiv(res, study = "2", col = 1:3, legend = TRUE)
 #' }
-#' 
+#'
 #' @export mint.spls
 mint.spls = function(X,
 Y,
@@ -181,7 +181,7 @@ all.outputs = TRUE)
     result = internal_wrapper.mint(X = X, Y = Y, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, study = study, mode = mode,
     keepX = keepX, keepY = keepY,
     max.iter = max.iter, tol = tol, all.outputs = all.outputs)
-    
+
     # choose the desired output from 'result'
     out = list(
         call = match.call(),
@@ -203,8 +203,8 @@ all.outputs = TRUE)
         nzv = result$nzv,
         scale = scale,
         explained_variance = result$explained_variance)
-    
+
     class(out) = c("mint.spls","mixo_spls")
     return(invisible(out))
- 
+
 }

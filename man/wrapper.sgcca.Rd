@@ -91,8 +91,8 @@ More details about the PLS modes in \code{?pls}.
 }
 \examples{
 
-
-data(nutrimouse)
+\dontrun{
+library(mixOmics.data)
 # need to unmap the Y factor diet if you pretend this is not a classification pb.
 # see also the function block.splsda for discriminant analysis  where you dont
 # need to unmap Y.
@@ -116,7 +116,7 @@ scheme = "centroid")
 wrap.result.sgcca
 #did the algo converge?
 wrap.result.sgcca$crit  # yes
-
+}
 
 }
 \references{

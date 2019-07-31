@@ -58,22 +58,22 @@
 
 
 #' Tuning functions for sPLS-DA method
-#' 
+#'
 #' Computes M-fold or Leave-One-Out Cross-Validation scores on a user-input
 #' grid to determine optimal values for the sparsity parameters in
 #' \code{splsda}.
-#' 
-#' 
+#'
+#'
 #' This tuning function should be used to tune the parameters in the
 #' \code{splsda} function (number of components and number of variables in
 #' \code{keepX} to select).
-#' 
+#'
 #' For a sPLS-DA, M-fold or LOO cross-validation is performed with stratified
 #' subsampling where all classes are represented in each fold.
-#' 
+#'
 #' If \code{validation = "loo"}, leave-one-out cross-validation is performed.
 #' By default \code{folds} is set to the number of unique individuals.
-#' 
+#'
 #' The function outputs the optimal number of components that achieve the best
 #' performance based on the overall error rate or BER. The assessment is
 #' data-driven and similar to the process detailed in (Rohart et al., 2016),
@@ -82,27 +82,27 @@
 #' the optimal number of components is the number of categories in \code{Y} -
 #' 1, but it is worth tuning a few extra components to check (see our website
 #' and case studies for more details).
-#' 
+#'
 #' For sPLS-DA multilevel one-factor analysis, M-fold or LOO cross-validation
 #' is performed where all repeated measurements of one sample are in the same
 #' fold. Note that logratio transform and the multilevel analysis are performed
 #' internally and independently on the training and test set.
-#' 
+#'
 #' For a sPLS-DA multilevel two-factor analysis, the correlation between
 #' components from the within-subject variation of X and the \code{cond} matrix
 #' is computed on the whole data set. The reason why we cannot obtain a
 #' cross-validation error rate as for the spls-DA one-factor analysis is
 #' because of the dififculty to decompose and predict the within matrices
 #' within each fold.
-#' 
+#'
 #' For a sPLS two-factor analysis a sPLS canonical mode is run, and the
 #' correlation between components from the within-subject variation of X and Y
 #' is computed on the whole data set.
-#' 
+#'
 #' If \code{validation = "Mfold"}, M-fold cross-validation is performed. How
 #' many folds to generate is selected by specifying the number of folds in
 #' \code{folds}.
-#' 
+#'
 #' If \code{auc = TRUE} and there are more than 2 categories in \code{Y}, the
 #' Area Under the Curve is averaged using one-vs-all comparison. Note however
 #' that the AUC criteria may not be particularly insightful as the prediction
@@ -115,15 +115,15 @@
 #' sPLS-DA (\code{dist} is not used). If \code{measure==AUC}, we do not output
 #' SD as this measure can be a mean (over \code{nrepeat}) of means (over the
 #' categories).
-#' 
+#'
 #' BER is appropriate in case of an unbalanced number of samples per class as
 #' it calculates the average proportion of wrongly classified samples in each
 #' class, weighted by the number of samples in each class. BER is less biased
 #' towards majority classes during the performance assessment.
-#' 
+#'
 #' More details about the prediction distances in \code{?predict} and the
 #' supplemental material of the mixOmics article (Rohart et al. 2017).
-#' 
+#'
 #' @param X numeric matrix of predictors. \code{NA}s are allowed.
 #' @param Y \code{if(method = 'spls')} numeric vector or matrix of continuous
 #' responses (for multi-response models) \code{NA}s are allowed.
@@ -171,72 +171,71 @@
 #' components for the model fitted with \code{$choice.keepX} }
 #' \item{error.rate.class}{returns the error rate for each level of \code{Y}
 #' and for each component computed with the optimal keepX}
-#' 
+#'
 #' \item{predict}{Prediction values for each sample, each \code{test.keepX},
 #' each comp and each repeat. Only if light.output=FALSE}
 #' \item{class}{Predicted class for each sample, each \code{test.keepX}, each
 #' comp and each repeat. Only if light.output=FALSE}
-#' 
+#'
 #' \item{auc}{AUC mean and standard deviation if the number of categories in
 #' \code{Y} is greater than 2, see details above. Only if auc = TRUE}
-#' 
+#'
 #' \item{cor.value}{only if multilevel analysis with 2 factors: correlation
 #' between latent variables.}
 #' @author Kim-Anh Lê Cao, Benoit Gautier, Francois Bartolo, Florian Rohart.
 #' @seealso \code{\link{splsda}}, \code{\link{predict.splsda}} and
 #' http://www.mixOmics.org for more details.
 #' @references mixOmics article:
-#' 
+#'
 #' Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics
 #' feature selection and multiple data integration. PLoS Comput Biol 13(11):
 #' e1005752
 #' @keywords regression multivariate
 #' @examples
-#' 
+#'
 #' ## First example: analysis with sPLS-DA
-#' 
-#' data(breast.tumors)
+#' \dontrun{
+#' library(mixOmics.data)
 #' X = breast.tumors$gene.exp
 #' Y = as.factor(breast.tumors$sample$treatment)
 #' tune = tune.splsda(X, Y, ncomp = 1, nrepeat = 10, logratio = "none",
 #' test.keepX = c(5, 10, 15), folds = 10, dist = "max.dist",
 #' progressBar = TRUE)
-#' 
-#' \dontrun{
-#' 
+#'
+
+#'
 #' # 5 components, optimising 'keepX' and 'ncomp'
 #' tune = tune.splsda(X, Y, ncomp = 5, test.keepX = c(5, 10, 15),
 #' folds = 10, dist = "max.dist", nrepeat = 5, progressBar = TRUE)
-#' 
+#'
 #' tune$choice.ncomp
 #' tune$choice.keepX
 #' plot(tune)
-#' 
-#' 
+#'
+#'
 #' ## only tune component 3 and 4
 #' # keeping 5 and 10 variables on the first two components respectively
-#' 
+#'
 #' tune = tune.splsda(X = X,Y = Y, ncomp = 4,
 #' already.tested.X = c(5,10),
 #' test.keepX = seq(1,10,2), progressBar = TRUE)
-#' 
-#' 
-#' 
-#' 
-#' 
+#'
+#'
+#'
+#'
+#'
 #' ## Second example: multilevel one-factor analysis with sPLS-DA
-#' 
-#' data(vac18)
+#'
 #' X = vac18$genes
 #' Y = vac18$stimulation
 #' # sample indicates the repeated measurements
 #' design = data.frame(sample = vac18$sample)
-#' 
+#'
 #' tune = tune.splsda(X, Y = Y, ncomp = 3, nrepeat = 10, logratio = "none",
 #' test.keepX = c(5,50,100),folds = 10, dist = "max.dist", multilevel = design)
-#' 
+#'
 #' }
-#' 
+#'
 #' @export tune.splsda
 tune.splsda = function (X, Y,
 ncomp = 1,
@@ -260,83 +259,83 @@ cpus
 )
 {    #-- checking general input parameters --------------------------------------#
     #---------------------------------------------------------------------------#
-    
+
     #------------------#
     #-- check entries --#
     if(!is(X, "matrix"))
     X = as.matrix(X)
-    
+
     if (length(dim(X)) != 2 || !is.numeric(X))
     stop("'X' must be a numeric matrix.")
-    
-    
+
+
     # Testing the input Y
     if (is.null(multilevel))
     {
         if (is.null(Y))
         stop("'Y' has to be something else than NULL.")
-        
+
         if (is.null(dim(Y)))
         {
             Y = factor(Y)
         }  else {
             stop("'Y' should be a factor or a class vector.")
         }
-        
+
         if (nlevels(Y) == 1)
         stop("'Y' should be a factor with more than one level")
-        
+
     } else {
         # we expect a vector or a 2-columns matrix in 'Y' and the repeated measurements in 'multilevel'
         multilevel = data.frame(multilevel)
-        
+
         if ((nrow(X) != nrow(multilevel)))
         stop("unequal number of rows in 'X' and 'multilevel'.")
-        
+
         if (ncol(multilevel) != 1)
         stop("'multilevel' should have a single column for the repeated measurements, other factors should be included in 'Y'.")
-        
+
         if (!is.null(ncol(Y)) && !ncol(Y) %in% c(0,1,2))# multilevel 1 or 2 factors
         stop("'Y' should either be a factor, a single column data.frame containing a factor, or a 2-columns data.frame containing 2 factors.")
-        
+
         multilevel = data.frame(multilevel, Y)
         multilevel[, 1] = as.numeric(factor(multilevel[, 1])) # we want numbers for the repeated measurements
-        
+
     }
-    
-    
+
+
     #-- progressBar
     if (!is.logical(progressBar))
     stop("'progressBar' must be a logical constant (TRUE or FALSE).", call. = FALSE)
-    
-    
+
+
     if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0)
     stop("invalid number of variates, 'ncomp'.")
-    
-    
+
+
     #-- validation
     choices = c("Mfold", "loo")
     validation = choices[pmatch(validation, choices)]
     if (is.na(validation))
     stop("'validation' must be either 'Mfold' or 'loo'")
-    
+
     if (validation == 'loo')
     {
         if (nrepeat != 1)
         warning("Leave-One-Out validation does not need to be repeated: 'nrepeat' is set to '1'.")
         nrepeat = 1
     }
-    
+
     #-- logratio
     if (length(logratio) > 1)
     logratio = logratio[1]
-    
+
     if (!logratio %in% c("none","CLR"))
     stop("'logratio must be one of 'none' or 'CLR'")
-    
+
     #if ((!is.null(already.tested.X)) && (length(already.tested.X) != (ncomp - 1)) )
     #stop("The number of already tested parameters should be NULL or ", ncomp - 1, " since you set ncomp = ", ncomp)
-    
+
     if (missing(already.tested.X))
     {
         already.tested.X = NULL
@@ -349,10 +348,10 @@ cpus
 
         message(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
     }
-    
+
     if(length(already.tested.X) >= ncomp)
     stop("'ncomp' needs to be higher than the number of components already tuned, which is length(already.tested.X)=",length(already.tested.X) , call. = FALSE)
-    
+
     #-- measure
     choices = c("BER", "overall","AUC")
     measure = choices[pmatch(measure, choices)]
@@ -361,11 +360,11 @@ cpus
 
     if (any(is.na(validation)) || length(validation) > 1)
     stop("'validation' should be one of 'Mfold' or 'loo'.", call. = FALSE)
-    
+
     #-- test.keepX
     if (is.null(test.keepX) | length(test.keepX) == 1 | !is.numeric(test.keepX))
     stop("'test.keepX' must be a numeric vector with more than two entries", call. = FALSE)
-    
+
     # remove some test.keepX if needed
     if (any(test.keepX > ncol(X))){
         test.keepX = test.keepX[-which(test.keepX>ncol(X))]
@@ -374,13 +373,13 @@ cpus
         variables in 'X' and were removed, the resulting 'test.keepX' has now
         too few entries (<2)", call. = FALSE)
     }
-    
-    
+
+
     if(!missing(cpus))
     {
         if(!is.numeric(cpus) | length(cpus)!=1)
         stop("'cpus' must be a numerical value")
-        
+
         parallel = TRUE
         cl = makeCluster(cpus, type = "SOCK")
         #clusterExport(cl, c("splsda","selectVar"))
@@ -393,7 +392,7 @@ cpus
         parallel = FALSE
         cl = NULL
     }
-    
+
     # add colnames and rownames if missing
     X.names = dimnames(X)[[2]]
     if (is.null(X.names))
@@ -401,30 +400,30 @@ cpus
         X.names = paste0("X", 1:ncol(X))
         dimnames(X)[[2]] = X.names
     }
-    
+
     ind.names = dimnames(X)[[1]]
     if (is.null(ind.names))
     {
         ind.names = 1:nrow(X)
         rownames(X)  = ind.names
     }
-    
+
     if (length(unique(rownames(X))) != nrow(X))
     stop("samples should have a unique identifier/rowname")
     if (length(unique(X.names)) != ncol(X))
     stop("Unique indentifier is needed for the columns of X")
-    
+
     rm(X.names);rm(ind.names)
 
     #-- end checking --#
     #------------------#
-    
-   
+
+
     #---------------------------------------------------------------------------#
     #-- logration + multilevel approach ----------------------------------------#
     # we can do logratio and multilevel on the whole data as these transformation are done per sample
     X = logratio.transfo(X = X, logratio = logratio)
-    
+
     if (!is.null(multilevel)) # logratio is applied per sample, multilevel as well, so both can be done on the whole data
     {
 
@@ -435,22 +434,22 @@ cpus
         Y = multilevel[, -1, drop=FALSE]
         if (ncol(Y) >= 1)
         Y = apply(Y, 1, paste, collapse = ".")  #  paste is to combine in the case we have 2 levels
-        
+
         Y = as.factor(Y)
     }
     #-- logration + multilevel approach ----------------------------------------#
     #---------------------------------------------------------------------------#
-    
-    
+
+
     #---------------------------------------------------------------------------#
     #-- NA calculation      ----------------------------------------------------#
-    
+
     misdata = c(X=anyNA(X), Y=FALSE) # Detection of missing data. we assume no missing values in the factor Y
-    
+
     if (any(misdata))
     {
         is.na.A = is.na(X)
-        
+
         #ind.NA = which(apply(is.na.A, 1, sum) > 0) # calculated only once
         #ind.NA.col = which(apply(is.na.A, 2, sum) >0) # indice of the col that have missing values. used in the deflation
     } else {
@@ -471,16 +470,16 @@ cpus
     } else {
         comp.real = 1:ncomp
     }
-    
-    
+
+
     choices = c("all", "max.dist", "centroids.dist", "mahalanobis.dist")
     dist = match.arg(dist, choices, several.ok = TRUE)
-    
-    
+
+
     mat.error.rate = list()
     error.per.class = list()
     AUC = list()
-    
+
     if(nrepeat>1 & all(measure != "AUC")){
         mat.sd.error = matrix(0,nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
         dimnames = list(c(test.keepX), c(paste0('comp', comp.real))))
@@ -489,7 +488,7 @@ cpus
     }
     mat.mean.error = matrix(nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
     dimnames = list(c(test.keepX), c(paste0('comp', comp.real))))
-   
+
     # first: near zero var on the whole data set
     if(near.zero.var == TRUE)
     {
@@ -498,10 +497,10 @@ cpus
         {
             warning("Zero- or near-zero variance predictors.\nReset predictors matrix to not near-zero variance predictors.\nSee $nzv for problematic predictors.")
             X = X[, -nzv$Position, drop=TRUE]
-            
+
             if(ncol(X)==0)
             stop("No more predictors after Near Zero Var has been applied!")
-            
+
         }
     }
 
@@ -509,14 +508,14 @@ cpus
     {
         if(light.output == FALSE)
         prediction.all = class.all = list()
-        
+
         if(auc)
         {
             auc.mean.sd=list()
             if(light.output == FALSE)
             auc.all=list()
         }
-        
+
         class.object=c("mixo_splsda","DA")
         if(!missing(cpus))
             clusterExport(cl, c("X","Y","is.na.A","misdata","scale","near.zero.var","class.object","test.keepX"),envir=environment())
@@ -534,20 +533,20 @@ cpus
 
             if (progressBar == TRUE)
             cat("\ncomp",comp.real[comp], "\n")
-            
+
             result = MCVfold.spls (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
             choice.keepX = already.tested.X,
             test.keepX = test.keepX, test.keepY = nlevels(Y), measure = measure, dist = dist, scale=scale,
             near.zero.var = near.zero.var, progressBar = progressBar, tol = tol, max.iter = max.iter, auc = auc,
             cl = cl, parallel = parallel,
             misdata = misdata, is.na.A = is.na.A, class.object=class.object)
-            
+
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
             mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]
             mat.mean.error[, comp]=result[[measure]]$error.rate.mean[[1]]
             if (!is.null(result[[measure]]$error.rate.sd[[1]]))
             mat.sd.error[, comp]=result[[measure]]$error.rate.sd[[1]]
-            
+
             # confusion matrix for keepX.opt
             if (all(measure!="AUC")){
                 error.per.class.keepX.opt[[comp]]=result[[measure]]$confusion[[1]]
@@ -556,33 +555,33 @@ cpus
 
             # best keepX
             already.tested.X = c(already.tested.X, result[[measure]]$keepX.opt[[1]])
-             
+
             if(light.output == FALSE)
             {
                 #prediction of each samples for each fold and each repeat, on each comp
                 class.all[[comp]] = result$class.comp[[1]]
                 prediction.all[[comp]] = result$prediction.comp
             }
-            
+
             if(auc)
             {
                 auc.mean.sd[[comp]] = result$auc
                 if(light.output == FALSE)
                 auc.all[[comp]] = result$auc.all
             }
-            
+
         } # end comp
         if (parallel == TRUE)
         stopCluster(cl)
         names(mat.error.rate) = c(paste0('comp', comp.real))
         if (all(measure!="AUC"))
             names(error.per.class.keepX.opt) = c(paste0('comp', comp.real))
-        
+
         names(already.tested.X) = c(paste0('comp', 1:ncomp))
-        
+
         if (progressBar == TRUE)
         cat('\n')
-        
+
         # calculating the number of optimal component based on t.tests and the error.rate.all, if more than 3 error.rates(repeat>3)
         if(nrepeat > 2 & length(comp.real) >1 & all(measure!="AUC"))
         {
@@ -594,9 +593,9 @@ cpus
                 error.keepX = cbind(error.keepX, mat.error.rate[[comp]][ind.row,])
             }
             colnames(error.keepX) = c(paste0('comp', comp.real))
-            
+
             opt = t.test.process(error.keepX)
-            
+
             ncomp_opt = comp.real[opt]
         }  else if(nrepeat > 2 & length(comp.real) >1 & all(measure=="AUC")){
             #hacking t.test.process for AUC
@@ -608,10 +607,10 @@ cpus
                 error.keepX = cbind(error.keepX, mat.error.rate[[comp]][ind.row,])
             }
             colnames(error.keepX) = c(paste0('comp', comp.real))
-            
+
             #1- to change the AUC to an 'error' and check for decrease
             opt = t.test.process(1-error.keepX)
-            
+
             ncomp_opt = comp.real[opt]
         } else {
             ncomp_opt = error.keepX = NULL
@@ -634,7 +633,7 @@ cpus
         }
         if(auc)
         {
-            
+
             #we add the AUC outputs only if it was not the measure
             #otherwise there is twice the same output
             if(all(measure != "AUC")){
@@ -662,8 +661,8 @@ cpus
 
         for (i in 1:length(test.keepX))
         {
-            spls.train = mixOmics::splsda(X, Y, ncomp = ncomp, keepX = c(already.tested.X, test.keepX[i]), logratio = logratio, near.zero.var = FALSE, mode = "regression")
-            
+            spls.train = mixOmics2::splsda(X, Y, ncomp = ncomp, keepX = c(already.tested.X, test.keepX[i]), logratio = logratio, near.zero.var = FALSE, mode = "regression")
+
             # Note: this is performed on the full data set
             # (could be done with resampling (bootstrap) (option 1) and/or prediction (option 2))
             cor.value[i] = cor(spls.train$variates$X[, ncomp], spls.train$variates$Y[, ncomp])

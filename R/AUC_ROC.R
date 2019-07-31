@@ -98,12 +98,14 @@
 #' @export auroc
 auroc = function(object, ...)
 UseMethod("auroc")
-
 # PLSDA object
 # ----------------------
-#'@rdname auroc
-#'@export
-auroc.mixo_plsda <- function(
+#' @rdname auroc
+
+#' @export auroc.mixo_plsda
+
+#' @export auroc.mixo_splsda
+auroc.mixo_plsda <- auroc.mixo_splsda <- function(
     object,
     newdata = object$input.X,
     outcome.test = as.factor(object$Y),
@@ -137,15 +139,16 @@ auroc.mixo_plsda <- function(
     return(invisible(c(statauc,graph=graph)))
 }
 
-#'@rdname auroc
-#'@export
-auroc.mixo_splsda <- function(object,...) auroc.mixo_plsda(object, ...)
+#' @rdname auroc
+#' @export
 
 # MINT object
 # ----------------------
-#'@rdname auroc
-#'@export
-auroc.mint.plsda <- function(
+
+#' @export auroc.mint.plsda
+
+#' @export auroc.mint.splsda
+auroc.mint.plsda = auroc.mint.splsda <- function(
 object,
 newdata = object$X,
 outcome.test = as.factor(object$Y),
@@ -207,14 +210,10 @@ roc.study = "global",
 
 }
 
-#'@rdname auroc
-#'@export
-auroc.mint.splsda <-  function(object,...) auroc.mint.plsda(object,...)
-
 # block.splsda object
 # ----------------------
-#'@rdname auroc
-#'@export
+
+#' @export
 auroc.sgccda = function(
 object,
 newdata = object$X,
@@ -262,9 +261,12 @@ roc.comp = 1,
 
 # mint.block.splsda object
 # ----------------------
-#'@rdname auroc
-#'@export
-auroc.mint.block.splsda <- function(
+
+#' @export auroc.mint.block.plsda
+
+
+#' @export auroc.mint.block.splsda
+auroc.mint.block.splsda <- auroc.mint.block.plsda <- function(
     object,
     newdata = object$X,
 
@@ -311,7 +313,3 @@ auroc.mint.block.splsda <- function(
     print(auc.mean)
     return(invisible(out))
 }
-
-#'@rdname auroc
-#'@export
-auroc.mint.block.plsda <-  function(object,...) UseMethod("auroc", object = )

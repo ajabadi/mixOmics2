@@ -101,7 +101,6 @@ Useful graphical outputs are available, e.g. \code{\link{plotIndiv}},
 }
 \examples{
 
-data(stemcells)
 
 # -- feature selection
 res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3, keepX = c(10, 5, 15),

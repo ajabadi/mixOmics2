@@ -163,7 +163,6 @@ the \code{background.predict} function.
 }
 \examples{
 
-data(linnerud)
 X <- linnerud$exercise
 Y <- linnerud$physiological
 linn.pls <- pls(X, Y, ncomp = 2, mode = "classic")
@@ -182,7 +181,6 @@ text(pred$variates[, 1], pred$variates[, 2],
 c("new ind.1", "new ind.2"), pos = 3)
 
 ## First example with plsda
-data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- as.factor(liver.toxicity$treatment[, 4])
 
@@ -206,7 +204,6 @@ cbind(Y = as.character(Y[test]), Prediction)
 
 
 ## example with block.splsda=diablo=sgccda and a missing block
-data(nutrimouse)
 # need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
 Y.mat = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y.mat)
@@ -240,7 +237,6 @@ test.predict = predict(res.train, newdata=data.test[2], method = "max.dist")
 
 
 ## example with mint.splsda
-data(stemcells)
 
 #training set
 ind.test = which(stemcells$study == "3")

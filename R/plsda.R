@@ -46,7 +46,7 @@
 #' count data, we thus advise the normalise raw data with a 1 offset).
 #'
 #' More details about the PLS modes in \code{?pls}.
-## --------------------------------------------------------------------------------------- arguments
+## ----------------------------------------------------------------------------- arguments
 #' @param X numeric matrix of predictors. \code{NA}s are allowed.
 #' @param Y a factor or a class vector for the discrete outcome.
 #' @param ncomp the number of components to include in the model. Default to 2.
@@ -70,7 +70,7 @@
 #' in \code{?splsda}.
 #' @param all.outputs boolean. Computation can be faster when some specific
 #' (and non-essential) outputs are not calculated. Default = \code{TRUE}.
-## --------------------------------------------------------------------------------------- value
+## ----------------------------------------------------------------------------- value
 #' @return \code{plsda} returns an object of class \code{"plsda"}, a list that
 #' contains the following components:
 #'
@@ -91,7 +91,7 @@
 #' matrix Y).} \item{mat.c}{matrix of coefficients from the regression of X /
 #' residual matrices X on the X-variates, to be used internally by
 #' \code{predict}.} \item{defl.matrix}{residual matrices X for each dimension.}
-## ---------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 #' @author Ignacio González, Kim-Anh Lê Cao.
 #' @seealso \code{\link{splsda}}, \code{\link{summary}},
 #' \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}},
@@ -116,11 +116,11 @@
 #' of repeated measures experiments from two assays. BMC bioinformatics 13(1),
 #' 325 (2012)
 #' @keywords regression multivariate
-## --------------------------------------------------------------------------------------- examples
+## -----------------------------------------------------------------------------examples
 #' @examples
-#'
+#' \dontrun{
 #' ## First example
-#' data(breast.tumors)
+#' library(mixOmics.data)
 #' X <- breast.tumors$gene.exp
 #' Y <- breast.tumors$sample$treatment
 #'
@@ -128,9 +128,7 @@
 #' plotIndiv(plsda.breast, ind.names = TRUE, ellipse = TRUE, legend = TRUE)
 #'
 #'
-#' \dontrun{
 #' ## Second example
-#' data(liver.toxicity)
 #' X <- liver.toxicity$gene
 #' Y <- liver.toxicity$treatment[, 4]
 #'
@@ -143,11 +141,19 @@
 ###########################################################
 ## generic function
 #############################################################
-#' @usage \S4method{plsda}{ANY}(X, Y, ncomp = 2, scale = TRUE, mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"), multilevel = NULL, all.outputs = TRUE)
-## arguemnts for 'ANY' must be copied from internal to @usage ANY,for generic other arguments passed to methods can be added plus '...' so the methods can get '...' - if we only include X, RStudio won't suggest the rest automatically for autofill
+#' @usage \S4method{plsda}{ANY}(X, Y, ncomp = 2, scale = TRUE,
+#' mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06,
+#' max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"),
+#' multilevel = NULL, all.outputs = TRUE)
+## arguemnts for 'ANY' must be copied from internal to @usage ANY,for generic other
+## arguments passed to methods can be added plus '...' so the methods can get '...' - if
+## we only include X, RStudio won't suggest the rest automatically for autofill
 #' @export
 #' @rdname plsda
-setGeneric("plsda", def = function(X, Y, formula=NULL, ncomp = 2, scale = TRUE, mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = "none",...) standardGeneric("plsda"))
+setGeneric("plsda", def = function(X, Y, formula=NULL, ncomp = 2, scale = TRUE,
+                                   mode = c("regression", "canonical", "invariant", "classic"),
+                                   tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
+                                   logratio = "none",...) standardGeneric("plsda"))
 
 #############################################################
 ## internal function

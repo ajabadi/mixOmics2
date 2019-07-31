@@ -25,7 +25,6 @@ This function provides scree plot of the canonical correlations.
 }
 \examples{
 
-data(nutrimouse)
 X <- nutrimouse$lipid
 Y <- nutrimouse$gene
 nutri.res <- rcc(X, Y, lambda1 = 0.064, lambda2 = 0.008)

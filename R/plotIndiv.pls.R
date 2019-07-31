@@ -30,59 +30,55 @@
 #----------------------------------------------------------------------------------------------------------#
 #-- Includes plotIndiv for PLS, sPLS, PLS-DA, SPLS-DA,  --#
 #----------------------------------------------------------------------------------------------------------#
-#'@export plotIndiv.mixo_pls
-#'@export plotIndiv.mixo_spls
-#'@export plotIndiv.rcc
-plotIndiv.mixo_pls =
-plotIndiv.mixo_spls =
-#plotIndiv.plsda =      # because pls too
-#plotIndiv.mlpls =      # because pls too
-#plotIndiv.mlplsda =    # because pls too
-#plotIndiv.splsda =     # because spls too
-#plotIndiv.mlspls =     # because spls too
-#plotIndiv.mlsplsda =   # because spls too
-plotIndiv.rcc =
+#'@title PLS sample plot methods
 
-function(object,
-comp  = NULL,
-rep.space  = NULL,
-ind.names  = TRUE,
-group, # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
-col.per.group,
-style = "ggplot2", # can choose between graphics, 3d, lattice or ggplot2
-ellipse  = FALSE, #ellipse
-ellipse.level  = 0.95,
-centroid = FALSE,  # centroid
-star = FALSE, # star
-title = NULL, #title
-subtitle,
-legend = FALSE,
-X.label  = NULL,
-Y.label  = NULL,
-Z.label  = NULL,
-abline  = FALSE, #abline
-xlim  = NULL,
-ylim  = NULL,
-col,
-cex,
-pch,
-pch.levels,
-alpha = 0.2, # used in shade3d
-axes.box  = "box",
-layout = NULL,
-size.title = rel(2),
-size.subtitle = rel(1.5),
-size.xlabel = rel(1),
-size.ylabel = rel(1),
-size.axis = rel(0.8),
-size.legend = rel(1), #size.legend
-size.legend.title = rel(1.1), #size.legend.title
-legend.title = "Legend",
-legend.title.pch = "Legend",
-legend.position = "right",
-point.lwd = 1,
-background = NULL,
-...
+#' @export plotIndiv.mixo_pls
+
+#' @export plotIndiv.mixo_spls
+
+#' @export plotIndiv.rcc
+plotIndiv.mixo_pls <-
+  plotIndiv.mixo_spls <-
+  plotIndiv.rcc <-  function(object,
+            comp  = NULL,
+            rep.space  = NULL,
+            ind.names  = TRUE,
+            group, # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
+            col.per.group,
+            style = "ggplot2", # can choose between graphics, 3d, lattice or ggplot2
+            ellipse  = FALSE, #ellipse
+            ellipse.level  = 0.95,
+            centroid = FALSE,  # centroid
+            star = FALSE, # star
+            title = NULL, #title
+            subtitle,
+            legend = FALSE,
+            X.label  = NULL,
+            Y.label  = NULL,
+            Z.label  = NULL,
+            abline  = FALSE, #abline
+            xlim  = NULL,
+            ylim  = NULL,
+            col,
+            cex,
+            pch,
+            pch.levels,
+            alpha = 0.2, # used in shade3d
+            axes.box  = "box",
+            layout = NULL,
+            size.title = rel(2),
+            size.subtitle = rel(1.5),
+            size.xlabel = rel(1),
+            size.ylabel = rel(1),
+            size.axis = rel(0.8),
+            size.legend = rel(1), #size.legend
+            size.legend.title = rel(1.1), #size.legend.title
+            legend.title = "Legend",
+            legend.title.pch = "Legend",
+            legend.position = "right",
+            point.lwd = 1,
+            background = NULL,
+            ...
 )
 {
     plot_parameters = list(size.title = size.title, size.subtitle = size.subtitle, size.xlabel = size.xlabel, size.ylabel = size.ylabel,

@@ -29,7 +29,7 @@
 # Copyright (C) 2009
 # Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 # Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-# Kim-Anh Le Cao, French National Institute for Agricultural Research and 
+# Kim-Anh Le Cao, French National Institute for Agricultural Research and
 # ARC Centre of Excellence ins Bioinformatics, Institute for Molecular Bioscience, University of Queensland, Australia
 #
 # This program is free software; you can redistribute it and/or
@@ -54,10 +54,10 @@
 
 
 #' Canonical Correlations Plot
-#' 
+#'
 #' This function provides scree plot of the canonical correlations.
-#' 
-#' 
+#'
+#'
 #' @param x object of class inheriting from \code{"rcc"}.
 #' @param scree.type character string, (partially) matching one of
 #' \code{"pointplot"} or \code{"barplot"}, determining the kind of scree plots
@@ -70,27 +70,26 @@
 #' @seealso \code{\link{points}}, \code{\link{barplot}}, \code{\link{par}}.
 #' @keywords multivariate hplot
 #' @examples
-#' 
-#' data(nutrimouse)
+#'
 #' X <- nutrimouse$lipid
 #' Y <- nutrimouse$gene
 #' nutri.res <- rcc(X, Y, lambda1 = 0.064, lambda2 = 0.008)
-#' 
+#'
 #' ## 'pointplot' type scree
 #' plot(nutri.res) #(default)
-#' 
+#'
 #' \dontrun{
 #' plot(nutri.res, pch = 19, cex = 1.2,
 #' col = c(rep("red", 3), rep("darkblue", 18)))
-#' 
+#'
 #' ## 'barplot' type scree
 #' plot(nutri.res, scree.type = "barplot")
-#' 
+#'
 #' plot(nutri.res, scree.type = "barplot", density = 20, col = "black")
 #' }
-#' 
+#'
 plot.rcc <-
-function(x, scree.type = c("pointplot", "barplot"), ...) 
+function(x, scree.type = c("pointplot", "barplot"), ...)
 {
 
     scree.type = match.arg(scree.type)

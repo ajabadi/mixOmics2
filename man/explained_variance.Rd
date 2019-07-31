@@ -27,7 +27,7 @@ out of the total variance in \code{data}.
 }
 \examples{
 
-data(liver.toxicity)
+\dontrun{
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 
@@ -37,7 +37,7 @@ ex = explained_variance(toxicity.spls$X, toxicity.spls$variates$X, ncomp =2)
 
 # ex should be the same as
 toxicity.spls$explained_variance$X
-
+}
 
 }
 \seealso{

@@ -201,7 +201,6 @@
 #'
 #'
 #' ## network representation for objects of class 'rcc'
-#' data(nutrimouse)
 #' X <- nutrimouse$lipid
 #' Y <- nutrimouse$gene
 #' nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
@@ -236,7 +235,6 @@
 #' ## select the 'cutoff' and "see" the new network
 #'
 #' ## network representation for objects of class 'spls'
-#' data(liver.toxicity)
 #' X <- liver.toxicity$gene
 #' Y <- liver.toxicity$clinic
 #' toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50),

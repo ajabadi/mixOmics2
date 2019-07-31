@@ -31,7 +31,6 @@ relevant for explaining \eqn{Y}.
 }
 \examples{
 
-data(linnerud)
 X <- linnerud$exercise
 Y <- linnerud$physiological
 linn.pls <- pls(X, Y)

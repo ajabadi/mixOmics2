@@ -1,7 +1,9 @@
 
 ## example with PLSDA, 2 classes
 # ----------------
-# \dontrun{
+#' \dontrun{
+library(mixOmics.data)
+
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
@@ -56,4 +58,4 @@ auc.plsda.breast = auroc(plsda.breast, ncomp = 1)
   list.keepX = list(gene = rep(10, 2), lipid = rep(5,2))
   block.splsda.nutri = block.splsda(X = data, Y = nutrimouse$diet, keepX = list.keepX)
   auc.block.splsda.nutri = auroc(block.splsda.nutri, block = 1)
-# }
+#' }

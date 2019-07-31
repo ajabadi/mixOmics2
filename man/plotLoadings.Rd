@@ -139,9 +139,10 @@ layout design.
 }
 \examples{
 
+\dontrun{
 ## object of class 'spls'
 # --------------------------
-data(liver.toxicity)
+library(mixOmics.data)
 X = liver.toxicity$gene
 Y = liver.toxicity$clinic
 
@@ -155,10 +156,8 @@ xlim = matrix(c(-0.1,0.3, -0.4,0.6), nrow = 2, byrow = TRUE)
 plotLoadings(toxicity.spls, xlim = xlim)
 
 
-\dontrun{
 ## object of class 'splsda'
 # --------------------------
-data(liver.toxicity)
 X = as.matrix(liver.toxicity$gene)
 Y = as.factor(liver.toxicity$treatment[, 4])
 
@@ -215,7 +214,6 @@ plotLoadings(splsda.liver, comp = 2, method = 'median', legend.color = c(1:4), c
 # object 'splsda multilevel'
 # -----------------
 
-data(vac18)
 X = vac18$genes
 Y = vac18$stimulation
 # sample indicates the repeated measurements
@@ -244,7 +242,6 @@ name.var = name.var, size.name = 0.5, ndisplay = 60, contrib = "max")
 
 # breast tumors
 # ---
-data(breast.tumors)
 X = breast.tumors$gene.exp
 Y = breast.tumors$sample$treatment
 
@@ -264,7 +261,6 @@ legend.color = color.mixo(1:2))
 # liver toxicity
 # ---
 
-data(liver.toxicity)
 X = liver.toxicity$gene
 Y = liver.toxicity$treatment[, 4]
 
@@ -283,7 +279,6 @@ legend.color = color.mixo(1:4))
 # object 'sgccda'
 # ----------------
 
-data(nutrimouse)
 Y = nutrimouse$diet
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
@@ -302,7 +297,6 @@ plotLoadings(nutrimouse.sgccda,block="gene")
 
 # object 'mint.splsda'
 # ----------------
-data(stemcells)
 data = stemcells$gene
 type.id = stemcells$celltype
 exp = stemcells$study

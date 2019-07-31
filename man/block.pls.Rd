@@ -98,10 +98,9 @@ Analysis and differs from the MB-PLS approaches proposed by Kowalski et al.,
 }
 \examples{
 
-
+\dontrun{
 # Example with TCGA multi omics study
 # -----------------------------------
-data("breast.TCGA")
 # this is the X data as a list of mRNA and miRNA; the Y data set is a single data set of proteins
 data = list(mrna = breast.TCGA$data.train$mrna, mirna = breast.TCGA$data.train$mirna)
 # set up a full design where every block is connected
@@ -118,7 +117,7 @@ TCGA.block.pls
 # in plotindiv we color the samples per breast subtype group but the method is unsupervised!
 # here Y is the protein data set
 plotIndiv(TCGA.block.pls, group =  breast.TCGA$data.train$subtype, ind.names = FALSE)
-
+}
 
 
 }

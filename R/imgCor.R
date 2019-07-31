@@ -28,17 +28,9 @@
 # -----------------------------------------
 # --- small example but see help file
 # ----------------------------------------
-#library(mixOmics)
-#data(liver.toxicity)
 #X <- liver.toxicity$gene
 #Y <- liver.toxicity$clinic
 #imgCor(X=X[,1:10],Y=Y[,1:4])
-
-
-
-
-
-
 
 
 #' Image Maps of Correlation Matrices between two Data Sets
@@ -100,7 +92,6 @@
 #' @keywords multivariate dplot
 #' @examples
 #'
-#' data(nutrimouse)
 #' X <- nutrimouse$lipid
 #' Y <- nutrimouse$gene
 #'

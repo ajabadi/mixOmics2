@@ -70,11 +70,11 @@
 
 #' N-integration and feature selection with sparse Projection to Latent
 #' Structures models (sPLS)
-#' 
+#'
 #' Integration of multiple data sets measured on the same samples or
 #' observations, with variable selection in each data set, ie. N-integration.
 #' The method is partly based on Generalised Canonical Correlation Analysis.
-#' 
+#'
 #' \code{block.spls} function fits a horizontal sPLS model with a specified
 #' number of components per block). An outcome needs to be provided, either by
 #' \code{Y} or by its position \code{indY} in the list of blocks \code{X}.
@@ -83,27 +83,27 @@
 #' cross product computations in the algorithm \code{block.pls} without having
 #' to delete rows with missing data. Alternatively, missing data can be imputed
 #' prior using the \code{nipals} function.
-#' 
+#'
 #' The type of algorithm to use is specified with the \code{mode} argument.
 #' Four PLS algorithms are available: PLS regression \code{("regression")}, PLS
 #' canonical analysis \code{("canonical")}, redundancy analysis
 #' \code{("invariant")} and the classical PLS algorithm \code{("classic")} (see
 #' References and \code{?pls} for more details).
-#' 
+#'
 #' Note that our method is partly based on sparse Generalised Canonical
 #' Correlation Analysis and differs from the MB-PLS approaches proposed by
 #' Kowalski et al., 1989, J Chemom 3(1), Westerhuis et al., 1998, J Chemom,
 #' 12(5) and sparse variants Li et al., 2012, Bioinformatics 28(19); Karaman et
 #' al (2014), Metabolomics, 11(2); Kawaguchi et al., 2017, Biostatistics.
-#' 
+#'
 #' Variable selection is performed on each component for each block of
 #' \code{X}, and for \code{Y} if specified, via input parameter \code{keepX}
 #' and \code{keepY}.
-#' 
+#'
 #' Note that if \code{Y} is missing and \code{indY} is provided, then variable
 #' selection on \code{Y} is performed by specifying the input parameter
 #' directly in \code{keepX} (no \code{keepY} is needed).
-#' 
+#'
 #' @param X A list of data sets (called 'blocks') measured on the same samples.
 #' Data in the list should be arranged in matrices, samples x variables, with
 #' samples order matching in all data sets.
@@ -144,7 +144,7 @@
 #' (and non-essential) outputs are not calculated. Default = \code{TRUE}.
 #' @return \code{block.spls} returns an object of class \code{"block.spls"}, a
 #' list that contains the following components:
-#' 
+#'
 #' \item{X}{the centered and standardized original predictor matrix.}
 #' \item{indY}{the position of the outcome Y in the output list X.}
 #' \item{ncomp}{the number of components included in the model for each block.}
@@ -164,24 +164,23 @@
 #' \code{\link{block.splsda}} and http://www.mixOmics.org for more details.
 #' @references Tenenhaus, M. (1998). \emph{La regression PLS: theorie et
 #' pratique}. Paris: Editions Technic.
-#' 
+#'
 #' Wold H. (1966). Estimation of principal components and related models by
 #' iterative least squares. In: Krishnaiah, P. R. (editors), \emph{Multivariate
 #' Analysis}. Academic Press, N.Y., 391-420.
-#' 
+#'
 #' Tenenhaus A. and Tenenhaus M., (2011), Regularized Generalized Canonical
 #' Correlation Analysis, Psychometrika, Vol. 76, Nr 2, pp 257-284.
-#' 
+#'
 #' Tenenhaus A., Philippe C., Guillemot V, Lê Cao K.A., Grill J, Frouin V.
 #' Variable selection for generalized canonical correlation analysis.
 #' \emph{Biostatistics}. kxu001
 #' @keywords regression multivariate
 #' @examples
-#' 
-#' 
+#'
+#'
 #' # Example with multi omics TCGA study
 #' # -----------------------------
-#' data("breast.TCGA")
 #' # this is the X data as a list of mRNA and miRNA; the Y data set is a single data set of proteins
 #' data = list(mrna = breast.TCGA$data.train$mrna, mirna = breast.TCGA$data.train$mirna)
 #' # set up a full design where every block is connected
@@ -194,7 +193,7 @@
 #' # set number of variables to select, per component and per data set (this is set arbitrarily)
 #' list.keepX = list(mrna = rep(20, 2), mirna = rep(10,2))
 #' list.keepY = c(rep(10, 2))
-#' 
+#'
 #' TCGA.block.spls = block.spls(X = data, Y = breast.TCGA$data.train$protein,
 #' ncomp = ncomp, keepX = list.keepX, keepY = list.keepY, design = design)
 #' TCGA.block.spls
@@ -204,8 +203,8 @@
 #' plotLoadings(TCGA.block.spls, ncomp = 1)
 #' plotVar(TCGA.block.spls, style = 'graphics', legend = TRUE)
 #' network(TCGA.block.spls)
-#' 
-#' 
+#'
+#'
 #' @export block.spls
 block.spls = function(X,
 Y,
@@ -223,15 +222,15 @@ max.iter = 100,
 near.zero.var = FALSE,
 all.outputs = TRUE)
 {
-    
-    
+
+
     # call to 'internal_wrapper.mint.block'
     result = internal_wrapper.mint.block(X=X, Y=Y, indY=indY, ncomp=ncomp,
     keepX=keepX, keepY=keepY,
     design=design, scheme=scheme, mode=mode, scale=scale,
     init=init, tol=tol, max.iter=max.iter, near.zero.var=near.zero.var,
     all.outputs = all.outputs)
-    
+
     # calculate weights for each dataset
     weights = get.weights(result$variates, indY = result$indY)
 
@@ -262,7 +261,7 @@ all.outputs = TRUE)
     # give a class
     class(out) = c("block.spls","sgcca")
     return(invisible(out))
-    
+
 }
 
 

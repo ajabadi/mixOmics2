@@ -87,7 +87,9 @@
 ## S3 generic
 #############################################################
 #'@rdname spca
-#'@usage {spca}{default}(X, assay=NULL, ncomp = 2, center = TRUE, scale = TRUE, keepX = rep(ncol(X), ncomp), max.iter = 500, tol = 1e-06, logratio = 'none', multilevel = NULL)
+#'@usage {spca}{default}(X, assay=NULL, ncomp = 2, center = TRUE, scale = TRUE,
+#'keepX = rep(ncol(X), ncomp), max.iter = 500, tol = 1e-06, logratio = 'none',
+#'multilevel = NULL)
 #'@export
 spca <- function(X, assay, ...) UseMethod("spca")
 
@@ -379,8 +381,8 @@ spca.MultiAssayExperiment <-   function(X, assay, ...){
     assay <- as.character(substitute(assay)) ## internal_mae2dm will check if it is valid
   }
   ## get all inputs so you can refer to provided names
-  X <- internal_mae2dm(X = X, Assay = assay)
-  .spca(X=X,...)
+  X <- internal_mae2dm(X, assay)
+  .spca(X,...)
 }
 ## --------------------------------------------------------------------------------------- SingleCellExperiment
 #'@rdname spca

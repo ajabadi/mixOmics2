@@ -31,12 +31,11 @@ University of Washington.
 }
 
 \examples{
-
-data(nutrimouse)
+#' \dontrun{
 Y = unmap(nutrimouse$diet)
 
 map(Y)
-
+}
 }
 \seealso{
 \code{\link{unmap}}

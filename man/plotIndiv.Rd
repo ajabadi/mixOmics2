@@ -199,19 +199,16 @@ For customized plots (i.e. adding points, text), use the style = 'graphics'
 Note: the ellipse options were borrowed from the \pkg{ellipse}.
 }
 \examples{
-
+\dontrun{
 ## plot of individuals for objects of class 'rcc'
 # ----------------------------------------------------
-data(nutrimouse)
+library(mixOmics.data)
 X <- nutrimouse$lipid
 Y <- nutrimouse$gene
 nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 
 # default, only in the X space
-plotIndiv(nutri.res)
 
-
-\dontrun{
 
 # ellipse with respect to genotype in the XY space,
 # names also indicate genotype
@@ -234,7 +231,7 @@ legend = TRUE, style = 'graphics')
 
 ## plot of individuals for objects of class 'pls' or 'spls'
 # ----------------------------------------------------
-data(liver.toxicity)
+library(mixOmics.data)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50),
@@ -279,7 +276,7 @@ legend = TRUE)
 
 ## plot of individuals for objects of class 'plsda' or 'splsda'
 # ----------------------------------------------------
-data(breast.tumors)
+library(mixOmics.data)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
@@ -326,7 +323,7 @@ pch = 15:17, pch.levels = c("a","b","c"),legend = TRUE)
 
 ## plot of individuals for objects of class 'mint.plsda' or 'mint.splsda'
 # ----------------------------------------------------
-data(stemcells)
+library(mixOmics.data)
 res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 2, keepX = c(10, 5),
 study = stemcells$study)
 
@@ -343,7 +340,7 @@ plotIndiv(res, study = "2")
 ## variable representation for objects of class 'sgcca' (or 'rgcca')
 # ----------------------------------------------------
 
-data(nutrimouse)
+library(mixOmics.data)
 Y = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 design1 = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
@@ -371,7 +368,6 @@ title = 'my plot')
 # ----------------------------------------------------
 
 # Note: the code differs from above as we use a 'supervised' GCCA analysis
-data(nutrimouse)
 Y = nutrimouse$diet
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 design1 = matrix(c(0,1,0,1), ncol = 2, nrow = 2, byrow = TRUE)

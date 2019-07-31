@@ -13,6 +13,7 @@ internal_check_eval <- function(EXP, error_message = paste0(as.expression(substi
 ##-----------------------------------------------------------------------------------------------------------------------
 ## ---- get a MAE object, assay name/index, and the call list, and return the data matrix for MAE methods ----
 ## args.list contains X entry
+#' @importFrom SummarizedExperiment assay
 #' @importFrom SummarizedExperiment assays
 internal_mae2dm <- function(X, assay){ ## MAE to data.matrix
   args.list <- match.call()[-1]
@@ -46,6 +47,7 @@ internal_mae2dm <- function(X, assay){ ## MAE to data.matrix
 ## ----- get MAE data and a call list containing character X and Y, check for validity of X (assay name) and Y (assay/coldata name)
 ## and return matrices of X and Y in mc$X and mc$Y, getting rid of data and/or formula args
 #' @importFrom MultiAssayExperiment complete.cases
+#' @importFrom SummarizedExperiment colData
 #' @importFrom SummarizedExperiment assays
 #' @importFrom SummarizedExperiment assay
 

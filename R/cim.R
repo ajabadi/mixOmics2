@@ -200,7 +200,6 @@
 #'
 #' ## default method: shows cross correlation between 2 data sets
 #' #------------------------------------------------------------------
-#' data(nutrimouse)
 #' X <- nutrimouse$lipid
 #' Y <- nutrimouse$gene
 #'
@@ -242,7 +241,6 @@
 #' ## CIM representation for objects of class 'spca' (also works for sipca)
 #' #------------------------------------------------------------------
 #'
-#' data(liver.toxicity)
 #' X <- liver.toxicity$gene
 #'
 #' liver.spca <- spca(X, ncomp = 2, keepX = c(30, 30), scale = FALSE)
@@ -258,7 +256,6 @@
 #' ## CIM representation for objects of class '(s)pls'
 #' #------------------------------------------------------------------
 #'
-#' data(liver.toxicity)
 #'
 #' X <- liver.toxicity$gene
 #' Y <- liver.toxicity$clinic
@@ -303,7 +300,6 @@
 #'
 #' ## CIM representation for objects of class '(s)plsda'
 #' #------------------------------------------------------------------
-#' data(liver.toxicity)
 #'
 #' X <- liver.toxicity$gene
 #' # Setting up the Y outcome first
@@ -320,7 +316,6 @@
 #' ## CIM representation for objects of class splsda 'multilevel'
 #' # with a two level factor (repeated sample and time)
 #' #------------------------------------------------------------------
-#' data(vac18.simulated)
 #' X <- vac18.simulated$genes
 #' design <- data.frame(samp = vac18.simulated$sample)
 #' Y = data.frame(time = vac18.simulated$time,
@@ -350,7 +345,6 @@
 #' ## CIM representation for objects of class spls 'multilevel'
 #' #------------------------------------------------------------------
 #'
-#' data(liver.toxicity)
 #' repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
 #' 6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,
 #' 10, 11, 12, 12, 10, 11, 12, 11, 12, 13, 14, 13, 14, 13, 14,

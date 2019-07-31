@@ -139,7 +139,6 @@ arguments.
 
 ## variable representation for objects of class 'rcc'
 # ----------------------------------------------------
-data(nutrimouse)
 X <- nutrimouse$lipid
 Y <- nutrimouse$gene
 nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
@@ -152,7 +151,6 @@ plotVar(nutri.res, comp = c(1,3), cutoff = 0.5)
 \dontrun{
 ## variable representation for objects of class 'pls' or 'spls'
 # ----------------------------------------------------
-data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50),
@@ -166,8 +164,6 @@ legend.title="my legend")
 
 ## variable representation for objects of class 'splsda'
 # ----------------------------------------------------
-
-data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- as.factor(liver.toxicity$treatment[, 4])
 
@@ -180,7 +176,6 @@ plotVar(splsda.liver)
 ## variable representation for objects of class 'sgcca' (or 'rgcca')
 # ----------------------------------------------------
 ## see example in ??wrapper.sgcca
-data(nutrimouse)
 # need to unmap the Y factor diet
 Y = unmap(nutrimouse$diet)
 # set up the data as list
@@ -227,7 +222,6 @@ title = c('Variables selected on components 1 and 2'))
 ## variable representation for objects of class 'rgcca'
 # ----------------------------------------------------
 
-data(nutrimouse)
 # need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
 Y = unmap(nutrimouse$diet)
 

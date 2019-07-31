@@ -102,8 +102,8 @@ canonical analysis \code{("canonical")}, redundancy analysis
 References and more details in \code{?pls}).
 }
 \examples{
-
-data(breast.TCGA)
+\dontrun{
+library(mixOmics.data)
 
 # for the purpose of this example, we consider the training set as study1 and
 # the test set as another independent study2.
@@ -118,7 +118,7 @@ Y = c(breast.TCGA$data.train$subtype, breast.TCGA$data.test$subtype)
 res = mint.block.plsda(data,Y,study=study, ncomp=2)
 
 res
-
+}
 
 }
 \references{

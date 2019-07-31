@@ -65,11 +65,11 @@
 
 
 #' N-integration with Projection to Latent Structures models (PLS)
-#' 
+#'
 #' Integration of multiple data sets measured on the same samples or
 #' observations, ie. N-integration. The method is partly based on Generalised
 #' Canonical Correlation Analysis.
-#' 
+#'
 #' \code{block.spls} function fits a horizontal integration PLS model with a
 #' specified number of components per block). An outcome needs to be provided,
 #' either by \code{Y} or by its position \code{indY} in the list of blocks
@@ -78,17 +78,17 @@
 #' during the cross product computations in the algorithm \code{block.pls}
 #' without having to delete rows with missing data. Alternatively, missing data
 #' can be imputed prior using the \code{nipals} function.
-#' 
+#'
 #' The type of algorithm to use is specified with the \code{mode} argument.
 #' Four PLS algorithms are available: PLS regression \code{("regression")}, PLS
 #' canonical analysis \code{("canonical")}, redundancy analysis
 #' \code{("invariant")} and the classical PLS algorithm \code{("classic")} (see
 #' References and \code{?pls} for more details).
-#' 
+#'
 #' Note that our method is partly based on Generalised Canonical Correlation
 #' Analysis and differs from the MB-PLS approaches proposed by Kowalski et al.,
 #' 1989, J Chemom 3(1) and Westerhuis et al., 1998, J Chemom, 12(5).
-#' 
+#'
 #' @param X A list of data sets (called 'blocks') measured on the same samples.
 #' Data in the list should be arranged in matrices, samples x variables, with
 #' samples order matching in all data sets.
@@ -124,7 +124,7 @@
 #' (and non-essential) outputs are not calculated. Default = \code{TRUE}.
 #' @return \code{block.pls} returns an object of class \code{"block.pls"}, a
 #' list that contains the following components:
-#' 
+#'
 #' \item{X}{the centered and standardized original predictor matrix.}
 #' \item{indY}{the position of the outcome Y in the output list X.}
 #' \item{ncomp}{the number of components included in the model for each block.}
@@ -143,20 +143,19 @@
 #' \code{\link{block.plsda}} and http://www.mixOmics.org for more details.
 #' @references Tenenhaus, M. (1998). \emph{La regression PLS: theorie et
 #' pratique}. Paris: Editions Technic.
-#' 
+#'
 #' Wold H. (1966). Estimation of principal components and related models by
 #' iterative least squares. In: Krishnaiah, P. R. (editors), \emph{Multivariate
 #' Analysis}. Academic Press, N.Y., 391-420.
-#' 
+#'
 #' Tenenhaus A. and Tenenhaus M., (2011), Regularized Generalized Canonical
 #' Correlation Analysis, Psychometrika, Vol. 76, Nr 2, pp 257-284.
 #' @keywords regression multivariate
 #' @examples
-#' 
-#' 
+#'
+#'\dontrun{
 #' # Example with TCGA multi omics study
 #' # -----------------------------------
-#' data("breast.TCGA")
 #' # this is the X data as a list of mRNA and miRNA; the Y data set is a single data set of proteins
 #' data = list(mrna = breast.TCGA$data.train$mrna, mirna = breast.TCGA$data.train$mirna)
 #' # set up a full design where every block is connected
@@ -166,16 +165,16 @@
 #' design
 #' # set number of component per data set
 #' ncomp = c(2)
-#' 
+#'
 #' TCGA.block.pls = block.pls(X = data, Y = breast.TCGA$data.train$protein, ncomp = ncomp,
 #' design = design)
 #' TCGA.block.pls
 #' # in plotindiv we color the samples per breast subtype group but the method is unsupervised!
 #' # here Y is the protein data set
 #' plotIndiv(TCGA.block.pls, group =  breast.TCGA$data.train$subtype, ind.names = FALSE)
-#' 
-#' 
-#' 
+#'}
+#'
+#'
 #' @export block.pls
 block.pls = function(X,
 Y,
@@ -191,13 +190,13 @@ max.iter = 100,
 near.zero.var = FALSE,
 all.outputs = TRUE)
 {
-    
+
     # call to 'internal_wrapper.mint.block'
     result = internal_wrapper.mint.block(X=X, Y=Y, indY=indY, ncomp=ncomp,
         design=design, scheme=scheme, mode=mode, scale=scale,
         init=init, tol=tol, max.iter=max.iter ,near.zero.var=near.zero.var,
         all.outputs = all.outputs)
-    
+
     # calculate weights for each dataset
     weights = get.weights(result$variates, indY = result$indY)
 
@@ -222,10 +221,10 @@ all.outputs = TRUE)
         scheme = result$scheme,
         weights = weights,
         explained_variance = result$explained_variance)
-    
+
     # give a class
     class(out) = c("block.pls","sgcca")
-    
+
     return(invisible(out))
-    
+
 }

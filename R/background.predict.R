@@ -49,10 +49,10 @@
 
 
 #' Calculate prediction areas
-#' 
+#'
 #' Calculate prediction areas that can be used in plotIndiv to shade the
 #' background.
-#' 
+#'
 #' \code{background.predict} simulates \code{resolution*resolution} points
 #' within the rectangle defined by xlim on the x-axis and ylim on the y-axis,
 #' and then predicts the class of each point (defined by two coordinates). The
@@ -60,20 +60,20 @@
 #' surface where all points are predicted to be of the same class. A polygon is
 #' returned and should be passed to \code{\link{plotIndiv}} for plotting the
 #' actual background.
-#' 
+#'
 #' Note that by default xlim and ylim will create a rectangle of simulated data
 #' that will cover the plotted area of \code{plotIndiv}. However, if you use
 #' \code{plotIndiv} with \code{ellipse=TRUE} or if you set \code{xlim} and
 #' \code{ylim}, then you will need to adapt \code{xlim} and \code{ylim} in
 #' \code{background.predict}.
-#' 
+#'
 #' Also note that the white frontier that defines the predicted areas when
 #' plotting with \code{plotIndiv} can be reduced by increasing
 #' \code{resolution}.
-#' 
+#'
 #' More details about the prediction distances in \code{?predict} and the
 #' supplemental material of the mixOmics article (Rohart et al. 2017).
-#' 
+#'
 #' @param object A list of data sets (called 'blocks') measured on the same
 #' samples. Data in the list should be arranged in matrices, samples x
 #' variables, with samples order matching in all data sets.
@@ -97,48 +97,46 @@
 #' for 'omics feature selection and multiple data integration. PLoS Comput Biol
 #' 13(11): e1005752
 #' @examples
-#' 
-#' 
+#'
+#' \dontrun{
 #' # Example 1
 #' # -----------------------------------
-#' data(breast.tumors)
+#' library(mixOmics.data)
 #' X <- breast.tumors$gene.exp
 #' Y <- breast.tumors$sample$treatment
-#' 
+#'
 #' splsda.breast <- splsda(X, Y,keepX=c(10,10),ncomp=2)
-#' 
+#'
 #' # calculating background for the two first components, and the centroids distance
-#' 
+#'
 #' background = background.predict(splsda.breast, comp.predicted = 2, dist = "centroids.dist")
-#' 
-#' \dontrun{
+#'
 #' # default option: note that the outcome color is included by default!
 #' plotIndiv(splsda.breast, background = background, legend=TRUE)
-#' 
-#' 
-#' 
-#' 
+#'
+#'
+#'
+#'
 #' # Example 2
 #' # -----------------------------------
-#' data(liver.toxicity)
 #' X = liver.toxicity$gene
 #' Y = as.factor(liver.toxicity$treatment[, 4])
-#' 
+#'
 #' plsda.liver <- plsda(X, Y, ncomp = 2)
-#' 
+#'
 #' # calculating background for the two first components, and the mahalanobis distance
 #' background = background.predict(plsda.liver, comp.predicted = 2, dist = "mahalanobis.dist")
-#' 
+#'
 #' plotIndiv(plsda.liver, background = background, legend = TRUE)
-#' 
-#' 
+#'
+#'
 #' }
-#' 
+#'
 #' @export background.predict
 background.predict = function(object, comp.predicted = 1, dist = "max.dist",
     xlim = NULL, ylim = NULL, resolution = 100)
 {
-    
+
     if(!any(class(object)%in%c("mixo_plsda","mixo_splsda")))
     stop("'background.predict' can only be calculated for 'plsda'
         and 'splsda' objects")
@@ -149,11 +147,11 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
 
     if(!comp.predicted %in% c(1,2))
     stop("Can only show predicted background for 1 or 2 components")
-    
+
     if(!is.null(xlim) && length(xlim)!=2)
     stop("'xlim' must be a vector of two values, indicating the min
         and max of the simulated data on variates 1 (x-axis)")
-    
+
     if(!is.null(ylim) && length(ylim)!=2)
     stop("'ylim' must be a vector of two values, indicating the min
         and max of the simulated data on variates 2 (y-axis)")
@@ -164,50 +162,50 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
     # ... = arg to pass to plotIndiv
     #plotIndiv(object, style = "graphics", ...)
     #plot(-10:10,-10:10,type="n")
-    
-    
+
+
     ####################################
     # ---- simulating new data
     ####################################
     X = object$X
     Y = object$Y
-    
+
     # we only need to simulate variates
     lim = apply(object$variates$X, 2, range) *1.2
     if(is.null(xlim))
     xlim = lim[,1]
     if(is.null(ylim))
     ylim = lim[,2]
-    
+
     lim = cbind(xlim,ylim)
-    
+
     increment = apply(lim, 2, function(x){sum(abs(x))/resolution})
     incrementx = increment[1]
     incrementy = increment[2]#(abs(ylim[1]) + abs(ylim[2]))/resolution
     #incrementy = (abs(zlim[1]) + abs(zlim[2]))/resolution
-    
-    
+
+
     list.grid = lapply(1:2, function(x){seq(lim[1,x],lim[2,x],increment[x])})
     grid = as.matrix(expand.grid(list.grid))
-    
+
     t.pred = list(grid)
     ncomp=comp.predicted
     J=1
     q=nlevels(Y)
     variatesX = list(object$variates$X)
     Y.prim=unmap(Y)
-    
-    
-    
+
+
+
     ####################################
     # ---- estimate polygon
     ####################################
     poly.save = vector("list", length = nlevels(Y))
     G = cls = list()
-    
+
     if(dist == "max.dist")
     {
-        
+
         variatesX = list(X=object$variates [-2][[1]][, 1:comp.predicted,
             drop = FALSE])
         Y=object$ind.mat
@@ -215,13 +213,13 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
             nrow=nrow(t.pred[[1]]),ncol=q,byrow=TRUE)
         sigma.Y = matrix(attr(Y, "scaled:scale"),
             nrow=nrow(t.pred[[1]]),ncol=q,byrow=TRUE)
-        
+
         Cmat = crossprod(Y, variatesX[[1]])
-        
+
         Y = object$Y
-        
+
         #print(variatesX)
-        
+
         Y.hat.temp = Y.hat = list()
         for(j in 1:ncomp)
         {
@@ -250,9 +248,9 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
             rownames(cls$max.dist[[x]]) = rownames(t.pred[[x]]);
             return(cls$max.dist[[x]])})
         names(cls$max.dist)=names(X)
-        
+
     }
-    
+
     if(dist == "mahalanobis.dist" | dist == "centroids.dist")
     {
         for (i in 1 : J)
@@ -266,21 +264,21 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
             G[[i]] = t(G[[i]])
             colnames(G[[i]]) = paste0("dim", c(1:ncomp[i]))
             rownames(G[[i]]) = levels(Y)
-            
+
         }
         names(G)=names(X)
-        
-        
+
+
         # predicting class of simulated data
         if(dist == "centroids.dist")
         {
-            
+
             ###Start: Centroids distance
             cl = list()
             centroids.fun = function(x, G, h, i) {
                 q = nrow(G[[i]])
                 x = matrix(x, nrow = q, ncol = h, byrow = TRUE)
-                
+
                 if (h > 1) {
                     d = apply((x - G[[i]][, 1:h])^2, 1, sum)
                 }
@@ -289,11 +287,11 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
                 }
                 cl.id = paste(levels(Y)[which(d == min(d))], collapse = "/")
             }
-            
+
             for (i in 1 : J)
             {
                 cl[[i]] = matrix(nrow = nrow(t.pred[[i]]), ncol = ncomp[i])
-                
+
                 for (h in 1 : ncomp[[i]])
                 {
                     cl.id = apply(matrix(t.pred[[i]][, 1:h], ncol = h), 1,
@@ -301,13 +299,13 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
                     cl[[i]][, h] = cl.id
                 }
             }
-            
+
             cls$centroids.dist = lapply(1:J, function(x){colnames(cl[[x]]) =
                 paste0(rep("comp", ncomp[x]), 1 : ncomp[[x]]);
                 return(cl[[x]])})
-            
+
         } else if (dist == "mahalanobis.dist") {
-            
+
             ### Start: Mahalanobis distance
             cl = list()
             Sr.fun = function(x, G, Yprim, h, i) {
@@ -326,30 +324,30 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
                 }
                 cl.id = paste(levels(Y)[which(d == min(d))], collapse = "/")
             }
-            
+
             for (i in 1 : J){
                 cl[[i]] = matrix(nrow = nrow(t.pred[[1]]), ncol = ncomp[i])
-                
+
                 for (h in 1:ncomp[[i]]) {
                     cl.id = apply(matrix(t.pred[[i]][, 1:h], ncol = h), 1,
                     Sr.fun, G = G, Yprim = Y.prim, h = h, i = i)
                     cl[[i]][, h] = cl.id
                 }
             }
-            
+
             cls$mahalanobis.dist = lapply(1:J, function(x){colnames(cl[[x]]) =
                 paste0(rep("comp", ncomp[x]), 1 : ncomp[[x]]);
                 return(cl[[x]])})
         }
     }
-    
+
     for(ind.area in 1:nlevels(Y))
     {
         ind1 = which(cls[[dist]][[1]][,comp.predicted] == levels(Y)[ind.area])
-        
+
         if(length(ind1) >0)
         {
-            
+
             # if less than 8 direct neighbours, we keep the point => contour
             # from one point from the contour, we can only test the direct
             # neighbours to speed up
@@ -357,14 +355,14 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
             contour = NULL
             for (i in 1: nrow(area))
             {
-                
+
                 areax = area[,1]#as.numeric(as.character(area[,1]))
                 areay = area[,2]#as.numeric(as.character(area[,2]))
-                
+
                 a = areax[i]
                 b = areay[i]
-                
-                
+
+
                 res = 0
                 for(x in c(a-incrementx, a, a+incrementx))
                 {
@@ -377,17 +375,17 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
                         res = res + 1
                     }
                 }
-                
+
                 if(res!=9)
                 contour = c(contour, i)
-                
+
                 if(length(contour) ==2)
                 break
             }
-            
+
             # now that we have two point of the contour,
             # we look for others in the direct neighbours.
-            
+
             added = TRUE
             while(added)
             {
@@ -395,18 +393,18 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
                 # we keep looking for another one
                 added = FALSE
                 i = length(contour)
-                
+
                 point = contour[i]
-                
+
                 areax = area[,1]#round(as.numeric(as.character(area[,1])),7)
                 areay = area[,2]#round(as.numeric(as.character(area[,2])),7)
-                
+
                 a = areax[point]#round(areax[point],7)
                 b = areay[point]#round(areay[point],7)
-                
+
                 # we want to add the point (x,y) that has the lowest number of
                 # neighbour (the more extreme on the edge)
-                
+
                 neighbour = contour.temp = NULL
                 # around the point that is in the contour
                 for(x in c(a-incrementx, a, a+incrementx))
@@ -426,7 +424,7 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
                                 #print(xx)
                                 #print(yy)
                                 #print(temp)
-                                
+
                                 if(length(temp)>0)
                                 res = res + 1
                             }
@@ -439,7 +437,7 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
                             # recover which indice in area the point is
                             ind = intersect(which(abs(areax - x)<1e-5),
                                 which(abs(areay - y)<1e-5))
-                            
+
                             # check whether it is already in contour
                             if(length(ind)>0 && sum(contour == ind) == 0)
                             {
@@ -449,24 +447,24 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
                                 added = TRUE
                             }
                         }
-                        
+
                     }
                 }
-                
+
                 if(length(contour.temp)>0)
                 {
                     contour = c(contour, contour.temp[which.min(neighbour)])
                 } else {
                     added=FALSE
                 }
-                
+
             }
-            
+
             poly = area[contour,]
             poly.save[[ind.area]] = poly
-            
+
         }
-        
+
     }
     names(poly.save) = levels(Y)#adjustcolor(color.mixo(ind.area), alpha.f=0.1)
 

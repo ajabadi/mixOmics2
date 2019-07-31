@@ -120,7 +120,6 @@ directly in \code{keepX} (no \code{keepY} is needed).
 
 # Example with multi omics TCGA study
 # -----------------------------
-data("breast.TCGA")
 # this is the X data as a list of mRNA and miRNA; the Y data set is a single data set of proteins
 data = list(mrna = breast.TCGA$data.train$mrna, mirna = breast.TCGA$data.train$mirna)
 # set up a full design where every block is connected

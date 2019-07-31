@@ -81,7 +81,6 @@ value is \code{TRUE}.
 }
 \examples{
 
-data(nutrimouse)
 X <- nutrimouse$lipid
 Y <- nutrimouse$gene
 

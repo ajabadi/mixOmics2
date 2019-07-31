@@ -31,49 +31,45 @@
 #----------------------------------------------------------------------------------------------------------#
 #'@export plotIndiv.sgcca
 #'@export plotIndiv.rgcca
-plotIndiv.sgcca =
-plotIndiv.rgcca =
-#plotIndiv.sgccda =   #because sgcca
-
-function(object,
-comp = NULL,
-blocks = NULL, # to choose which block data to plot, when using GCCA module
-ind.names = TRUE,
-group, # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
-col.per.group,
-style = "ggplot2", # can choose between graphics, 3d, lattice or ggplot2
-ellipse = FALSE,
-ellipse.level = 0.95,
-centroid = FALSE,
-star = FALSE,
-title = NULL,
-subtitle,
-legend = FALSE,
-X.label = NULL,
-Y.label = NULL,
-Z.label = NULL,
-abline = FALSE,
-xlim = NULL,
-ylim = NULL,
-col,
-cex,
-pch,
-pch.levels,
-alpha = 0.2,
-axes.box = "box",
-layout = NULL,
-size.title = rel(2),
-size.subtitle = rel(1.5),
-size.xlabel = rel(1),
-size.ylabel = rel(1),
-size.axis = rel(0.8),
-size.legend = rel(1),
-size.legend.title = rel(1.1),
-legend.title = "Legend",
-legend.title.pch = "Legend",
-legend.position = "right",
-point.lwd = 1,
-...
+plotIndiv.sgcca <- plotIndiv.rgcca <-  function(object,
+      comp = NULL,
+      blocks = NULL, # to choose which block data to plot, when using GCCA module
+      ind.names = TRUE,
+      group, # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
+      col.per.group,
+      style = "ggplot2", # can choose between graphics, 3d, lattice or ggplot2
+      ellipse = FALSE,
+      ellipse.level = 0.95,
+      centroid = FALSE,
+      star = FALSE,
+      title = NULL,
+      subtitle,
+      legend = FALSE,
+      X.label = NULL,
+      Y.label = NULL,
+      Z.label = NULL,
+      abline = FALSE,
+      xlim = NULL,
+      ylim = NULL,
+      col,
+      cex,
+      pch,
+      pch.levels,
+      alpha = 0.2,
+      axes.box = "box",
+      layout = NULL,
+      size.title = rel(2),
+      size.subtitle = rel(1.5),
+      size.xlabel = rel(1),
+      size.ylabel = rel(1),
+      size.axis = rel(0.8),
+      size.legend = rel(1),
+      size.legend.title = rel(1.1),
+      legend.title = "Legend",
+      legend.title.pch = "Legend",
+      legend.position = "right",
+      point.lwd = 1,
+      ...
 )
 {
     plot_parameters = list(size.title = size.title, size.subtitle = size.subtitle, size.xlabel = size.xlabel, size.ylabel = size.ylabel,

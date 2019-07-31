@@ -61,7 +61,6 @@ values are handled by casewise deletion in the \code{rcc} function.
 }
 \examples{
 
-data(nutrimouse)
 X <- nutrimouse$lipid
 Y <- nutrimouse$gene
 

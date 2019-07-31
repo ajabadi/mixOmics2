@@ -38,23 +38,23 @@
 
 #' Generic function to choose the parameters in the different methods in
 #' mixOmics
-#' 
+#'
 #' Wrapper of all tuning functions.
-#' 
+#'
 #' The \code{tune} function called the function \code{predict}. more details
 #' about most arguments are detailed in \code{?predict}.
-#' 
+#'
 #' Also see the help file corresponding to your \code{method}, e.g.
 #' \code{tune.splsda}. Note that only the arguments used in the tune function
 #' corresponding to \code{method} are passed on.
-#' 
+#'
 #' Some details on the use of the nrepeat argument are provided in
 #' \code{?perf}.
-#' 
+#'
 #' More details about the prediction distances in \code{?predict} and the
 #' supplemental material of the mixOmics article (Rohart et al. 2017). More
 #' details about the PLS modes are in \code{?pls}.
-#' 
+#'
 #' @param method This parameter is used to pass all other argument to the
 #' suitable function. \code{method} has to be one of the following: "spls",
 #' "splsda", "mint.splsda", "rcc", "pca".
@@ -119,7 +119,7 @@
 #' sample for each of \code{test.keepX} and each comp is returned.
 #' @return Depending on the type of analysis performed and the input arguments,
 #' a list that may contain:
-#' 
+#'
 #' \item{error.rate}{returns the prediction error for each \code{test.keepX} on
 #' each component, averaged across all repeats and subsampling folds. Standard
 #' deviation is also output. All error rates are also available as a list.}
@@ -132,15 +132,15 @@
 #' ncomp is returned for each prediction framework.}
 #' \item{error.rate.class}{returns the error rate for each level of \code{Y}
 #' and for each component computed with the optimal keepX}
-#' 
+#'
 #' \item{predict}{Prediction values for each sample, each \code{test.keepX},
 #' each comp and each repeat. Only if light.output=FALSE}
 #' \item{class}{Predicted class for each sample, each \code{test.keepX}, each
 #' comp and each repeat. Only if light.output=FALSE}
-#' 
+#'
 #' \item{auc}{AUC mean and standard deviation if the number of categories in
 #' \code{Y} is greater than 2, see details above. Only if auc = TRUE}
-#' 
+#'
 #' \item{cor.value}{only if multilevel analysis with 2 factors: correlation
 #' between latent variables.}
 #' @author Florian Rohart
@@ -148,76 +148,75 @@
 #' \code{\link{tune.pca}}, \code{\link{tune.splsda}},
 #' \code{\link{tune.splslevel}} and http://www.mixOmics.org for more details.
 #' @references DIABLO:
-#' 
+#'
 #' Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Lê
 #' Cao K.A. (2016). DIABLO - multi omics integration for biomarker discovery.
-#' 
+#'
 #' mixOmics article:
-#' 
+#'
 #' Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics
 #' feature selection and multiple data integration. PLoS Comput Biol 13(11):
 #' e1005752
-#' 
+#'
 #' MINT:
-#' 
+#'
 #' Rohart F, Eslami A, Matigian, N, Bougeard S, Lê Cao K-A (2017). MINT: A
 #' multivariate integrative approach to identify a reproducible biomarker
 #' signature across multiple experiments and platforms. BMC Bioinformatics
 #' 18:128.
-#' 
+#'
 #' PLS and PLS citeria for PLS regression: Tenenhaus, M. (1998). \emph{La
 #' regression PLS: theorie et pratique}. Paris: Editions Technic.
-#' 
+#'
 #' Chavent, Marie and Patouille, Brigitte (2003). Calcul des coefficients de
 #' regression et du PRESS en regression PLS1. \emph{Modulad n}, \bold{30} 1-11.
 #' (this is the formula we use to calculate the Q2 in perf.pls and perf.spls)
-#' 
+#'
 #' Mevik, B.-H., Cederkvist, H. R. (2004). Mean Squared Error of Prediction
 #' (MSEP) Estimates for Principal Component Regression (PCR) and Partial Least
 #' Squares Regression (PLSR). \emph{Journal of Chemometrics} \bold{18}(9),
 #' 422-429.
-#' 
+#'
 #' sparse PLS regression mode:
-#' 
+#'
 #' Lê Cao, K. A., Rossouw D., Robert-Granie, C. and Besse, P. (2008). A sparse
 #' PLS for variable selection when integrating Omics data. \emph{Statistical
 #' Applications in Genetics and Molecular Biology} \bold{7}, article 35.
-#' 
+#'
 #' One-sided t-tests (suppl material):
-#' 
+#'
 #' Rohart F, Mason EA, Matigian N, Mosbergen R, Korn O, Chen T, Butcher S,
 #' Patel J, Atkinson K, Khosrotehrani K, Fisk NM, Lê Cao K-A&, Wells CA&
 #' (2016). A Molecular Classification of Human Mesenchymal Stromal Cells. PeerJ
 #' 4:e1845.
 #' @keywords regression multivariate
 #' @examples
-#' 
+#'
 #' ## sPLS-DA
-#' 
-#' data(breast.tumors)
+#' \dontrun{
+#' library(mixOmics.data)
 #' X <- breast.tumors$gene.exp
 #' Y <- as.factor(breast.tumors$sample$treatment)
 #' tune= tune(method = "splsda", X, Y, ncomp=1, nrepeat=10, logratio="none",
 #' test.keepX = c(5, 10, 15), folds=10, dist="max.dist", progressBar = TRUE)
-#' 
+#'
 #' plot(tune)
-#' 
-#' 
-#' 
-#' \dontrun{
+#'
+#'
+#'
+
 #' ## mint.splsda
-#' 
-#' data(stemcells)
+#'
 #' data = stemcells$gene
 #' type.id = stemcells$celltype
 #' exp = stemcells$study
-#' 
+#'
 #' out = tune(method="mint.splsda", X=data,Y=type.id, ncomp=2, study=exp, test.keepX=seq(1,10,1))
 #' out$choice.keepX
-#' 
+#'
 #' plot(out)
 #' }
-#' 
+#'
 #' @export tune
 tune = function (method, # choice of "spls", "splsda", "mint.splsda", "rcc", "pca"
 X,
@@ -250,13 +249,13 @@ light.output = TRUE # mint, splsda
 {
     choice.method = c("spls", "splsda", "mint.splsda", "rcc", "pca")
     method = match.arg(method, choice.method)
-    
+
     if (method == "mint.splsda") {
         message("Calling 'tune.mint.splsda' with Leave-One-Group-Out Cross Validation (nrepeat = 1)")
 
         if (missing(ncomp))
         ncomp = 1
-        
+
         result = tune.mint.splsda(X = X, Y = Y,
         ncomp = ncomp,
         study = study,
@@ -271,10 +270,10 @@ light.output = TRUE # mint, splsda
         max.iter = max.iter,
         near.zero.var = near.zero.var,
         light.output = light.output)
-        
+
     } else if (method == "rcc") {
         message("Calling 'tune.rcc'")
-        
+
         result = tune.rcc(X = X,
         Y = Y,
         grid1 = grid1,
@@ -282,7 +281,7 @@ light.output = TRUE # mint, splsda
         validation = validation,
         folds = folds,
         plot = plot)
-        
+
     } else if (method == "pca") {
         message("Calling 'tune.pca'")
 
@@ -295,15 +294,15 @@ light.output = TRUE # mint, splsda
         scale = scale,
         max.iter = max.iter,
         tol = tol)
-        
-        
+
+
     } else if (method == "splsda") {
 
         message("Calling 'tune.splsda'")
 
         if (missing(ncomp))
         ncomp = 1
-        
+
         result = tune.splsda (X = X, Y = Y,
         ncomp = ncomp,
         test.keepX = test.keepX,
@@ -331,7 +330,7 @@ light.output = TRUE # mint, splsda
             ncomp = 1
             if (missing(already.tested.Y))
             already.tested.Y = NULL
-            
+
             result = tune.splslevel(X = X, Y = Y,
             multilevel = multilevel,
             mode = mode,
@@ -339,7 +338,7 @@ light.output = TRUE # mint, splsda
             already.tested.X = already.tested.X, already.tested.Y = already.tested.Y)
         }
     }
-    
+
     result$call = match.call()
     return(result)
 }

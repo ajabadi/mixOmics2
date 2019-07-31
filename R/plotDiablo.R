@@ -36,16 +36,16 @@
 # ========================================================================================================
 
 #' Graphical output for the DIABLO framework
-#' 
+#'
 #' Function to visualise correlation between components from different data
 #' sets
-#' 
+#'
 #' The function uses a plot.data.frame to plot the component \code{ncomp}
 #' calculated from each data set to visualise whether DIABLO (block.splsda) is
 #' successful at maximising the correlation between each data sets' component.
 #' The lower triangular panel indicated the Pearson's correlation coefficient,
 #' the upper triangular panel the scatter plot.
-#' 
+#'
 #' @param x object of class inheriting from \code{"block.splsda"}.
 #' @param ncomp Which component to plot calculated from each data set. Has to
 #' be lower than the minimum of \code{object$ncomp}
@@ -62,28 +62,26 @@
 #' discovery. Submitted.
 #' @keywords regression multivariate
 #' @examples
-#' 
-#' 
-#' data('breast.TCGA')
+#'
 #' Y = breast.TCGA$data.train$subtype
-#' 
+#'
 #' data = list(mrna =  breast.TCGA$data.train$mrna,
 #' mirna =  breast.TCGA$data.train$mirna, prot =  breast.TCGA$data.train$protein)
-#' 
+#'
 #' # set number of component per data set
 #' ncomp = 3
 #' # set number of variables to select, per component and per data set (arbitrarily set)
 #' list.keepX = list(mrna = rep(20, 3), mirna = rep(10,3), prot = rep(10,3))
-#' 
+#'
 #' # set up a full design where every block is connected
 #' design = matrix(1, ncol = length(data), nrow = length(data),
 #' dimnames = list(names(data), names(data)))
 #' diag(design) =  0
 #' design
-#' 
+#'
 #' BC.diablo = block.splsda(X = data, Y = Y, ncomp = ncomp, keepX = list.keepX, design = design)
 #' plotDiablo(BC.diablo, ncomp = 1)
-#' 
+#'
 
 plot.sgccda = plotDiablo = function(x,
 ncomp = 1,
@@ -91,7 +89,7 @@ legend = TRUE,
 legend.ncol,
 ...)
 {
-    
+
     object=x
     #need to reorder variates and loadings to put 'Y' in last
     opar = par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
@@ -99,26 +97,26 @@ legend.ncol,
     indY=object$indY
     object$variates=c(object$variates[-indY],object$variates[indY])
     object$loadings=c(object$loadings[-indY],object$loadings[indY])
-    
+
     VarX = do.call(cbind, lapply(object$variates, function(i) i[, ncomp]))
     datNames = colnames(VarX)
-    
+
     if(ncol(VarX)<=2)
     stop("This function is only available when there are more than 3 blocks") # so 2 blocks + the outcome Y
-    
+
     # check input parameters
     Y=object$Y
-    
+
     if (length(ncomp) != 1 | ncomp > min(object$ncomp))
     stop(paste0("'ncomp' must be a numeric value lower than ", min(object$ncomp),", which is min(object$ncomp)"))
     # end check parameters
-    
+
     if(missing(legend.ncol))
     legend.ncol = min(5, nlevels(Y))
 
     numberOfCols = ncol(VarX)-1
     numberOfRows = numberOfCols #- 1
-    
+
     mat = matrix(0, nrow = numberOfRows, ncol = numberOfRows)
     for(i in 1:nrow(mat))
     {
@@ -129,7 +127,7 @@ legend.ncol,
     lab=diag(mat))#,
     #bar=paste(1:(numberOfRows-1), numberOfCols, sep="_"),
     #stackedbar=paste(numberOfRows, numberOfCols, sep="_"))
-    
+
     par(mfrow = c(numberOfRows+1, numberOfCols), mar = rep.int(1/2, 4), oma = c(2,2,2,2))
     layout(matrix(c(1:(numberOfCols)^2, rep((numberOfCols)^2+1,numberOfCols)),numberOfRows+1,numberOfCols, byrow=TRUE),
     heights = c(rep(1,numberOfRows), 0.25 * floor(nlevels(Y)/legend.ncol)))
@@ -142,10 +140,10 @@ legend.ncol,
                 intersect(paste(i,j,sep="_"), x)
             }))
             splotMatPlot(x=VarX[, j], y=VarX[, i], datNames, Y, ptype)
-            
+
             if(i == 1 & j %in% seq(2, numberOfRows, 1))
             Axis(side = 3, x=VarX[, i])
-            
+
             if(j == numberOfRows & i %in% seq(1, numberOfRows-1, 1))
             Axis(side = 4, x=VarX[, i])
         }
@@ -154,7 +152,7 @@ legend.ncol,
     plot(1:3,1:3,type="n",axes=FALSE,xlab="",ylab="")
     if(legend)
     legend("center",legend=levels(Y), col = color.mixo(1:nlevels(Y)), pch = 19, ncol = legend.ncol, cex = 1.5)
-    
+
     par(opar)
 }
 
@@ -170,7 +168,7 @@ splotMatPlot = function(x, y, datNames, Y, ptype)
     }
     if(names(ptype) == "scatter")
     panel.ellipses(x=x, y=y, Y = Y)
-    
+
     if(names(ptype) == "lab")
     {
         plot(1, type = "n", axes = FALSE)
@@ -203,24 +201,24 @@ panel.ellipses = function(x, y, Y = Y, pch = par("pch"), col.lm = "red", axes = 
     ind.gp = matrice = cdg = variance = list()
     for(i in 1:nlevels(Y))
     ind.gp[[i]] = which(as.numeric(Y)==i)
-    
+
     matrice = lapply(ind.gp, function(z){matrix(c(x[z], y[z]), ncol = 2)})
     cdg = lapply(matrice, colMeans)
     variance = lapply(matrice, var)
-    
+
     #library(ellipse)
     coord.ellipse = lapply(1:nlevels(Y), function(x){ellipse(variance[[x]], centre = cdg[[x]], ellipse.level = 0.95)})
     max.ellipse = sapply(coord.ellipse, function(x){apply(x, 2, max)})
     min.ellipse = sapply(coord.ellipse, function(x){apply(x, 2, min)})
     ind.names = names(Y)
     cex = 0.5
-    
+
     plot(x, y, xlab = "X.label", ylab = "Y.label", col=color.mixo(as.numeric(Y)), pch=20, axes=axes,
     xlim = c(min(x, min.ellipse[1, ]), max(x, max.ellipse[1, ])), ylim = c(min(y, min.ellipse[2, ]), max(y, max.ellipse[2, ])))
     #text(x, y, ind.names, col = col, cex = cex)
     box()
     for (z in 1:nlevels(Y))
     points(coord.ellipse[[z]], type = "l", col = color.mixo(c(1:nlevels(Y))[z]))
-    
+
 }
 

@@ -57,7 +57,6 @@ framework.
 
 ## default method: shows cross correlation between 2 data sets
 #------------------------------------------------------------------
-data(nutrimouse)
 Y = nutrimouse$diet
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)

@@ -58,14 +58,14 @@ get.weights = function(variates, indY)
     rownames(corMat.diablo) <- paste(names(variates),".comp",
     rep(seq_len(ncomp),each=length(variates)),sep="")
     colnames(corMat.diablo) <- names(variates)
-    
+
     temp = matrix(corMat.diablo[,indY],ncol=ncomp)
     correlation = apply(temp, 1, function(x){mean(abs(x))})[seq_len(length(variates))]
     names(correlation) = names(variates)
-    
+
     correlation = correlation[-indY]
     return(correlation)
-    
+
 }
 
 
@@ -79,11 +79,11 @@ get.weights = function(variates, indY)
 
 
 #' divides a data matrix in a list of matrices defined by a factor
-#' 
+#'
 #' \code{study_spli} divides a data matrix in a list of matrices defined by a
 #' \code{study} input.
-#' 
-#' 
+#'
+#'
 #' @param data numeric matrix of predictors
 #' @param study grouping factor indicating which samples are from the same
 #' study
@@ -94,26 +94,25 @@ get.weights = function(variates, indY)
 #' \code{\link{mint.plsda}}, \code{\link{mint.splsda}}.
 #' @keywords regression multivariate
 #' @examples
-#' 
-#' data(stemcells)
+#'
 #' data = stemcells$gene
 #' exp = stemcells$study
-#' 
+#'
 #' data.list = study_split(data, exp)
-#' 
+#'
 #' names(data.list)
 #' lapply(data.list, dim)
 #' table(exp)
-#' 
+#'
 #' @export study_split
 study_split = function(data, study)
 {
     #data should be a matrix
     if(!is(data, "matrix"))
     data = as.matrix(data)
-    
+
     M = length(levels(study))
-    
+
     #---------------------- split data
     if(M>1)
     {
@@ -147,7 +146,7 @@ soft_thresholding_L1 = function(x,nx)
                         ties.method = "max") <= nx])))
         }
     }
-    
+
     x
 }
 
@@ -162,7 +161,7 @@ BinarySearch = function(argu,sumabs)
 {
     if (norm2(argu)==0 || sum(abs(argu/norm2(argu)))<=sumabs)
     return(0)
-    
+
     lam1 = 0
     lam2 = max(abs(argu))-1e-5
     iter = 1
@@ -177,7 +176,7 @@ BinarySearch = function(argu,sumabs)
         }
         if ((lam2-lam1)<1e-10)
         return((lam1+lam2)/2)
-        
+
         iter = iter+1
     }
     warning("Didn't quite converge")
@@ -191,7 +190,7 @@ norm2 = function(vec)
     a = sqrt(sum(vec^2))
     if (a == 0)
     a = .05
-    
+
     return(a)
 }
 
@@ -201,7 +200,7 @@ norm2 = function(vec)
 # --------------------------------------
 sparsity=function(loadings.A, keepA, penalty=NULL)
 {
-    
+
     if (!is.null(keepA)) {
         nx = length(loadings.A) - keepA
         loadings.A = soft_thresholding_L1(loadings.A, nx = nx)
@@ -230,11 +229,11 @@ scale.function_old=function(temp, scale = TRUE)
     } else {
         sqrt.sdX = NULL
     }
-    
+
     #is.na.data = is.na(data.list.study.scale_i)
     #if (sum(is.na.data) > 0)
     #data.list.study.scale_i[is.na.data] = 0
-    
+
     out = list(data_scale=data.list.study.scale_i, meanX=meanX,
     sqrt.sdX=sqrt.sdX)
     return(out)
@@ -247,34 +246,34 @@ scale.function_old=function(temp, scale = TRUE)
 scale.function=function(temp, scale = TRUE)
 {
     meanX = colMeans(temp, na.rm = TRUE)
-    
+
     if (scale)
     {
         sqrt.sdX = colSds(temp,  na.rm=TRUE)
         # first possiblity: scale(), too long
         # second possibility: matrix approach: transpose is too long
         # data.list.study.scale_i = t( (t(temp)-meanX) / sqrt.sdX)
-        
+
         # third possibility (ell.equal=>TRUE)
         data.list.study.scale_i = temp-rep(1, nrow(temp)) %*% t(meanX)
         data.list.study.scale_i = data.list.study.scale_i /
             rep(1, nrow(temp)) %*% t(sqrt.sdX)
-        
-        
+
+
         ind = which(sqrt.sdX == 0) # scaling can creates NA
         if(length(ind) >0)
         data.list.study.scale_i[,ind] = 0
-        
+
     } else {
         sqrt.sdX = NULL
         # data.list.study.scale_i = t( (t(temp)-meanX)) # too long bc t()
         data.list.study.scale_i = temp-rep(1, nrow(temp)) %*% t(meanX)
     }
-    
+
     #is.na.data = is.na(data.list.study.scale_i)
     #if (sum(is.na.data) > 0)
     #data.list.study.scale_i[is.na.data] = 0
-    
+
     out = list(data_scale=data.list.study.scale_i, meanX=meanX,
     sqrt.sdX=sqrt.sdX)
     return(out)
@@ -286,21 +285,21 @@ scale.function=function(temp, scale = TRUE)
 # --------------------------------------
 mean_centering_per_study=function(data, study, scale)
 {
-    
+
     M = length(levels(study))   # number of groups
     # split the data
     data.list.study = study_split(data, study)
 
     # center and scale data per group, and concatene the data
     res = lapply(data.list.study, scale.function, scale = scale)
-    
+
     meanX = lapply(res, function(x){x[[2]]})
     sqrt.sdX = lapply(res, function(x){x[[3]]})
     rownames.study = lapply(res, function(x){rownames(x[[1]])})
 
     #rename rows and cols of concatenated centered (and/or scaled) data
     #colnames(concat.data) = colnames(data) #already done
-    
+
     #sort the samples as in the original X
     if(M>1) # otherwise already same order
     {
@@ -332,7 +331,7 @@ mean_centering_per_study=function(data, study, scale)
             attr(concat.data,"scaled:scale") = NULL
         }
     }
-    
+
     return(list(concat.data=concat.data, rownames.study=rownames.study))
 }
 
@@ -344,7 +343,7 @@ l2.norm=function(x)
 {
     if (!is.vector(x))
     stop("x has to be a vector")
-    
+
     out = x / drop(sqrt(crossprod(x)))
 }
 
@@ -356,7 +355,7 @@ tau.estimate = function (x)
 {
     if (is.matrix(x) == TRUE && is.numeric(x) == FALSE)
     stop("The data matrix must be numeric!")
-    
+
     p = NCOL(x)
     n = NROW(x)
     #covm = cov(x)
@@ -419,14 +418,14 @@ miscrossprod = function (x, y) {
 deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
     # Computation of the residual matrix R
     # Computation of the vector p.
-    
+
     #is.na.tX <- is.na(t(X))
     #save(list=ls(),file="temp3.Rdata")
     if (misdata.q)
     {
         #is.na.tX = t(is.na.A.q)
         #p = apply(t(X),1,miscrossprod,y)/as.vector(crossprod(y))
-        
+
         #variates.A[, q] =  apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
         #A.temp = replace(t(X), is.na.tX, 0) # replace NA in A[[q]] by 0
         loadings.A.temp = crossprod(X, y)
@@ -435,13 +434,13 @@ deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
         # we only want the diagonal, which is the norm of each column of temp
         #loadings.A.norm = crossprod(temp)
         #p = variates.A.temp / diag(loadings.A.norm)
-        
+
         #d.loadings.A.norm = apply(temp,2, crossprod)
         #only calculating the ones where there's a NA
         d.loadings.A.norm = rep(crossprod(y), ncol(X))
         #ind.NA = which(apply(is.na.A.q, 2, sum) == 1)
-        
-        
+
+
         if(length(ind.NA)>0)
         {
             temp = drop(y) %o% rep(1, length(ind.NA))
@@ -449,17 +448,17 @@ deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
             temp[is.na.A.q[,ind.NA,drop=FALSE]] = 0
             d.loadings.A.norm[ind.NA] = apply(temp,2, crossprod)
         }
-        
+
         p = loadings.A.temp / d.loadings.A.norm
         # we can have 0/0, so we put 0
         a = is.na(p)
         if (any(a))
         p[a] = 0
-        
+
     } else {
         p <- crossprod(X,y) / as.vector(crossprod(y))
     }
-    
+
     R <- X - tcrossprod(y,p)
     return(list(p=p,R=R))
 }
@@ -514,7 +513,7 @@ mode = "canonical", aa = NULL, misdata, is.na.A, ind.NA) {
         }
     }
     names(resdefl) = names(pdefl) = names(rr)
-    
+
     return(list(resdefl=resdefl,pdefl=pdefl))
 }
 
@@ -525,16 +524,16 @@ mode = "canonical", aa = NULL, misdata, is.na.A, ind.NA) {
 initsvd = function (X) {
     n = NROW(X)
     p = NCOL(X)
-    
+
     if(p>3) #use svds
     {
         ifelse(n >= p, return(svds(X, k=1, nu = 1, nv = 1)$v),
         return(svds(X, k=1, nu = 1, nv = 1)$u))
-        
+
     } else {
         ifelse(n >= p, return(svd(X, nu = 0, nv = 1)$v),
         return(svd(X, nu = 1, nv = 0)$u))
-        
+
     }
 }
 
@@ -544,25 +543,25 @@ initsvd = function (X) {
 initialisation_by_svd = function(A, indY = NULL, misdata, is.na.A = NULL,
 init = "svd")
 {
-    
+
     J = length(A)
     loadings.A = vector("list",length=J)
-    
+
     if (init == "svd")
     {
-        
+
         # same step with or without NA, as they are already replaced by 0
         M = lapply(c(seq_len(J))[-indY], function(x){crossprod(A[[x]], A[[indY]])})
         #ssvd faster with svds, only if more than 3 column, otherwise break down
         svd.M = lapply(M, function(x){if(ncol(x)>3)
             {svds(x, k=1, nu = 1, nv = 1)} else {svd(x, nu = 1, nv = 1)}})
-        
+
         loadings.A[c(seq_len(J))[-indY]] = lapply(seq_len(length(M)), function(x)
         {svd.M[[x]]$u})
         loadings.A[[indY]] = svd.M[[1]]$v
-        
+
     } else if (init=="svd.single") {
-        
+
         alpha =  lapply(seq_len(J), function(y){initsvd(A[[y]])})
 
         for (j in seq_len(J))
@@ -573,7 +572,7 @@ init = "svd")
             } else {
                 alpha[[j]] = drop(1/sqrt( t(alpha[[j]]) %*% A[[j]] %*%
                 (t(A[[j]]) %*% alpha[[j]]))) * alpha[[j]]
-                
+
                 loadings.A[[j]] = crossprod(A[[j]],alpha[[j]])
             }
         }

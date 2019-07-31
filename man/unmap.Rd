@@ -47,13 +47,12 @@ University of Washington.
 }
 
 \examples{
-
-data(nutrimouse)
+\dontrun{
 Y = unmap(nutrimouse$diet)
 Y
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 # data could then used as an input in wrapper.rgcca, which is not, technically,
 # a supervised method, see ??wrapper.rgcca
-
+}
 }
 \keyword{cluster}

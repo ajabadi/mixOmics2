@@ -116,7 +116,6 @@ if specified, via input parameter \code{keepX}.
 
 # block.splsda
 # -------------
-data("breast.TCGA")
 # this is the X data as a list of mRNA, miRNA and proteins
 data = list(mrna = breast.TCGA$data.train$mrna, mirna = breast.TCGA$data.train$mirna,
 protein = breast.TCGA$data.train$protein)

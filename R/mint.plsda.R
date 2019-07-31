@@ -50,11 +50,11 @@
 
 #' P-integration with Projection to Latent Structures models (PLS) with
 #' Discriminant Analysis
-#' 
+#'
 #' Function to combine multiple independent studies measured on the same
 #' variables or predictors (P-integration) using variants of multi-group PLS-DA
 #' for supervised classification.
-#' 
+#'
 #' \code{mint.plsda} function fits a vertical PLS-DA models with \code{ncomp}
 #' components in which several independent studies measured on the same
 #' variables are integrated. The aim is to classify the discrete outcome
@@ -62,22 +62,22 @@
 #' each study. We advise to only combine studies with more than 3 samples as
 #' the function performs internal scaling per study, and where all outcome
 #' categories are represented.
-#' 
+#'
 #' \code{X} can contain missing values. Missing values are handled by being
 #' disregarded during the cross product computations in the algorithm
 #' \code{mint.plsda} without having to delete rows with missing data.
 #' Alternatively, missing data can be imputed prior using the \code{nipals}
 #' function.
-#' 
+#'
 #' The type of algorithm to use is specified with the \code{mode} argument.
 #' Four PLS algorithms are available: PLS regression \code{("regression")}, PLS
 #' canonical analysis \code{("canonical")}, redundancy analysis
 #' \code{("invariant")} and the classical PLS algorithm \code{("classic")} (see
 #' References and more details in \code{?pls}).
-#' 
+#'
 #' Useful graphical outputs are available, e.g. \code{\link{plotIndiv}},
 #' \code{\link{plotLoadings}}, \code{\link{plotVar}}.
-#' 
+#'
 #' @param X numeric matrix of predictors combining multiple independent studies
 #' on the same set of predictors. \code{NA}s are allowed.
 #' @param Y A factor or a class vector indicating the discrete outcome of each
@@ -99,7 +99,7 @@
 #' (and non-essential) outputs are not calculated. Default = \code{TRUE}.
 #' @return \code{mint.plsda} returns an object of class \code{"mint.plsda",
 #' "plsda"}, a list that contains the following components:
-#' 
+#'
 #' \item{X}{the centered and standardized original predictor matrix.}
 #' \item{Y}{original factor} \item{ind.mat}{the centered and standardized
 #' original response vector or matrix.} \item{ncomp}{the number of components
@@ -126,33 +126,31 @@
 #' MINT: A multivariate integrative approach to identify a reproducible
 #' biomarker signature across multiple experiments and platforms. BMC
 #' Bioinformatics 18:128.
-#' 
+#'
 #' Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms
 #' for multi-group PLS. J. Chemometrics, 28(3), 192-201.
-#' 
+#'
 #' mixOmics article:
-#' 
+#'
 #' Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics
 #' feature selection and multiple data integration. PLoS Comput Biol 13(11):
 #' e1005752
 #' @keywords regression multivariate
 #' @examples
-#' 
-#' data(stemcells)
-#' 
+#'
 #' res = mint.plsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3,
 #' study = stemcells$study)
-#' 
+#'
 #' plotIndiv(res)
-#' 
+#'
 #' #plot study-specific outputs for all studies
 #' plotIndiv(res, study = "all.partial")
-#' 
+#'
 #' \dontrun{
 #' #plot study-specific outputs for study "2"
 #' plotIndiv(res, study = "2", col = 1:3, legend = TRUE)
 #' }
-#' 
+#'
 #' @export mint.plsda
 mint.plsda = function(X,
 Y,
@@ -165,14 +163,14 @@ max.iter = 100,
 near.zero.var = FALSE,
 all.outputs = TRUE)
 {
-    
-    
+
+
     #-- validation des arguments --#
     # most of the checks are done in 'internal_wrapper.mint'
-    
+
     if (is.null(Y))
     stop("'Y' has to be something else than NULL.")
-    
+
     if (is.null(dim(Y)))
     {
         Y = factor(Y)
@@ -219,7 +217,7 @@ all.outputs = TRUE)
         scale = result$scale,
         explained_variance = result$explained_variance
         )
-    
+
     class(out) = c("mint.plsda","mint.pls","mixo_pls","DA")
     return(invisible(out))
 

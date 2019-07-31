@@ -84,7 +84,6 @@ long arrows a disagreement between the matching data sets.
 ## plot of individuals for objects of class 'rcc'
 # ----------------------------------------------------
 dev.off()
-data(nutrimouse)
 X <- nutrimouse$lipid
 Y <- nutrimouse$gene
 nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
@@ -103,7 +102,6 @@ legend = TRUE)
 \dontrun{
 ## plot of individuals for objects of class 'pls' or 'spls'
 # ----------------------------------------------------
-data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50),
@@ -125,7 +123,6 @@ legend = TRUE, position.names = 'start')
 
 ## variable representation for objects of class 'sgcca' (or 'rgcca')
 # ----------------------------------------------------
-data(nutrimouse)
 Y = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 design1 = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
@@ -169,7 +166,6 @@ title = 'my plot', ind.names = TRUE, position.names   = 'end')
 ## variable representation for objects of class 'sgccda'
 # ----------------------------------------------------
 # Note: the code differs from above as we use a 'supervised' GCCA analysis
-data(nutrimouse)
 Y = nutrimouse$diet
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 design1 = matrix(c(0,1,0,1), ncol = 2, nrow = 2, byrow = TRUE)

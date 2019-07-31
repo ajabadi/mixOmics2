@@ -35,8 +35,6 @@ the upper triangular panel the scatter plot.
 }
 \examples{
 
-
-data('breast.TCGA')
 Y = breast.TCGA$data.train$subtype
 
 data = list(mrna =  breast.TCGA$data.train$mrna,

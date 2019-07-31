@@ -80,14 +80,12 @@ values are handled by casewise deletion in the \code{rcc} function.
 \examples{
 
 ## Classic CCA
-data(linnerud)
 X <- linnerud$exercise
 Y <- linnerud$physiological
 linn.res <- rcc(X, Y)
 
 \dontrun{
 ## Regularized CCA
-data(nutrimouse)
 X <- nutrimouse$lipid
 Y <- nutrimouse$gene
 nutri.res1 <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)

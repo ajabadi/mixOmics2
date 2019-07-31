@@ -200,7 +200,6 @@ More details about the PLS modes in \code{?pls}.
 
 ## validation for objects of class 'pls' (regression)
 # ----------------------------------------
-data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 
@@ -263,7 +262,6 @@ plot(model.spls.val, criterion="Q2", type = 'l')
 
 ## validation for objects of class 'splsda' (classification)
 # ----------------------------------------
-data(srbct)
 X <- srbct$gene
 Y <- srbct$class
 
@@ -311,7 +309,6 @@ dist = "all", auc = TRUE, cpus =2)
 ## validation for objects of class 'mint.splsda' (classification)
 # ----------------------------------------
 
-data(stemcells)
 res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3, keepX = c(10, 5, 15),
 study = stemcells$study)
 
@@ -324,7 +321,6 @@ out$auc.study
 ## validation for objects of class 'sgccda' (classification)
 # ----------------------------------------
 
-data(nutrimouse)
 Y = nutrimouse$diet
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)

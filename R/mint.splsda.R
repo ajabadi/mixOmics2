@@ -50,11 +50,11 @@
 
 
 #' P-integration with Discriminant Analysis and variable selection
-#' 
+#'
 #' Function to combine multiple independent studies measured on the same
 #' variables or predictors (P-integration) using variants of multi-group sparse
 #' PLS-DA for supervised classification with variable selection.
-#' 
+#'
 #' \code{mint.splsda} function fits a vertical sparse PLS-DA models with
 #' \code{ncomp} components in which several independent studies measured on the
 #' same variables are integrated. The aim is to classify the discrete outcome
@@ -63,25 +63,25 @@
 #' only combine studies with more than 3 samples as the function performs
 #' internal scaling per study, and where all outcome categories are
 #' represented.
-#' 
+#'
 #' \code{X} can contain missing values. Missing values are handled by being
 #' disregarded during the cross product computations in the algorithm
 #' \code{mint.splsda} without having to delete rows with missing data.
 #' Alternatively, missing data can be imputed prior using the \code{nipals}
 #' function.
-#' 
+#'
 #' The type of algorithm to use is specified with the \code{mode} argument.
 #' Four PLS algorithms are available: PLS regression \code{("regression")}, PLS
 #' canonical analysis \code{("canonical")}, redundancy analysis
 #' \code{("invariant")} and the classical PLS algorithm \code{("classic")} (see
 #' References and more details in \code{?pls}).
-#' 
+#'
 #' Variable selection is performed on each component for \code{X} via input
 #' parameter \code{keepX}.
-#' 
+#'
 #' Useful graphical outputs are available, e.g. \code{\link{plotIndiv}},
 #' \code{\link{plotLoadings}}, \code{\link{plotVar}}.
-#' 
+#'
 #' @param X numeric matrix of predictors combining multiple independent studies
 #' on the same set of predictors. \code{NA}s are allowed.
 #' @param Y A factor or a class vector indicating the discrete outcome of each
@@ -105,7 +105,7 @@
 #' (and non-essential) outputs are not calculated. Default = \code{TRUE}.
 #' @return \code{mint.splsda} returns an object of class \code{"mint.splsda",
 #' "splsda"}, a list that contains the following components:
-#' 
+#'
 #' \item{X}{the centered and standardized original predictor matrix.}
 #' \item{Y}{the centered and standardized original response vector or matrix.}
 #' \item{ind.mat}{the centered and standardized original response vector or
@@ -134,36 +134,35 @@
 #' MINT: A multivariate integrative approach to identify a reproducible
 #' biomarker signature across multiple experiments and platforms. BMC
 #' Bioinformatics 18:128.
-#' 
+#'
 #' Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms
 #' for multi-group PLS. J. Chemometrics, 28(3), 192-201.
-#' 
+#'
 #' mixOmics article:
-#' 
+#'
 #' Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics
 #' feature selection and multiple data integration. PLoS Comput Biol 13(11):
 #' e1005752
 #' @keywords regression multivariate
 #' @examples
-#' 
-#' data(stemcells)
-#' 
+#'
+#'
 #' # -- feature selection
 #' res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3, keepX = c(10, 5, 15),
 #' study = stemcells$study)
-#' 
+#'
 #' plotIndiv(res)
 #' #plot study-specific outputs for all studies
 #' plotIndiv(res, study = "all.partial")
-#' 
+#'
 #' \dontrun{
 #' #plot study-specific outputs for study "2"
 #' plotIndiv(res, study = "2")
-#' 
+#'
 #' #plot study-specific outputs for study "2", "3" and "4"
 #' plotIndiv(res, study = c(2, 3, 4))
 #' }
-#' 
+#'
 #' @export mint.splsda
 mint.splsda = function(X,
 Y,
@@ -177,12 +176,12 @@ max.iter = 100,
 near.zero.var = FALSE,
 all.outputs = TRUE)
 {
-    
+
     #-- validation des arguments --#
     # most of the checks are done in 'internal_wrapper.mint'
     if (is.null(Y))
     stop("'Y' has to be something else than NULL.")
-    
+
     if (is.null(dim(Y)))
     {
         Y = factor(Y)
@@ -191,22 +190,22 @@ all.outputs = TRUE)
     }
     Y.mat = unmap(Y)
     colnames(Y.mat) = levels(Y)
-    
+
     X = as.matrix(X)
 
     if (length(study) != nrow(X))
     stop(paste0("'study' must be a factor of length ",nrow(X),"."))
-    
+
     if(sum(apply(table(Y,study)!=0,2,sum)==1) >0)
     stop("At least one study only contains a single level of the multi-levels outcome Y. The MINT algorithm cannot be computed.")
-    
+
     if(sum(apply(table(Y,study)==0,2,sum)>0) >0)
     warning("At least one study does not contain all the levels of the outcome Y. The MINT algorithm might not perform as expected.")
 
     # call to 'internal_wrapper.mint'
     result = internal_wrapper.mint(X = X, Y = Y.mat, ncomp = ncomp, near.zero.var = near.zero.var, study = study, mode = mode,
     keepX = keepX, max.iter = max.iter, tol = tol, scale = scale, all.outputs = all.outputs)
-    
+
     # choose the desired output from 'result'
     out = list(
         call = match.call(),
@@ -232,5 +231,5 @@ all.outputs = TRUE)
 
     class(out) = c("mint.splsda","mixo_splsda","mixo_spls","DA")
     return(invisible(out))
-    
+
 }

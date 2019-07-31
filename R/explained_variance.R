@@ -57,7 +57,7 @@
 ## --------------------------------------------------------------------------------------- examples
 #' @examples
 #'
-#' data(liver.toxicity)
+#' \dontrun{
 #' X <- liver.toxicity$gene
 #' Y <- liver.toxicity$clinic
 #'
@@ -67,7 +67,7 @@
 #'
 #' # ex should be the same as
 #' toxicity.spls$explained_variance$X
-#'
+#'}
 #'
 #' @export explained_variance
 explained_variance = function(data, variates, ncomp)

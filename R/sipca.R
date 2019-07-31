@@ -70,7 +70,9 @@
 ## S3 generic
 #############################################################
 #'@rdname sipca
-#'@usage {sipca}{default}(X, assay=NULL, ncomp = 3, mode = c("deflation","parallel"), fun = c("logcosh", "exp"), scale = FALSE, max.iter = 200, tol = 1e-04, keepX = rep(50,ncomp), w.init = NULL)
+#'@usage {sipca}{default}(X, assay=NULL, ncomp = 3, mode = c("deflation","parallel"),
+#' fun = c("logcosh", "exp"), scale = FALSE, max.iter = 200, tol = 1e-04,
+#' keepX = rep(50,ncomp), w.init = NULL)
 #'@export
 sipca <- function(X, assay, ...) UseMethod("sipca")
 
@@ -194,13 +196,13 @@ sipca <- function(X, assay, ...) UseMethod("sipca")
 #############################################################
 ## S3 methods
 #############################################################
-## --------------------------------------------------------------------------------------- default
+## ----------------------------------------------------------------------------- default
 #'@export
 sipca.default <- function(X, assay=NULL,...) {
   .sipca(X,...)
 }
 
-## --------------------------------------------------------------------------------------- MultiAssayExperiment
+## ----------------------------------------------------------------- MultiAssayExperiment
 #'@rdname sipca
 #'@importFrom SummarizedExperiment assay
 #'@export
@@ -210,14 +212,14 @@ sipca.MultiAssayExperiment <-   function(X, assay, ...){
     assay <- as.character(substitute(assay)) ## internal_mae2dm will check if it is valid
   }
   ## get all inputs so you can refer to provided names
-  X <- internal_mae2dm(X = X, Assay = assay)
+  X <- internal_mae2dm(X, assay)
   .sipca(X=X,...)
 }
-## --------------------------------------------------------------------------------------- SingleCellExperiment
+## ---------------------------------------------------------------- SingleCellExperiment
 #'@rdname sipca
 #'@export
 sipca.SingleCellExperiment <- function(X, assay="logcounts", ...) sipca.MultiAssayExperiment
-## --------------------------------------------------------------------------------------- SummarizedExperiment
+## ----------------------------------------------------------------- SummarizedExperiment
 #'@rdname sipca
 #'@export
 sipca.SummarizedExperiment <- function(X, assay, ...) sipca.MultiAssayExperiment

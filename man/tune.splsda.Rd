@@ -161,15 +161,14 @@ supplemental material of the mixOmics article (Rohart et al. 2017).
 \examples{
 
 ## First example: analysis with sPLS-DA
-
-data(breast.tumors)
+\dontrun{
+library(mixOmics.data)
 X = breast.tumors$gene.exp
 Y = as.factor(breast.tumors$sample$treatment)
 tune = tune.splsda(X, Y, ncomp = 1, nrepeat = 10, logratio = "none",
 test.keepX = c(5, 10, 15), folds = 10, dist = "max.dist",
 progressBar = TRUE)
 
-\dontrun{
 
 # 5 components, optimising 'keepX' and 'ncomp'
 tune = tune.splsda(X, Y, ncomp = 5, test.keepX = c(5, 10, 15),
@@ -193,7 +192,6 @@ test.keepX = seq(1,10,2), progressBar = TRUE)
 
 ## Second example: multilevel one-factor analysis with sPLS-DA
 
-data(vac18)
 X = vac18$genes
 Y = vac18$stimulation
 # sample indicates the repeated measurements

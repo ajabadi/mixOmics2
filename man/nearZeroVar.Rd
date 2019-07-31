@@ -53,11 +53,11 @@ In the above example, the frequency ratio is 999 and the unique value
 percentage is 0.0001.
 }
 \examples{
-
-data(diverse.16S)
+\dontrun{
+library(mixOmics.data)
 nzv = nearZeroVar(diverse.16S$data.raw)
 length(nzv$Position) # those would be removed for the default frequency cut
-
+}
 }
 \seealso{
 \code{\link{pls}}, \code{\link{spls}}, \code{\link{plsda}},

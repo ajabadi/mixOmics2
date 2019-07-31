@@ -94,7 +94,6 @@
 #' @examples
 #'
 #' ## First example
-#' data(breast.tumors)
 #' X <- breast.tumors$gene.exp
 #' # Y will be transformed as a factor in the function,
 #' # but we set it as a factor to set up the colors.
@@ -110,7 +109,6 @@
 #' ## Second example: one-factor analysis with sPLS-DA, selecting a subset of variables
 #' # as in the paper Liquet et al.
 #' #--------------------------------------------------------------
-#' data(vac18)
 #' X <- vac18$genes
 #' Y <- vac18$stimulation
 #' # sample indicates the repeated measurements
@@ -129,8 +127,6 @@
 #' # as in the paper Liquet et al.
 #' #--------------------------------------------------------------
 #'
-#' data(vac18.simulated) # simulated data
-#'
 #' X <- vac18.simulated$genes
 #' design <- data.frame(sample = vac18.simulated$sample)
 #' Y = data.frame( stimu = vac18.simulated$stimulation,
@@ -147,7 +143,6 @@
 #' ## Fourth example: with more than two classes
 #' # ------------------------------------------------
 #'
-#' data(liver.toxicity)
 #' X <- as.matrix(liver.toxicity$gene)
 #' # Y will be transformed as a factor in the function,
 #' # but we set it as a factor to set up the colors.
@@ -181,8 +176,13 @@
 ###########################################################
 ## generic function
 #############################################################
-#' @usage \S4method{splsda}{ANY}(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"), keepX, scale = TRUE, tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"),  multilevel = NULL, all.outputs = TRUE)
-## arguemnts for 'ANY' must be copied from internal to @usage ANY,for generic other arguments passed to methods can be added plus '...' so the methods can get '...' - if we only include X, RStudio won't suggest the rest automatically for autofill
+#' @usage \S4method{splsda}{ANY}(X, Y, ncomp = 2,
+#' mode = c("regression", "canonical", "invariant", "classic"),
+#' keepX, scale = TRUE, tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
+#' logratio = c("none", "CLR"),  multilevel = NULL, all.outputs = TRUE)
+## arguemnts for 'ANY' must be copied from internal to @usage ANY,for generic other arguments
+## passed to methods can be added plus '...' so the methods can get '...' - if we only
+## include X, RStudio won't suggest the rest automatically for autofill
 #' @export
 #' @rdname splsda
 setGeneric("splsda", def = function(X, Y, formula=NULL, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"), keepX, scale = TRUE, tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = "none", multilevel = NULL, all.outputs = TRUE,...) standardGeneric("splsda"))

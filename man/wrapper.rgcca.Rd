@@ -83,8 +83,7 @@ unsupervised model can be run. For a supervised model, the
 details can be found on the package \pkg{RGCCA}.
 }
 \examples{
-
-data(nutrimouse)
+\dontrun{
 # need to unmap the Y factor diet
 Y = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
@@ -103,7 +102,7 @@ wrap.result.rgcca = wrapper.rgcca(X = data, design = design, tau = c(1, 1, 0),
 ncomp = 2,
 scheme = "centroid")
 #wrap.result.rgcca
-
+}
 }
 \references{
 Tenenhaus A. and Tenenhaus M., (2011), Regularized Generalized Canonical

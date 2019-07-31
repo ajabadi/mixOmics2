@@ -35,7 +35,6 @@
 #' 20(6):621-632, 2009.
 #' @examples
 #'
-#' data(diverse.16S)
 #' CLR = logratio.transfo(X = diverse.16S$data.TSS, logratio = 'CLR')
 #' # no offset needed here as we have put it prior to the TSS, see www.mixOmics.org/mixMC
 #'

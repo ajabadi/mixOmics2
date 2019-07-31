@@ -33,28 +33,28 @@
 
 
 #' Summary Methods for CCA and PLS objects
-#' 
+#'
 #' Produce \code{summary} methods for class \code{"rcc"}, \code{"pls"} and
 #' \code{"spls"}.
-#' 
+#'
 #' The information in the \code{rcc}, \code{pls} or \code{spls} object is
 #' summarised, it includes: the dimensions of \code{X} and \code{Y} data, the
 #' number of variates considered, the canonical correlations (if \code{object}
 #' of class \code{"rcc"}) and the (s)PLS algorithm used (if \code{object} of
 #' class \code{"pls"} or \code{"spls"}) and the number of variables selected on
 #' each of the sPLS components (if \code{x} of class \code{"spls"}).
-#' 
+#'
 #' \code{"communalities"} in \code{what} gives Communalities Analysis.
 #' \code{"redundancy"} display Redundancy Analysis. \code{"VIP"} gives the
 #' Variable Importance in the Projection (VIP) coefficients fit by \code{pls}
 #' or \code{spls}. If \code{what} is \code{"all"}, all are given.
-#' 
+#'
 #' For class \code{"rcc"}, when a value to \code{cutoff} is specified, the
 #' correlations between each variable and the equiangular vector between
 #' \eqn{X}- and \eqn{Y}-variates are computed. Variables with at least one
 #' correlation componente bigger than \code{cutoff} are showed. The defaults is
 #' \code{cutoff=NULL} all the variables are given.
-#' 
+#'
 #' @aliases summary summary.rcc summary.mixo_pls summary.mixo_spls
 #' @param object object of class inherited from \code{"rcc"}, \code{"pls"} or
 #' \code{"spls"}.
@@ -84,39 +84,36 @@
 #' \code{\link{vip}}.
 #' @keywords regression multivariate
 #' @examples
-#' 
+#'
 #' ## summary for objects of class 'rcc'
-#' data(nutrimouse)
 #' X <- nutrimouse$lipid
 #' Y <- nutrimouse$gene
 #' nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 #' more <- summary(nutri.res, cutoff = 0.65)
-#' 
+#'
 #' \dontrun{
 #' ## summary for objects of class 'pls'
-#' data(linnerud)
 #' X <- linnerud$exercise
 #' Y <- linnerud$physiological
 #' linn.pls <- pls(X, Y)
 #' more <- summary(linn.pls)
-#' 
+#'
 #' ## summary for objects of class 'spls'
-#' data(liver.toxicity)
 #' X <- liver.toxicity$gene
 #' Y <- liver.toxicity$clinic
 #' toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50),
 #' keepY = c(10, 10, 10))
 #' more <- summary(toxicity.spls, what = "redundancy", keep.var = TRUE)
 #' }
-#' 
-#' 
+#'
+#'
 
 summary.mixo_pls <- summary.mixo_spls <-
-function(object, 
-         what = c("all", "communalities", "redundancy", "VIP"), 
-         digits = 4, 
+function(object,
+         what = c("all", "communalities", "redundancy", "VIP"),
+         digits = 4,
          keep.var = FALSE,
-	 ...) 
+	 ...)
 {
 
     #-- initialisation des matrices --#
@@ -125,7 +122,7 @@ function(object,
     p = ncol(object$X)
     q = ncol(object$Y)
     result = list( )
-     
+
     if (keep.var) {
         gp.X = apply(object$loadings$X, 1, sum) != 0
         gp.Y = apply(object$loadings$Y, 1, sum) != 0
@@ -134,7 +131,7 @@ function(object,
         gp.X = 1:p
         gp.Y = 1:q
     }
-     
+
     #-- communaut? --#
     if (any(what == "all") || any(what == "communalities")) {
         # communaut? inter-groupe #
@@ -142,76 +139,76 @@ function(object,
         Cm.XvsV = cor(object$X[, gp.X], object$variate$Y[, 1:ncomp], use = "pairwise")
         Cm.XvsV = t(apply(Cm.XvsV^2, 1, cumsum))
         colnames(Cm.XvsV) = paste("comp", 1:ncomp)
-         
+
         Cm.YvsU = cor(object$Y[, gp.Y], object$variate$X[, 1:ncomp], use = "pairwise")
         Cm.YvsU = t(apply(Cm.YvsU^2, 1, cumsum))
         colnames(Cm.YvsU) = paste("comp", 1:ncomp)
-         
+
         # communaut? intra-groupe #
         #-------------------------#
         Cm.XvsU = cor(object$X[, gp.X], object$variates$X[, 1:ncomp], use = "pairwise")
         Cm.XvsU = t(apply(Cm.XvsU^2, 1, cumsum))
         colnames(Cm.XvsU) = paste("comp", 1:ncomp)
-         
+
         Cm.YvsV = cor(object$Y[, gp.Y], object$variates$Y[, 1:ncomp], use = "pairwise")
         Cm.YvsV = t(apply(Cm.YvsV^2, 1, cumsum))
         colnames(Cm.YvsV) = paste("comp", 1:ncomp)
-         
+
         result$Cm.X = list(own = Cm.XvsU, opp = Cm.XvsV)
         result$Cm.Y = list(own = Cm.YvsV, opp = Cm.YvsU)
     }
-     
+
     #-- redondance --#
     if (any(what == "all") || any(what == "redundancy")) {
         Rd.XvsU = cor(object$X[, gp.X], object$variates$X[, 1:ncomp], use = "pairwise")
         Rd.XvsU = apply(Rd.XvsU^2, 2, sum)/p
         Rd.XvsV = cor(object$X[, gp.X], object$variates$Y[, 1:ncomp], use = "pairwise")
         Rd.XvsV = apply(Rd.XvsV^2, 2, sum)/p
-         
+
         Rd.YvsU = cor(object$Y[, gp.Y], object$variates$X[, 1:ncomp], use = "pairwise")
         Rd.YvsU = apply(Rd.YvsU^2, 2, sum)/q
         Rd.YvsV = cor(object$Y[, gp.Y], object$variates$Y[, 1:ncomp], use = "pairwise")
         Rd.YvsV = apply(Rd.YvsV^2, 2, sum)/q
-         
+
         own = cbind(Rd.XvsU, cumsum(Rd.XvsU))
         colnames(own) = c("Proportion", "Cumulative")
         opp = cbind(Rd.XvsV, cumsum(Rd.XvsV))
         colnames(opp) = c("Proportion", "Cumulative")
         result$Rd.X = list(own = own, opp = opp)
-         
+
         own = cbind(Rd.YvsV, cumsum(Rd.YvsV))
         colnames(own) = c("Proportion", "Cumulative")
         opp = cbind(Rd.YvsU, cumsum(Rd.YvsU))
         colnames(opp) = c("Proportion", "Cumulative")
         result$Rd.Y = list(own = own, opp = opp)
     }
-     
+
     #-- affichage --#
-    if (any(what == "all") || any(what == "communalities") || 
+    if (any(what == "all") || any(what == "communalities") ||
         any(what == "redundancy") || any(what == "VIP")) {
         result$ncomp = ncomp
         result$mode = object$mode
         result$keep.var = list(X = colnames(object$X)[gp.X], Y = colnames(object$Y)[gp.Y])
     }
-     
+
     #-- tableau VIP --#
     if (any(what == "all") || any(what == "VIP")) {
         VIP = vip(object)[gp.X, ]
         result$VIP = VIP
     }
-     
+
     #-- valeurs sortantes --#
     result$what = what
     result$digits = digits
     if(class(object)[1] == "pls") {
         result$method = 'pls'
-	} 
+	}
 	else {
         result$method = 'spls'
         result$keepX = object$keepX
         result$keepY = object$keepY
-    } 
-     
+    }
+
     class(result) = "summary"
     return(invisible(result))
 }
@@ -219,11 +216,11 @@ function(object,
 
 #-------------------------- rcc -------------------------#
 summary.rcc <-
-function(object, 
-         what = c("all", "communalities", "redundancy"), 
-         cutoff = NULL, 
+function(object,
+         what = c("all", "communalities", "redundancy"),
+         cutoff = NULL,
          digits = 4,
-	 ...) 
+	 ...)
 {
 
     #-- initialisation des matrices --#
@@ -231,43 +228,43 @@ function(object,
     p = ncol(object$X)
     q = ncol(object$Y)
     n = nrow(object$X)
-     
+
     bisect = object$variates$X[, 1:ncomp] + object$variates$Y[, 1:ncomp]
     cord.X = cor(object$X, bisect, use = "pairwise")
     cord.Y = cor(object$Y, bisect, use = "pairwise")
     gp.X = 1:p
     gp.Y = 1:q
-     
+
     if (!is.null(cutoff)) {
-        # choix des variables avec au moins une coordonn?e # 
+        # choix des variables avec au moins une coordonn?e #
         # sup?rieur au cutoff                              #
         #--------------------------------------------------#
         gp.X = vector(mode = "numeric")
         gp.Y = vector(mode = "numeric")
-          
+
         k = 1
-        for (i in 1:p) {  
-            if (any(abs(cord.X[i, ]) > cutoff)) { 
+        for (i in 1:p) {
+            if (any(abs(cord.X[i, ]) > cutoff)) {
                 gp.X[k] = i
                 k = k + 1
             }
         }
-         
+
         k = 1
-        for (i in 1:q) {  
-            if (any(abs(cord.Y[i, ]) > cutoff)) { 
+        for (i in 1:q) {
+            if (any(abs(cord.Y[i, ]) > cutoff)) {
                 gp.Y[k] = i
                 k = k + 1
             }
         }
     }
-     
-    if (length(gp.X) == 0 || length(gp.Y) == 0) 
+
+    if (length(gp.X) == 0 || length(gp.Y) == 0)
         stop("Cutoff value very high for the components 1:ncomp.
              No variable was selected.")
-     
+
     result = list( )
-     
+
     #-- communaut? --#
     if (any(what == "all") || any(what == "communalities")) {
         # communaut? inter-groupe #
@@ -275,39 +272,39 @@ function(object,
         Cm.XvsV = cor(object$X[, gp.X], object$variate$Y[, 1:ncomp], use = "pairwise")
         Cm.XvsV = t(apply(Cm.XvsV^2, 1, cumsum))
         colnames(Cm.XvsV) = paste("comp", 1:ncomp)
-         
+
         Cm.YvsU = cor(object$Y[, gp.Y], object$variate$X[, 1:ncomp], use = "pairwise")
         Cm.YvsU = t(apply(Cm.YvsU^2, 1, cumsum))
         colnames(Cm.YvsU) = paste("comp", 1:ncomp)
-         
+
         # communaut? intra-groupe #
         #-------------------------#
         Cm.XvsU = cor(object$X[, gp.X], object$variates$X[, 1:ncomp], use = "pairwise")
         Cm.XvsU = scale(Cm.XvsU^2, center = FALSE, scale = (object$cor[1:ncomp])^2)
         Cm.XvsU = t(apply(Cm.XvsU, 1, cumsum))
         colnames(Cm.XvsU) = paste("comp", 1:ncomp)
-         
+
         Cm.YvsV = cor(object$Y[, gp.Y], object$variates$Y[, 1:ncomp], use = "pairwise")
         Cm.YvsV = scale(Cm.YvsV^2, center = FALSE, scale = (object$cor[1:ncomp])^2)
         Cm.YvsV = t(apply(Cm.YvsV, 1, cumsum))
         colnames(Cm.YvsV) = paste("comp", 1:ncomp)
-         
+
         result$Cm.X = list(own = Cm.XvsU, opp = Cm.XvsV)
         result$Cm.Y = list(own = Cm.YvsV, opp = Cm.YvsU)
     }
-     
+
     #-- redondance --#
     if (any(what == "all") || any(what == "redundancy")) {
         Rd.XvsU = cor(object$X, object$variates$X[, 1:ncomp], use = "pairwise")
         Rd.XvsU = apply(Rd.XvsU^2, 2, sum)/p
         Rd.XvsV = cor(object$X, object$variates$Y[, 1:ncomp], use = "pairwise")
         Rd.XvsV = apply(Rd.XvsV^2, 2, sum)/p
-         
+
         Rd.YvsU = cor(object$Y, object$variates$X[, 1:ncomp], use = "pairwise")
         Rd.YvsU = apply(Rd.YvsU^2, 2, sum)/q
         Rd.YvsV = cor(object$Y, object$variates$Y[, 1:ncomp], use = "pairwise")
         Rd.YvsV = apply(Rd.YvsV^2, 2, sum)/q
-         
+
         own = cbind(Rd.XvsU, cumsum(Rd.XvsU))
         colnames(own) = c("Proportion", "Cumulative")
         rownames(own) = paste("comp", 1:ncomp)
@@ -315,7 +312,7 @@ function(object,
         colnames(opp) = c("Proportion", "Cumulative")
         rownames(opp) = paste("comp", 1:ncomp)
         result$Rd.X = list(own = own, opp = opp)
-         
+
         own = cbind(Rd.YvsV, cumsum(Rd.YvsV))
         colnames(own) = c("Proportion", "Cumulative")
         rownames(own) = paste("comp", 1:ncomp)
@@ -324,11 +321,11 @@ function(object,
         rownames(opp) = paste("comp", 1:ncomp)
         result$Rd.Y = list(own = own, opp = opp)
     }
-     
+
     #-- corr?lations canoniques --#
     can.cor = object$cor[1:ncomp]
     names(can.cor) = paste(1:ncomp, "th", sep = "")
-     
+
     #-- valeurs sortantes --#
     result$can.cor = can.cor
     result$ncomp = ncomp
@@ -338,7 +335,7 @@ function(object,
     result$what = what
     result$digits = digits
     result$method = 'rcc'
-     
+
     class(result) = "summary"
     return(invisible(result))
 }

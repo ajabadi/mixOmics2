@@ -101,7 +101,6 @@ References and more details in \code{?pls}).
 }
 \examples{
 
-data(breast.TCGA)
 
 # for the purpose of this example, we create data that fit in the context of
 # this function.

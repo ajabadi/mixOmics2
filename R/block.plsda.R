@@ -66,33 +66,33 @@
 
 #' N-integration with Projection to Latent Structures models (PLS) with
 #' Discriminant Analysis
-#' 
+#'
 #' Integration of multiple data sets measured on the same samples or
 #' observations to classify a discrete outcome, ie. N-integration with
 #' Discriminant Analysis. The method is partly based on Generalised Canonical
 #' Correlation Analysis.
-#' 
+#'
 #' \code{block.plsda} function fits a horizontal integration PLS-DA model with
 #' a specified number of components per block). A factor indicating the
 #' discrete outcome needs to be provided, either by \code{Y} or by its position
 #' \code{indY} in the list of blocks \code{X}.
-#' 
+#'
 #' \code{X} can contain missing values. Missing values are handled by being
 #' disregarded during the cross product computations in the algorithm
 #' \code{block.pls} without having to delete rows with missing data.
 #' Alternatively, missing data can be imputed prior using the \code{nipals}
 #' function.
-#' 
+#'
 #' The type of algorithm to use is specified with the \code{mode} argument.
 #' Four PLS algorithms are available: PLS regression \code{("regression")}, PLS
 #' canonical analysis \code{("canonical")}, redundancy analysis
 #' \code{("invariant")} and the classical PLS algorithm \code{("classic")} (see
 #' References and \code{?pls} for more details).
-#' 
+#'
 #' Note that our method is partly based on Generalised Canonical Correlation
 #' Analysis and differs from the MB-PLS approaches proposed by Kowalski et al.,
 #' 1989, J Chemom 3(1) and Westerhuis et al., 1998, J Chemom, 12(5).
-#' 
+#'
 #' @param X A list of data sets (called 'blocks') measured on the same samples.
 #' Data in the list should be arranged in matrices, samples x variables, with
 #' samples order matching in all data sets.
@@ -128,7 +128,7 @@
 #' @return \code{block.plsda} returns an object of class
 #' \code{"block.plsda","block.pls"}, a list that contains the following
 #' components:
-#' 
+#'
 #' \item{X}{the centered and standardized original predictor matrix.}
 #' \item{indY}{the position of the outcome Y in the output list X.}
 #' \item{ncomp}{the number of components included in the model for each block.}
@@ -146,7 +146,7 @@
 #' \code{\link{perf}}, \code{\link{selectVar}}, \code{\link{block.pls}},
 #' \code{\link{block.splsda}} and http://www.mixOmics.org for more details.
 #' @references On PLSDA:
-#' 
+#'
 #' Barker M and Rayens W (2003). Partial least squares for discrimination.
 #' \emph{Journal of Chemometrics} \bold{17}(3), 166-173. Perez-Enciso, M. and
 #' Tenenhaus, M. (2003). Prediction of clinical outcome with microarray data: a
@@ -154,39 +154,37 @@
 #' Genetics} \bold{112}, 581-592. Nguyen, D. V. and Rocke, D. M. (2002). Tumor
 #' classification by partial least squares using microarray gene expression
 #' data. \emph{Bioinformatics} \bold{18}, 39-50.
-#' 
+#'
 #' On multiple integration with PLS-DA: Gunther O., Shin H., Ng R. T. ,
 #' McMaster W. R., McManus B. M. , Keown P. A. , Tebbutt S.J. , Lê Cao K-A. ,
 #' (2014) Novel multivariate methods for integration of genomics and proteomics
 #' data: Applications in a kidney transplant rejection study, OMICS: A journal
 #' of integrative biology, 18(11), 682-95.
-#' 
+#'
 #' On multiple integration with sPLS-DA and 4 data blocks:
-#' 
+#'
 #' Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Lê
 #' Cao K.A. (2016). DIABLO: multi omics integration for biomarker discovery.
 #' BioRxiv available here:
 #' \url{http://biorxiv.org/content/early/2016/08/03/067611}
-#' 
+#'
 #' mixOmics article:
-#' 
+#'
 #' Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics
 #' feature selection and multiple data integration. PLoS Comput Biol 13(11):
 #' e1005752
 #' @keywords regression multivariate
 #' @examples
-#' 
-#' 
-#' data(nutrimouse)
+#'
 #' data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = nutrimouse$diet)
 #' # with this design, all blocks are connected
 #' design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
 #' byrow = TRUE, dimnames = list(names(data), names(data)))
-#' 
+#'
 #' res = block.plsda(X = data, indY = 3) # indY indicates where the outcome Y is in the list X
 #' plotIndiv(res, ind.names = FALSE, legend = TRUE)
 #' plotVar(res)
-#' 
+#'
 #' \dontrun{
 #' # when Y is provided
 #' res2 = block.plsda(list(gene = nutrimouse$gene, lipid = nutrimouse$lipid),
@@ -194,7 +192,7 @@
 #' plotIndiv(res2)
 #' plotVar(res2)
 #' }
-#' 
+#'
 #' @export block.plsda
 block.plsda = function(X,
 Y,
@@ -237,7 +235,7 @@ all.outputs = TRUE)
         } else {
             stop("'Y' should be a factor or a class vector.")
         }
-        
+
         if (nlevels(temp) == 1)
         stop("'X[[indY]]' should be a factor with more than one level")
 
@@ -249,7 +247,7 @@ all.outputs = TRUE)
     } else if (missing(indY)) {
         stop("Either 'Y' or 'indY' is needed")
     }
-    
+
     # call to 'internal_wrapper.mint.block'
     result = internal_wrapper.mint.block(X=X, Y=Y, indY=indY, ncomp=ncomp,
         design=design, scheme=scheme, mode=mode, scale=scale,
@@ -282,11 +280,11 @@ all.outputs = TRUE)
         indY = result$indY,
         weights = weights,
         explained_variance = result$explained_variance)#[-result$indY])
-    
+
     # give a class
     class(out) = c("block.plsda","block.pls","sgccda","sgcca","DA")
     return(invisible(out))
-    
+
 }
 
 

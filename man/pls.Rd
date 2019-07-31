@@ -124,6 +124,9 @@ internal pre-processing step, through \code{\link{logratio.transfo}} and
 \code{\link{withinVariation}} respectively.
 }
 \examples{
+#' \dontrun{
+## successful: FALSE
+
 library(mixOmics.data)
 
 X <- linnerud$exercise
@@ -132,18 +135,19 @@ linn.pls <- pls(X, Y, mode = "classic")
 
 plotVar(linn.pls)
 
-\dontrun{
-  X <- liver.toxicity$gene
-  Y <- liver.toxicity$clinic
-  toxicity.pls <- pls(X, Y, ncomp = 3)
-}
+
+X <- liver.toxicity$gene
+Y <- liver.toxicity$clinic
+toxicity.pls <- pls(X, Y, ncomp = 3)
+
+plotVar(toxicity.pls, cutoff = 0.8)
 
 ## ---- example with formula
-
-linn.pls.form <- pls(formula = Y~X)
+# linn.pls.form <- pls(formula = Y~X)
 
 ## --- example with MultiAssayExperiment:
 
+#' }
 }
 \references{
 Tenenhaus, M. (1998). \emph{La regression PLS: theorie et

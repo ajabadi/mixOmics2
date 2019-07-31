@@ -32,34 +32,34 @@
 
 
 #' Tune the number of principal components in PCA
-#' 
+#'
 #' \code{tune.pca} can be used to quickly visualise the proportion of explained
 #' variance for a large number of principal components in PCA.
-#' 
+#'
 #' The calculation is done either by a singular value decomposition of the
 #' (possibly centered and scaled) data matrix, if the data is complete or by
 #' using the NIPALS algorithm if there is data missing. Unlike
 #' \code{\link{princomp}}, the print method for these objects prints the
 #' results in a nice format and the \code{plot} method produces a bar plot of
 #' the percentage of variance explaned by the principal components (PCs).
-#' 
+#'
 #' When using NIPALS (missing values), we make the assumption that the first
 #' (\code{min(ncol(X),} \code{nrow(X)}) principal components will account for
 #' 100 \% of the explained variance.
-#' 
+#'
 #' Note that \code{scale= TRUE} cannot be used if there are zero or constant
 #' (for \code{center = TRUE}) variables.
-#' 
+#'
 #' Components are omitted if their standard deviations are less than or equal
 #' to \code{comp.tol} times the standard deviation of the first component. With
 #' the default null setting, no components are omitted. Other settings for
 #' \code{comp.tol} could be \code{comp.tol = sqrt(.Machine$double.eps)}, which
 #' would omit essentially constant components, or \code{comp.tol = 0}.
-#' 
+#'
 #' logratio transform and multilevel analysis are performed sequentially as
 #' internal pre-processing step, through \code{\link{logratio.transfo}} and
 #' \code{\link{withinVariation}} respectively.
-#' 
+#'
 #' @param X a numeric matrix (or data frame) which provides the data for the
 #' principal components analysis. It can contain missing values.
 #' @param ncomp integer, the number of components to initially analyse in
@@ -97,11 +97,11 @@
 #' for more details.
 #' @keywords algebra
 #' @examples
-#' 
-#' data(liver.toxicity)
+#' \dontrun{
+#' library(mixOmics.data)
 #' tune <- tune.pca(liver.toxicity$gene, center = TRUE, scale = TRUE)
 #' tune
-#' 
+#'}
 #' @export tune.pca
 tune.pca =
 function(X,
@@ -114,24 +114,24 @@ logratio = 'none',# one of ('none','CLR','ILR')
 V = NULL,
 multilevel = NULL)
 {
-    
-    
+
+
     result = pca(X = X, ncomp = ncomp,
     center = center, scale = scale,
     max.iter = max.iter, tol = tol,
     logratio = logratio, V = V,
     multilevel = multilevel)
-    
+
     is.na.X = is.na(X)
     na.X = FALSE
     if (any(is.na.X)) na.X = TRUE
-    
+
     #  list eigenvalues, prop. of explained varience and cumulative proportion of explained variance
     prop.var = result$explained_variance
     cum.var = result$cum.var
-    
+
     ind.show = min(10, ncomp)
-    
+
     print(result)
 
     # Plot the principal components and explained variance
@@ -144,9 +144,9 @@ multilevel = NULL)
     }
     barplot(prop.var[1:result$ncomp], names.arg = 1:result$ncomp, xlab = "Principal Components",
     ylab = ylab)
-    
+
     result$call = match.call()
-    
+
     class(result) = "tune.pca"
     return(invisible(result))
 }

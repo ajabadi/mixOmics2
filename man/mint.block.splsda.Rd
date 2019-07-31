@@ -107,7 +107,7 @@ References and more details in \code{?pls}).
 }
 \examples{
 
-data(breast.TCGA)
+\dontrun{
 
 # for the purpose of this example, we consider the training set as study1 and
 # the test set as another independent study2.
@@ -124,7 +124,7 @@ keepX = list(mrna=c(10,10), mirna=c(20,20)),ncomp=2)
 
 res
 
-
+}
 }
 \references{
 On multi-group PLS: Rohart F, Eslami A, Matigian, N, Bougeard S,

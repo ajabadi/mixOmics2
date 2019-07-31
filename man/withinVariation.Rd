@@ -35,7 +35,6 @@ One or two-factor analyses are available.
 
 ## Example: one-factor analysis matrix decomposition
 #--------------------------------------------------------------
-data(vac18)
 X <- vac18$genes
 # in design we only need to mention the repeated measurements to split the one level variation
 design <- data.frame(sample = vac18$sample)

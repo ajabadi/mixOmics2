@@ -31,24 +31,24 @@
 
 
 #' Plot of Loading vectors
-#' 
+#'
 #' This function provides a horizontal bar plot to visualise loading vectors.
 #' For discriminant analysis, it provides visualisation of highest or lowest
 #' mean/median value of the variables with color code corresponding to the
 #' outcome of interest.
-#' 
-#' 
+#'
+#'
 #' The contribution of each variable for each component (depending on the
 #' object) is represented in a barplot where each bar length corresponds to the
 #' loading weight (importance) of the feature. The loading weight can be
 #' positive or negative.
-#' 
+#'
 #' For discriminant analysis, the color corresponds to the group in which the
 #' feature is most 'abundant'.  Note that this type of graphical output is
 #' particularly insightful for count microbial data - in that latter case using
 #' the \code{method = 'median'} is advised. Note also that if the parameter
 #' \code{contrib} is not provided, plots are white.
-#' 
+#'
 #' For MINT analysis, \code{study="global"} plots the global loadings while
 #' partial loadings are plotted when \code{study} is a level of
 #' \code{object$study}. Since variable selection in MINT is performed at the
@@ -56,7 +56,7 @@
 #' loadings even if the partial loadings are not sparse. See references.
 #' Importantly for multi plots, the legend accounts for one subplot in the
 #' layout design.
-#' 
+#'
 #' @aliases plotLoadings plotLoadings.mixo_pls plotLoadings.mixo_spls
 #' plotLoadings.rcc plotLoadings.pca plotLoadings.sgcca plotLoadings.rgcca
 #' plotLoadings.block.pls plotLoadings.block.spls plotLoadings.mixo_plsda
@@ -133,65 +133,64 @@
 #' @references Rohart F. et al (2016, submitted). MINT: A multivariate
 #' integrative approach to identify a reproducible biomarker signature across
 #' multiple experiments and platforms.
-#' 
+#'
 #' Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2013). Multi-group
 #' PLS Regression: Application to Epidemiology. In New Perspectives in Partial
 #' Least Squares and Related Methods, pages 243-255. Springer.
-#' 
+#'
 #' Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Lê
 #' Cao K.A. (2016). DIABLO - multi omics integration for biomarker discovery.
-#' 
+#'
 #' Lê Cao, K.-A., Martin, P.G.P., Robert-Granie, C. and Besse, P. (2009).
 #' Sparse canonical methods for biological data integration: application to a
 #' cross-platform study. \emph{BMC Bioinformatics} \bold{10}:34.
-#' 
+#'
 #' Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris:
 #' Editions Technic.
-#' 
+#'
 #' Wold H. (1966). Estimation of principal components and related models by
 #' iterative least squares. In: Krishnaiah, P. R. (editors), \emph{Multivariate
 #' Analysis}. Academic Press, N.Y., 391-420.
 #' @keywords multivariate
 #' @examples
-#' 
+#'
+#' \dontrun{
 #' ## object of class 'spls'
 #' # --------------------------
-#' data(liver.toxicity)
+#' library(mixOmics.data)
 #' X = liver.toxicity$gene
 #' Y = liver.toxicity$clinic
-#' 
+#'
 #' toxicity.spls = spls(X, Y, ncomp = 2, keepX = c(50, 50),
 #' keepY = c(10, 10))
-#' 
+#'
 #' plotLoadings(toxicity.spls)
-#' 
+#'
 #' # with xlim
 #' xlim = matrix(c(-0.1,0.3, -0.4,0.6), nrow = 2, byrow = TRUE)
 #' plotLoadings(toxicity.spls, xlim = xlim)
-#' 
-#' 
-#' \dontrun{
+#'
+#'
 #' ## object of class 'splsda'
 #' # --------------------------
-#' data(liver.toxicity)
 #' X = as.matrix(liver.toxicity$gene)
 #' Y = as.factor(liver.toxicity$treatment[, 4])
-#' 
+#'
 #' splsda.liver = splsda(X, Y, ncomp = 2, keepX = c(20, 20))
-#' 
+#'
 #' # contribution on comp 1, based on the median.
 #' # Colors indicate the group in which the median expression is maximal
 #' plotLoadings(splsda.liver, comp = 1, method = 'median')
 #' plotLoadings(splsda.liver, comp = 1, method = 'median', contrib = "max")
-#' 
+#'
 #' # contribution on comp 2, based on median.
 #' #Colors indicate the group in which the median expression is maximal
 #' plotLoadings(splsda.liver, comp = 2, method = 'median', contrib = "max")
-#' 
+#'
 #' # contribution on comp 2, based on median.
 #' # Colors indicate the group in which the median expression is minimal
 #' plotLoadings(splsda.liver, comp = 2, method = 'median', contrib = 'min')
-#' 
+#'
 #' # changing the name to gene names
 #' # if the user input a name.var but names(name.var) is NULL,
 #' # then a warning will be output and assign names of name.var to colnames(X)
@@ -200,17 +199,17 @@
 #' length(name.var)
 #' plotLoadings(splsda.liver, comp = 2, method = 'median', name.var = name.var,
 #' title = "Liver data", contrib = "max")
-#' 
+#'
 #' # if names are provided: ok, even when NAs
 #' name.var = liver.toxicity$gene.ID[, 'geneBank']
 #' names(name.var) = rownames(liver.toxicity$gene.ID)
 #' plotLoadings(splsda.liver, comp = 2, method = 'median',
 #' name.var = name.var, size.name = 0.5, contrib = "max")
-#' 
+#'
 #' #missing names of some genes? complete with the original names
 #' plotLoadings(splsda.liver, comp = 2, method = 'median',
 #' name.var = name.var, size.name = 0.5,complete.name.var=TRUE, contrib = "max")
-#' 
+#'
 #' # look at the contribution (median) for each variable
 #' plot.contrib = plotLoadings(splsda.liver, comp = 2, method = 'median', plot = FALSE,
 #' contrib = "max")
@@ -218,123 +217,118 @@
 #' # change the title of the legend and title name
 #' plotLoadings(splsda.liver, comp = 2, method = 'median', legend.title = 'Time',
 #' title = 'Contribution plot', contrib = "max")
-#' 
+#'
 #' # no legend
 #' plotLoadings(splsda.liver, comp = 2, method = 'median', legend = FALSE, contrib = "max")
-#' 
+#'
 #' # change the color of the legend
 #' plotLoadings(splsda.liver, comp = 2, method = 'median', legend.color = c(1:4), contrib = "max")
-#' 
-#' 
-#' 
+#'
+#'
+#'
 #' # object 'splsda multilevel'
 #' # -----------------
-#' 
-#' data(vac18)
+#'
 #' X = vac18$genes
 #' Y = vac18$stimulation
 #' # sample indicates the repeated measurements
 #' sample = vac18$sample
 #' stimul = vac18$stimulation
-#' 
+#'
 #' # multilevel sPLS-DA model
 #' res.1level = splsda(X, Y = stimul, ncomp = 3, multilevel = sample,
 #' keepX = c(30, 137, 123))
-#' 
-#' 
+#'
+#'
 #' name.var = vac18$tab.prob.gene[, 'Gene']
 #' names(name.var) = colnames(X)
-#' 
+#'
 #' plotLoadings(res.1level, comp = 2, method = 'median', legend.title = 'Stimu',
 #' name.var = name.var, size.name = 0.2, contrib = "max")
-#' 
+#'
 #' # too many transcripts? only output the top ones
 #' plotLoadings(res.1level, comp = 2, method = 'median', legend.title = 'Stimu',
 #' name.var = name.var, size.name = 0.5, ndisplay = 60, contrib = "max")
-#' 
-#' 
-#' 
+#'
+#'
+#'
 #' # object 'plsda'
 #' # ----------------
-#' 
+#'
 #' # breast tumors
 #' # ---
-#' data(breast.tumors)
 #' X = breast.tumors$gene.exp
 #' Y = breast.tumors$sample$treatment
-#' 
+#'
 #' plsda.breast = plsda(X, Y, ncomp = 2)
-#' 
+#'
 #' name.var = as.character(breast.tumors$genes$name)
 #' names(name.var) = colnames(X)
-#' 
+#'
 #' # with gene IDs, showing the top 60
 #' plotLoadings(plsda.breast, contrib = 'max', comp = 1, method = 'median',
 #' ndisplay = 60,
 #' name.var = name.var,
 #' size.name = 0.6,
 #' legend.color = color.mixo(1:2))
-#' 
-#' 
+#'
+#'
 #' # liver toxicity
 #' # ---
-#' 
-#' data(liver.toxicity)
+#'
 #' X = liver.toxicity$gene
 #' Y = liver.toxicity$treatment[, 4]
-#' 
+#'
 #' plsda.liver = plsda(X, Y, ncomp = 2)
 #' plotIndiv(plsda.liver, ind.names = Y, ellipse = TRUE)
-#' 
-#' 
+#'
+#'
 #' name.var = liver.toxicity$gene.ID[, 'geneBank']
 #' names(name.var) = rownames(liver.toxicity$gene.ID)
-#' 
+#'
 #' plotLoadings(plsda.liver, contrib = 'max', comp = 1, method = 'median', ndisplay = 100,
 #' name.var = name.var, size.name = 0.4,
 #' legend.color = color.mixo(1:4))
-#' 
-#' 
+#'
+#'
 #' # object 'sgccda'
 #' # ----------------
-#' 
-#' data(nutrimouse)
+#'
 #' Y = nutrimouse$diet
 #' data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 #' design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
-#' 
+#'
 #' nutrimouse.sgccda = wrapper.sgccda(X = data,
 #' Y = Y,
 #' design = design,
 #' keepX = list(gene = c(10,10), lipid = c(15,15)),
 #' ncomp = 2,
 #' scheme = "centroid")
-#' 
+#'
 #' plotLoadings(nutrimouse.sgccda,block=2)
 #' plotLoadings(nutrimouse.sgccda,block="gene")
-#' 
-#' 
-#' 
+#'
+#'
+#'
 #' # object 'mint.splsda'
 #' # ----------------
-#' data(stemcells)
 #' data = stemcells$gene
 #' type.id = stemcells$celltype
 #' exp = stemcells$study
-#' 
+#'
 #' res = mint.splsda(X = data, Y = type.id, ncomp = 3, keepX = c(10,5,15), study = exp)
-#' 
+#'
 #' plotLoadings(res)
 #' plotLoadings(res, contrib = "max")
 #' plotLoadings(res, contrib = "min", study = 1:4,comp=2)
-#' 
+#'
 #' # combining different plots by setting a layout of 2 rows and 4columns.
 #' # Note that the legend accounts for a subplot so 4columns instead of 2.
 #' plotLoadings(res,contrib="min",study=c(1,2,3),comp=2, layout = c(2,4))
 #' plotLoadings(res,contrib="min",study="global",comp=2)
-#' 
+#'
 #' }
-#' 
+#'
 #' @export plotLoadings
 plotLoadings  =
 function(object, ...) UseMethod("plotLoadings")
@@ -347,10 +341,10 @@ function(object, ...) UseMethod("plotLoadings")
 
 check.input.plotLoadings = function(object, block, study, subtitle, size.name, size.legend, title, col, contrib, name.var, xlim)
 {
-    
+
     if (is.null(object$loadings))
     stop("'plotLoadings' should be used on object for which object$loadings is present.")
-    
+
     # block
     # --
     if (missing(block))
@@ -369,25 +363,25 @@ check.input.plotLoadings = function(object, block, study, subtitle, size.name, s
             }
         }
     }
-    
+
     if (is(object, c("mixo_plsda", "mixo_splsda")) & (!all(block %in% c(1,"X")) | length(block) > 1 ))
     stop("'block' can only be 'X' or '1' for plsda and splsda object")
-    
+
     if (is(object, c("mixo_plsda", "mixo_splsda","pca")))
     {
         object$indY = 2
     } else if (is(object, c("mixo_pls", "mixo_spls"))) {
         object$indY = 3 # we don't want to remove anything in that case, and 3 is higher than the number of blocks which is 2
     }
-    
+
     if(!is(object, "DA"))
     object$indY = length(object$names$blocks)+1  # we don't want to remove anything in that case, and 3 is higher than the number of blocks which is 2
-    
+
     if(is.numeric(block))
     {
         if(any(block>length(object$names$blocks[-object$indY])))
         stop("'block' needs to be lower than the number of blocks in the fitted model, which is ",length(object$names$blocks)-1)
-        
+
     }else if(is.character(block) & any(is.na(match(block,object$names$blocks[-object$indY])))) {
         stop("Incorrect value for 'block', 'block' should be among the blocks used in your object: ", paste(object$names$blocks[-object$indY],collapse=", "), call. = FALSE)
     }
@@ -413,7 +407,7 @@ check.input.plotLoadings = function(object, block, study, subtitle, size.name, s
     # --
     if (size.name <= 0)
     size.name = 0.7
-    
+
     if (!missing(size.legend))
     {
         if(size.legend <= 0)
@@ -421,16 +415,16 @@ check.input.plotLoadings = function(object, block, study, subtitle, size.name, s
     } else {
         size.legend = NULL
     }
-    
+
     # contrib
     # --
     if(!missing(contrib))
     {
         if(length(contrib) > 1 | !all(contrib %in% c("min", "max")))
         stop("'contrib' must be either 'min' or 'max'")
-        
+
     }
-    
+
     # xlim
     #---
     if(!missing(xlim))
@@ -440,7 +434,7 @@ check.input.plotLoadings = function(object, block, study, subtitle, size.name, s
         {
             if(length(xlim) !=2)
             stop("'xlim' must be a vector of length 2")
-            
+
             xlim = matrix(xlim, nrow = 1)
         }
 
@@ -448,7 +442,7 @@ check.input.plotLoadings = function(object, block, study, subtitle, size.name, s
         {
             if(is.matrix(xlim) && ( !nrow(xlim) %in%c(1, length(block))  | ncol(xlim) != 2 ))
             stop("'xlim' must be a matrix with ",length(block)," rows (length(block)) and 2 columns")
-            
+
             if(is.vector(xlim))
             {
                 if(length(xlim) !=2)
@@ -456,22 +450,22 @@ check.input.plotLoadings = function(object, block, study, subtitle, size.name, s
 
                 xlim = matrix(xlim, nrow = 1)
             }
-            
+
             if(nrow(xlim) != length(block)) # we complete xlim to have one xlim per block
             xlim = matrix(rep(xlim, length(block)), nrow = length(block), byrow=TRUE)
         }
-        
+
     } else {
         xlim = NULL
     }
-    
+
     #names.var
     #-----
     if(!is.null(name.var))
     {
         if (length(block) >1 && length(block) != length(name.var))
         stop("'names' has to be a list of length the number of block to plot: ", length(block))
-        
+
         if (length(block) > 1)
         {
             for (block_i in block)
@@ -530,27 +524,27 @@ layout.plotLoadings = function(layout, plot, legend, block)
                 } else {
                     nRows = min(c(3, ceiling(nResp/3)))
                     nCols = min(c(3, ceiling(nResp / nRows)))
-                    
+
                     layout(matrix(1 : (nCols * nRows), nRows, nCols, byrow=TRUE))
 
                 }
                 if (nRows * nCols < nResp)
                 devAskNewPage(TRUE)
-                
+
                 reset.mfrow=TRUE # we changed mfrow to suits our needs, so we reset it at the end
             }
         } else {
             if (length(layout) != 2 || !is.numeric(layout) || any(is.na(layout)))
             stop("'layout' must be a numeric vector of length 2.")
-            
+
             nRows = layout[1]
             nCols = layout[2]
             par(mfrow = layout)
-            
+
             if (nRows * nCols < nResp)
             devAskNewPage(TRUE)
         }
-        
+
     } else {
         reset.mfrow = FALSE
         opar = NULL
@@ -567,7 +561,7 @@ get.loadings.ndisplay = function(object, comp, block, name.var, name.var.complet
     selected.var = selectVar(object, comp = comp, block = block) # gives name and values of the blocks in 'block'
     name.selected.var = selected.var[[1]]$name
     value.selected.var = selected.var[[1]]$value
-    
+
     # ndisplay
     # ------
     # if null set by default to all variables from selectVar
@@ -580,10 +574,10 @@ get.loadings.ndisplay = function(object, comp, block, name.var, name.var.complet
     } else {
         ndisplay.temp = ndisplay
     }
-    
+
     name.selected.var = name.selected.var[1:ndisplay.temp]
     value.selected.var = value.selected.var[1:ndisplay.temp,]
-    
+
     #comp
     # ----
     if (is(object, c("mixo_pls","mixo_spls", "rcc")))# cause pls methods just have 1 ncomp, block approaches have different ncomp per block
@@ -593,27 +587,27 @@ get.loadings.ndisplay = function(object, comp, block, name.var, name.var.complet
     } else {
         ncomp = object$ncomp[block]
     }
-    
+
     if (any(max(comp) > ncomp))
     stop(paste("Argument 'comp' should be less or equal to ", ncomp))
-    
+
     names.block = as.character(names(selected.var)[1]) #it should be one block and ncomp, so we take the first one
-    
+
     X = object$X[names.block][[1]]
-    
+
     #name.var
     ind.match = match(name.selected.var, colnames(X)) # look at the position of the selected variables in the original data X
     if(!is.null(name.var))
     {
         if(length(name.var)!= ncol(X))
         stop("For block '", names.block,"', 'name.var' should be a vector of length ", ncol(X))
-        
+
         colnames.X = as.character(name.var[ind.match]) # get the
     }else{
         colnames.X = as.character(colnames(X))[ind.match]
     }
     X = X[, name.selected.var, drop = FALSE] #reduce the problem to ndisplay
-    
+
     #completing colnames.X by the original names of the variables when missing
     if (name.var.complete == TRUE)
     {
@@ -621,8 +615,8 @@ get.loadings.ndisplay = function(object, comp, block, name.var, name.var.complet
         if (length(ind) > 0)
         colnames.X[ind] = colnames(X)[ind]
     }
-    
-    
+
+
     return(list(X = X, names.block = names.block, colnames.X = colnames.X, name.selected.var = name.selected.var, value.selected.var = value.selected.var))
 }
 
@@ -635,7 +629,7 @@ get.contrib.df = function(Y, X, method, contrib, value.selected.var, colnames.X,
     which.contrib = data.frame(matrix(FALSE, ncol = nlevels(Y) + 2, nrow = length(colnames.X),
     dimnames = list(name.selected.var, c(paste0("Contrib.", levels(Y)), "Contrib", "GroupContrib"))))
     # End: Initialisation
-    
+
     # calculate the max.method per group for each variable, and identifies which group has the max max.method
     for(k in 1:ncol(X))
     {
@@ -643,7 +637,7 @@ get.contrib.df = function(Y, X, method, contrib, value.selected.var, colnames.X,
         # determine which group has the highest mean/median
         which.contrib[k, 1:nlevels(Y)] = (method.group[[k]]) == get(contrib)((method.group[[k]])) # contrib is either min or max
     }
-    
+
     # we also add an output column indicating the group that is max
     # if ties, we set the color to white
     which.contrib$color = apply(which.contrib, 1, function(x)
@@ -655,7 +649,7 @@ get.contrib.df = function(Y, X, method, contrib, value.selected.var, colnames.X,
             return(legend.color[1 : nlevels(Y)][which(x)])
         }
     })
-    
+
     which.contrib$GroupContrib = apply(which.contrib[, 1:(nlevels(Y))], 1, function(x)
     {
         if (length(which(x)) > 1)
@@ -665,7 +659,7 @@ get.contrib.df = function(Y, X, method, contrib, value.selected.var, colnames.X,
             return(levels(Y)[which(x)])
         }
     })
-    
+
     method.group = do.call(rbind, method.group)
     df = data.frame(method.group, which.contrib, importance = value.selected.var)
     return(df)

@@ -152,8 +152,8 @@ details about the PLS modes are in \code{?pls}.
 \examples{
 
 ## sPLS-DA
-
-data(breast.tumors)
+\dontrun{
+library(mixOmics.data)
 X <- breast.tumors$gene.exp
 Y <- as.factor(breast.tumors$sample$treatment)
 tune= tune(method = "splsda", X, Y, ncomp=1, nrepeat=10, logratio="none",
@@ -163,10 +163,8 @@ plot(tune)
 
 
 
-\dontrun{
 ## mint.splsda
 
-data(stemcells)
 data = stemcells$gene
 type.id = stemcells$celltype
 exp = stemcells$study

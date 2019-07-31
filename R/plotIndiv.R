@@ -27,28 +27,21 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #############################################################################################################
 
-
-
-
-
-
-
-
 #' Plot of Individuals (Experimental Units)
-#' 
+#'
 #' This function provides scatter plots for individuals (experimental units)
 #' representation in (sparse)(I)PCA, (regularized)CCA, (sparse)PLS(DA) and
 #' (sparse)(R)GCCA(DA).
-#' 
+#'
 #' \code{plotIndiv} method makes scatter plot for individuals representation
 #' depending on the subspace of projection. Each point corresponds to an
 #' individual.
-#' 
+#'
 #' If \code{ind.names=TRUE} and row names is \code{NULL}, then
 #' \code{ind.names=1:n}, where \code{n} is the number of individuals. Also, if
 #' \code{pch} is an input, then \code{ind.names} is set to FALSE as we do not
 #' show both names and shapes.
-#' 
+#'
 #' \code{plotIndiv} can have a two layers legend. This is especially convenient
 #' when you have two grouping factors, such as a gender effect and a study
 #' effect, and you want to highlight both simulatenously on the graphical
@@ -63,7 +56,7 @@
 #' layer legend and we merge \code{col} and \code{pch}. In the similar case
 #' where \code{pch} is a single value, then this value is used to represent all
 #' samples. See examples below for object of class plsda and splsda.
-#' 
+#'
 #' In the specific case of a single `omics supervised model
 #' (\code{\link{plsda}}, \code{\link{splsda}}), users can overlay prediction
 #' results to sample plots in order to visualise the prediction areas of each
@@ -72,12 +65,12 @@
 #' the surfaces obtained for higher order components cannot be projected onto a
 #' 2D representation in a meaningful way. For more details, see
 #' \code{\link{background.predict}}
-#' 
+#'
 #' For customized plots (i.e. adding points, text), use the style = 'graphics'
 #' (default is ggplot2).
-#' 
+#'
 #' Note: the ellipse options were borrowed from the \pkg{ellipse}.
-#' 
+#'
 #' @aliases plotIndiv plotIndiv.mixo_pls plotIndiv.mixo_spls plotIndiv.rcc
 #' plotIndiv.pca plotIndiv.sipca plotIndiv.sgcca plotIndiv.rgcca
 #' plotIndiv.mint.spls plotIndiv.mint.splsda
@@ -181,51 +174,48 @@
 #' \code{\link{points}} and http://mixOmics.org/graphics for more details.
 #' @keywords multivariate hplot dplot
 #' @examples
-#' 
+#' \dontrun{
 #' ## plot of individuals for objects of class 'rcc'
 #' # ----------------------------------------------------
-#' data(nutrimouse)
+#' library(mixOmics.data)
 #' X <- nutrimouse$lipid
 #' Y <- nutrimouse$gene
 #' nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
-#' 
+#'
 #' # default, only in the X space
-#' plotIndiv(nutri.res)
-#' 
-#' 
-#' \dontrun{
-#' 
+#'
+#'
 #' # ellipse with respect to genotype in the XY space,
 #' # names also indicate genotype
 #' plotIndiv(nutri.res, rep.space= 'XY-variate',
 #' ellipse = TRUE, ellipse.level = 0.9,
 #' group = nutrimouse$genotype, ind.names = nutrimouse$genotype)
-#' 
+#'
 #' # ellipse with respect to genotype in the XY space, with legend
 #' plotIndiv(nutri.res, rep.space= 'XY-variate', group = nutrimouse$genotype,
 #' legend = TRUE)
-#' 
-#' 
+#'
+#'
 #' # lattice style
 #' plotIndiv(nutri.res, rep.space= 'XY-variate', group = nutrimouse$genotype,
 #' legend = TRUE, style = 'lattice')
-#' 
+#'
 #' # classic style, in the Y space
 #' plotIndiv(nutri.res, rep.space= 'Y-variate', group = nutrimouse$genotype,
 #' legend = TRUE, style = 'graphics')
-#' 
+#'
 #' ## plot of individuals for objects of class 'pls' or 'spls'
 #' # ----------------------------------------------------
-#' data(liver.toxicity)
+#' library(mixOmics.data)
 #' X <- liver.toxicity$gene
 #' Y <- liver.toxicity$clinic
 #' toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50),
 #' keepY = c(10, 10, 10))
-#' 
+#'
 #' #default
 #' plotIndiv(toxicity.spls)
-#' 
-#' 
+#'
+#'
 #' # two layers legend: a first grouping with Time.Group and 'group'
 #' # and a second with Dose.Group and 'pch'
 #' plotIndiv(toxicity.spls, rep.space="X-variate", ind.name = FALSE,
@@ -233,99 +223,99 @@
 #' pch = as.numeric(factor(liver.toxicity$treatment$Dose.Group)), #second factor
 #' pch.levels =liver.toxicity$treatment$Dose.Group, #levels of the second factor, for the legend
 #' legend = TRUE)
-#' 
-#' 
-#' 
+#'
+#'
+#'
 #' # indicating the centroid
 #' plotIndiv(toxicity.spls, rep.space= 'X-variate', ind.names = FALSE,
 #' group = liver.toxicity$treatment[, 'Time.Group'], centroid = TRUE)
-#' 
+#'
 #' # indicating the star and centroid
 #' plotIndiv(toxicity.spls, rep.space= 'X-variate', ind.names = FALSE,
 #' group = liver.toxicity$treatment[, 'Time.Group'], centroid = TRUE, star = TRUE)
-#' 
-#' 
+#'
+#'
 #' # indicating the star and ellipse
 #' plotIndiv(toxicity.spls, rep.space= 'X-variate', ind.names = FALSE,
 #' group = liver.toxicity$treatment[, 'Time.Group'], centroid = TRUE,
 #' star = TRUE, ellipse = TRUE)
-#' 
-#' 
-#' 
+#'
+#'
+#'
 #' # in the Y space, colors indicate time of necropsy, text is the dose
 #' plotIndiv(toxicity.spls, rep.space= 'Y-variate',
 #' group = liver.toxicity$treatment[, 'Time.Group'],
 #' ind.names = liver.toxicity$treatment[, 'Dose.Group'],
 #' legend = TRUE)
-#' 
-#' 
+#'
+#'
 #' ## plot of individuals for objects of class 'plsda' or 'splsda'
 #' # ----------------------------------------------------
-#' data(breast.tumors)
+#' library(mixOmics.data)
 #' X <- breast.tumors$gene.exp
 #' Y <- breast.tumors$sample$treatment
-#' 
+#'
 #' splsda.breast <- splsda(X, Y,keepX=c(10,10),ncomp=2)
-#' 
+#'
 #' # default option: note the outcome color is included by default!
 #' plotIndiv(splsda.breast)
-#' 
+#'
 #' # also check ?background.predict for to visualise the prediction
 #' # area with a plsda or splsda object!
-#' 
-#' 
-#' 
+#'
+#'
+#'
 #' # default option with no ind name: pch and color are set automatically
 #' plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2))
-#' 
+#'
 #' # default option with no ind name: pch and color are set automatically, with legend
 #' plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2), legend = TRUE)
-#' 
+#'
 #' # trying the different styles
 #' plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2),
 #' ellipse = TRUE, style = "ggplot2", cex = c(1, 1))
 #' plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2),
 #' ellipse = TRUE, style = "lattice", cex = c(1, 1))
-#' 
+#'
 #' # changing pch of the two groups
 #' plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2),
 #' pch = c(15,16), legend = TRUE)
-#' 
+#'
 #' # creating a second grouping factor with a pch of length 3,
 #' #  which is recycled to obtain a vector of length n
 #' plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2),
 #' pch = c(15,16,17), legend = TRUE)
-#' 
+#'
 #' #same thing as
 #' pch.indiv = c(rep(15:17,15), 15, 16) # length n
 #' plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2),
 #' pch = pch.indiv, legend = TRUE)
-#' 
+#'
 #' # change the names of the second legend with pch.levels
 #' plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2),
 #' pch = 15:17, pch.levels = c("a","b","c"),legend = TRUE)
-#' 
-#' 
+#'
+#'
 #' ## plot of individuals for objects of class 'mint.plsda' or 'mint.splsda'
 #' # ----------------------------------------------------
-#' data(stemcells)
+#' library(mixOmics.data)
 #' res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 2, keepX = c(10, 5),
 #' study = stemcells$study)
-#' 
+#'
 #' plotIndiv(res)
-#' 
-#' 
+#'
+#'
 #' #plot study-specific outputs for all studies
 #' plotIndiv(res, study = "all.partial")
-#' 
+#'
 #' #plot study-specific outputs for study "2"
 #' plotIndiv(res, study = "2")
-#' 
-#' 
+#'
+#'
 #' ## variable representation for objects of class 'sgcca' (or 'rgcca')
 #' # ----------------------------------------------------
-#' 
-#' data(nutrimouse)
+#'
+#' library(mixOmics.data)
 #' Y = unmap(nutrimouse$diet)
 #' data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 #' design1 = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
@@ -334,10 +324,10 @@
 #' penalty = c(0.3, 0.5, 1),
 #' ncomp = 3,
 #' scheme = "horst")
-#' 
+#'
 #' # default style: one panel for each block
 #' plotIndiv(nutrimouse.sgcca)
-#' 
+#'
 #' # for the block 'lipid' with ellipse plots and legend, different styles
 #' plotIndiv(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
 #' ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", title = 'my plot')
@@ -347,41 +337,40 @@
 #' plotIndiv(nutrimouse.sgcca, style = "graphics", group = nutrimouse$diet,
 #' legend = TRUE, ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid",
 #' title = 'my plot')
-#' 
-#' 
+#'
+#'
 #' ## variable representation for objects of class 'sgccda'
 #' # ----------------------------------------------------
-#' 
+#'
 #' # Note: the code differs from above as we use a 'supervised' GCCA analysis
-#' data(nutrimouse)
 #' Y = nutrimouse$diet
 #' data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 #' design1 = matrix(c(0,1,0,1), ncol = 2, nrow = 2, byrow = TRUE)
-#' 
+#'
 #' nutrimouse.sgccda1 <- wrapper.sgccda(X = data,
 #' Y = Y,
 #' design = design1,
 #' ncomp = 2,
 #' keepX = list(gene = c(10,10), lipid = c(15,15)),
 #' scheme = "centroid")
-#' 
-#' 
+#'
+#'
 #' # plotIndiv
 #' # ----------
-#' 
+#'
 #' # displaying all blocks. bu default colors correspond to outcome Y
 #' plotIndiv(nutrimouse.sgccda1)
-#' 
-#' 
+#'
+#'
 #' # displaying only 2 blocks
 #' plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet)
-#' 
+#'
 #' # with some ellipse, legend and title
 #' plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet,
 #' ellipse = TRUE, legend = TRUE, title = 'my sample plot')
-#' 
+#'
 #' }
-#' 
+#'
 #' @export plotIndiv
 plotIndiv  =
 function(object, ...) UseMethod("plotIndiv")
@@ -413,39 +402,39 @@ alpha = 0.2,
 axes.box = "box",
 plot_parameters)
 {
-    
-    
+
+
     # --------------------------------------------------------------------------------------
     #           independent from class.object
     # --------------------------------------------------------------------------------------
-    
+
     ### Start: Validation of arguments
     ncomp = object$ncomp
-    
+
     #-- style
     if (!style %in% c("ggplot2", "lattice", "graphics", "3d"))
     stop("'style' must be one of 'ggplot2', 'lattice', 'graphics' or '3d' .", call. = FALSE)
-    
+
     #-- axes.box
     choices = c("box", "bbox", "both")
     axes.box = choices[pmatch(axes.box, choices)]
-    
+
     if (is.na(axes.box))
     stop("'axes.box' should be one of 'box', 'bbox' or 'both'.", call. = FALSE)
-    
+
     #-- ellipse.level
     if ((ellipse.level > 1) | (ellipse.level < 0))
     stop("The value taken by 'ellipse.level' must be between 0 and 1")
-    
+
     #-- legend
     if (length(legend) !=  1 || !is.logical(legend))
     stop("'legend' must be a logical value.", call. = FALSE)
-    
+
     #-- alpha correlation
     if (!is.numeric(alpha) | (alpha > 1) | (alpha < 0))
     stop("The value taken by 'alpha' must be between 0 and 1", call. = FALSE)
-    
-    
+
+
     #-- comp
     if (is.null(comp))
     {
@@ -462,13 +451,13 @@ plot_parameters)
     } else if (length(comp) !=  3 && (style == "3d")) {
         stop("'comp' must be a numeric vector of length 3.", call. = FALSE)
     }
-    
+
     if (!is.numeric(comp))
     stop("Invalid vector for 'comp'.")
-    
+
     if (any(ncomp < max(comp)))
     stop(paste0("The number of components of the object to be plotted (ncomp = ", max(object$ncomp), ") is smaller than 'comp' (", paste(comp, collapse = ", "), "). Please increase ncomp  or decrease 'comp'"), call. = FALSE)
-    
+
     comp1 = round(comp[1])
     comp2 = round(comp[2])
     if (style == "3d")
@@ -477,41 +466,41 @@ plot_parameters)
     } else {
         comp3 = NULL
     }
-    
-    
+
+
     #ellipse
     if (!is.logical(ellipse))
     stop("'ellipse' must be either TRUE or FALSE", call. = FALSE)
-    
+
     #centroid
     if (!is.logical(centroid))
     stop("'centroid' must be either TRUE or FALSE", call. = FALSE)
-    
+
     #star
     if (!is.logical(star))
     stop("'star' must be either TRUE or FALSE", call. = FALSE)
-    
+
     #legend
     if (!is.logical(legend))
     stop("'legend' must be either TRUE or FALSE", call. = FALSE)
-    
+
     # abline
     if (!is.logical(abline))
     stop("'abline' must be either TRUE or FALSE", call. = FALSE)
-    
+
     #X.label, Y.label, Z.label
     if (!is.null(X.label))
     {
         if (length(X.label)!= 1 | !is.vector(X.label))
         stop("'X.label' must be a vector of length 1", call. = FALSE)
     }
-    
+
     if (!is.null(Y.label))
     {
         if (length(Y.label)!= 1 | !is.vector(Y.label))
         stop("'Y.label' must be a vector of length 1", call. = FALSE)
     }
-    
+
     if (!is.null(Z.label))
     {
         if (style!= "3d")
@@ -519,7 +508,7 @@ plot_parameters)
         if (length(Z.label)!= 1 | !is.vector(Z.label))
         stop("'Z.label' must be a vector of length 1", call. = FALSE)
     }
-    
+
     # plot_parameters
     #plot_parameters = list(size.title = size.title, size.subtitle = size.subtitle, size.xlabel = size.xlabel, size.ylabel = size.ylabel, size.axis = size.axis,
     #size.legend = size.legend, size.legend.title = size.legend.title, legend.position = legend.position)
@@ -534,31 +523,31 @@ plot_parameters)
     legend.title.pch = plot_parameters$legend.title.pch
     legend.position = plot_parameters$legend.position
     point.lwd = plot_parameters$point.lwd
-    
+
     if (!is.numeric(size.title) || length(size.title)>1 || size.title<0)
     stop("'size.title' needs to be a non negative number")
-    
+
     if (!is.numeric(size.subtitle) || length(size.subtitle)>1 || size.subtitle<0)
     stop("'size.subtitle' needs to be a non negative number")
-    
+
     if (!is.numeric(size.xlabel) || length(size.xlabel)>1 || size.xlabel<0)
     stop("'size.xlabel' needs to be a non negative number")
-    
+
     if (!is.numeric(size.ylabel) || length(size.ylabel)>1 || size.ylabel<0)
     stop("'size.ylabel' needs to be a non negative number")
-    
+
     if (!is.numeric(size.axis) || length(size.axis)>1 || size.axis<0)
     stop("'size.axis' needs to be a non negative number")
-    
+
     if (!is.numeric(size.legend) || length(size.legend)>1 || size.legend<0)
     stop("'size.legend' needs to be a non negative number")
-    
+
     if (!is.numeric(size.legend.title) || length(size.legend.title)>1 || size.legend.title<0)
     stop("'size.legend.title' needs to be a non negative number")
-    
+
     if (length(legend.position)>1 || !legend.position%in%c("bottom", "left", "right", "top"))
     stop('"legend.position" needs to be one of "bottom", "left", "right" or "top"')
-    
+
     if (length(legend.title)>1)
     stop("'legend.title' needs to be a single value (length 1)")
 
@@ -567,7 +556,7 @@ plot_parameters)
 
     if (!is.numeric(point.lwd) || length(point.lwd)>1 || point.lwd<0)
     stop("'point.lwd' needs to be a non negative number")
-    
+
     if (is.logical(ind.names) & isTRUE(ind.names))
     ind.names = object$names$sample
     if (length(ind.names) > 1)
@@ -575,12 +564,12 @@ plot_parameters)
         if (length(ind.names) !=  length(object$names$sample))
         stop("'ind.names' must be a character vector of length ", length(object$names$sample), " or a boolean atomic vector.")
     }
-    
-    
+
+
     display.names = FALSE
     if (length(ind.names) == length(object$names$sample))
     display.names = TRUE
-    
+
     # --------------------------------------------------------------------------------------
     #           need blocks
     # --------------------------------------------------------------------------------------
@@ -593,27 +582,27 @@ plot_parameters)
             {
                 if (!is.numeric(xlim) || length(xlim) !=  2)
                 stop("'xlim' must be a vector of length 2.", call. = FALSE)
-                
+
                 xlim = list(xlim)
-                
+
             } else { # multiple graphs are plotted, xlim needs to be a list of vectors of length 2
-                
+
                 if (!is.list(xlim) || length(xlim) !=  length(blocks) || length(unlist(xlim)) !=  2 * length(blocks))
                 stop("'xlim' must be a list of ", length(blocks), " vectors of length 2.", call. = FALSE)
             }
         }
-        
+
         if (!is.null(ylim))
         {
             if (length(blocks) == 1) # a single graph is plotted, ylim needs to be a vector of length 2
             {
                 if (!is.numeric(ylim) || length(ylim) !=  2)
                 stop("'ylim' must be a vector of length 2.", call. = FALSE)
-                
+
                 ylim = list(ylim)
-                
+
             } else { # multiple graphs are plotted, ylim needs to be a list of vectors of length 2
-                
+
                 if (!is.list(ylim) || length(ylim) !=  length(blocks) || length(unlist(ylim)) !=  2 * length(blocks))
                 stop("'ylim' must be a list of ", length(blocks), " vectors of length 2.", call. = FALSE)
             }
@@ -629,28 +618,28 @@ plot_parameters)
                 if (!is.numeric(ylim) || length(ylim) !=  2)
                 stop("'ylim' must be a vector of length 2.", call. = FALSE)
         }
-        
+
     }# for style = 3d, no xlim, ylim used
-    
+
     out = list(axes.box = axes.box, comp = c(comp1, comp2, comp3), xlim = xlim, ylim = ylim, ind.names = ind.names, display.names = display.names)
-    
+
 }
 
 
 internal_getVariatesAndLabels = function(object, comp, blocks.init, blocks, rep.space, style, X.label, Y.label, Z.label)
 {
-    
+
     class.object = class(object)
     object.pls = c("mixo_pls", "mixo_spls", "mixo_mlspls", "rcc")
     object.blocks = c("sgcca", "rgcca")
     object.mint = c("mint.pls", "mint.spls", "mint.plsda", "mint.splsda")
-    
+
     #-- Start: Retrieve variates from object
     x = y = z = list()
     if (any(class.object %in%  c(object.pls, object.blocks, object.mint)))
     {
-        
-        
+
+
         x = lapply(object$variates, function(x){x[, comp[1], drop = FALSE]})
         y = lapply(object$variates, function(x){x[, comp[2], drop = FALSE]})
         if (style == "3d")
@@ -659,10 +648,10 @@ internal_getVariatesAndLabels = function(object, comp, blocks.init, blocks, rep.
         } else {
             z = NULL
         }
-        
-        
+
+
         #-- Variance explained for pls and block.pls obejcts
-        
+
         # we display explained variance when only 1block is plotted and the object is not MINT
         #        if (!any(class.object%in%object.mint) & length(blocks) == 1 && rep.space !=  "XY-variate")
         if (length(blocks) == 1 && rep.space !=  "XY-variate")
@@ -680,22 +669,22 @@ internal_getVariatesAndLabels = function(object, comp, blocks.init, blocks, rep.
                             inf = 100*round(object$explained_variance[[blocks]]$"all data"[c(comp[1], comp[2])], 2)
                         } else {
                             inf = 100*round(object$explained_variance[[blocks.init]][[blocks]][c(comp[1], comp[2])], 2)# c((object$sdev[comp[1]])^2/object$var.tot, (object$sdev[comp[2]])^2/object$var.tot)
-                            
+
                         }
                     } else {
                         inf = 100*round(object$explained_variance[[blocks]][c(comp[1], comp[2])], 2)
-                        
+
                     }
                 }
             } else {
                 inf = rep("NC", 3)
             }
-            
+
             # for future development: if a label with explained variance for each blocks :
             #   inf = lapply(object$explained_variance, function(x){round(x[c(comp[1], comp[2])], 2)})
             #   lapply(inf, function(x){paste0("variate ", comp[2], ": ", x[comp[2]], "% expl. var")})}
-            
-            
+
+
             if (is.null(X.label))
             {
                 percentage = paste0(inf[1], "% expl. var")
@@ -733,9 +722,9 @@ internal_getVariatesAndLabels = function(object, comp, blocks.init, blocks, rep.
                 Z.label = paste0("XY-variate ", comp[3], ": ", percentage)
             }
         }
-        
-        
-        
+
+
+
         if (is.null(X.label))
         {
             if (rep.space == "multi")
@@ -769,12 +758,12 @@ internal_getVariatesAndLabels = function(object, comp, blocks.init, blocks, rep.
             if (rep.space == "XY-variate")
             Z.label = paste("XY-variate", comp[3])
         }
-        
+
     }
     #-- End: Retrieve variates from object
     out = list(x = x, y = y, z = z, X.label = X.label, Y.label = Y.label, Z.label = Z.label)
-    
-    
+
+
 }
 
 
@@ -802,10 +791,10 @@ pch.levels,
 display.names,
 plot_parameters)
 {
-    
+
     class.object = class(object)
     object.mint = c("mint.pls", "mint.spls", "mint.plsda", "mint.splsda")
-    
+
     size.title = plot_parameters$size.title
     size.subtitle = plot_parameters$size.subtitle
     size.xlabel = plot_parameters$size.xlabel
@@ -821,7 +810,7 @@ plot_parameters)
     # --------------------------------------------------------------------------------------
     #           need class.object whether it's DA
     # --------------------------------------------------------------------------------------
-    
+
     #-- Define group
     missing.group = TRUE
     if (missing(group) & is(object, "DA"))
@@ -835,7 +824,7 @@ plot_parameters)
         group = as.factor(group)
 
         object$ind.mat = unmap(group)
-        
+
         if (length(group) !=  n)
         stop("Length of 'group' should be of length ", n, ", the sample size of your data")
     } else {
@@ -845,15 +834,15 @@ plot_parameters)
         group = factor(rep("No group", n))
         object$ind.mat = unmap(group)
     }
-    
-    
-    
+
+
+
     # --------------------------------------------------------------------------------------
     #           independent from class.object
     # --------------------------------------------------------------------------------------
-    
+
     #at this stage, we have a 'group' - user defined or DA, or by default 1 single group
-    
+
     # col and col.per.group
     if(!missing.group) # group is user defined or DA; we require a col.per.group input, if only a 'col' input: we use it as col.per.group
     {
@@ -864,7 +853,7 @@ plot_parameters)
             col.per.group = col
 
         } else if (missing(col.per.group) & missing(col)) { # we create a col.per.group
-            
+
             if (nlevels(group) < 10)
             {
                 #only 10 colors in color.mixo
@@ -874,14 +863,14 @@ plot_parameters)
                 col.per.group = color.jet(nlevels(group))
             }
 
-            
+
         } else if (!missing(col.per.group) & !missing(col)) { # we ignore 'col'
             warning("'col' is ignored as 'group' has been set.")
 
         } else if (!missing(col.per.group) & missing(col)) {# all good
-            
+
         }
-        
+
         if(length(col.per.group) !=  nlevels(group))
         stop("Length of 'col.per.group' should be of length ", nlevels(group), " (the number of groups).")
 
@@ -895,12 +884,12 @@ plot_parameters)
         } else {
             levels.color = col.per.group
         }
-        
+
     } else { #missing group, we require a 'col' of length n (or repeated to length n) and not a 'col.per.group'
         # col creates a group argument, which creates a col.per.group (levels from 'col')
         if(!missing(col.per.group))
         warning("'col.per.group' is ignored as 'group' has not been set.")
-        
+
         if(!missing(col))
         {
             if (length(col) > n)
@@ -920,7 +909,7 @@ plot_parameters)
     }
     # 'group' and 'col' are always the same factor, but different values
     # here we have a group, a col.per.group (length nlevels(group)) and a levels.color (length n)
-    
+
 
     #-- cex argument
     if (missing(cex))
@@ -954,14 +943,14 @@ plot_parameters)
     if (ellipse)
     {
         # removing calculation for classes with only one sample
-        
+
         nlevels.class = 1 : ncol(object$ind.mat)
         ind.unique = which(apply(object$ind.mat, 2, sum) == 1)
         if(length(ind.unique) > 0)
         {
             nlevels.class = nlevels.class[-ind.unique]
         }
-       
+
         #-- Start: Computation ellipse
         min.ellipse = max.ellipse = xlim.min = xlim.max = ylim.min = ylim.max = list()
         ind.gp = matrice = cdg = variance = list()
@@ -975,7 +964,7 @@ plot_parameters)
         max.ellipse = lapply(1 : length(x), function(z1) {sapply(coord.ellipse[[z1]], function(z2){apply(z2, 2, max)})})
         min.ellipse = lapply(1 : length(x), function(z1) {sapply(coord.ellipse[[z1]], function(z2){apply(z2, 2, min)})})
         #-- End: Computation ellipse
-        
+
         if (is.null(xlim))
         xlim = lapply(1 : length(x), function(z) {c(min(x[[z]], min.ellipse[[z]][1, ]), max(x[[z]], max.ellipse[[z]][1, ]))})
         if (is.null(ylim))
@@ -987,7 +976,7 @@ plot_parameters)
             temp = matrix(unlist(ylim),ncol=2,byrow=TRUE)
             ylim = c(min(temp[,1]),max(temp[,2]))
         }
-        
+
     }
     # no need for xlim and ylim as ggplot2, lattice and graphics are good without by default
     #else {
@@ -996,20 +985,20 @@ plot_parameters)
     #    if (is.null(ylim))
     #    ylim = lapply(1 : length(x), function(z) {c(min(y[[z]]), max(y[[z]]))})
     #}
-    
-    
+
+
     # --------------------------------------------------------------------------------------
     #           not independent from class.object: for the title of the plot, either "PlotIndiv" or "block:.."
     # --------------------------------------------------------------------------------------
-    
+
     #-- pch argument
     if (missing(pch) & !any(class.object%in%object.mint))
     {
-      
+
         if (style == "3d")
         {
             pch = unlist(lapply(1 : length(length(levels(group))), function(x){rep(c("sphere", "tetra", "cube", "octa", "icosa", "dodeca")[x], length(group == x))}))
-            
+
         } else {
             pch = as.numeric(group)
         }
@@ -1033,7 +1022,7 @@ plot_parameters)
             stop("pch' must be a simple character or character vector from {'sphere', 'tetra', 'cube', 'octa', 'icosa', 'dodeca'}.",
             call. = FALSE)
         }
-        
+
         if(!missing(pch.levels))
         {
             if(length(pch.levels) != length(pch))
@@ -1041,7 +1030,7 @@ plot_parameters)
         } else {
             pch.levels = pch
         }
-        
+
         if (length(pch) == 1)
         {
             pch = rep(pch, n)
@@ -1057,17 +1046,17 @@ plot_parameters)
             pch = rep(pch, ceiling(n/length(pch)))[1 : n]
             pch.levels = rep(pch.levels, ceiling(n/length(pch.levels)))[1 : n]
         }
-        
+
         # if pch is given and ind.names is TRUE, pch takes over
         if(display.names)
         warning("'ind.names' is set to FALSE as 'pch' overrides it")
 
         display.names = FALSE
-      
+
     }
-    
-    
-    
+
+
+
     # constructing data.frame df
     if (any(study == "global"))# | length(study) == 1)
     {
@@ -1081,7 +1070,7 @@ plot_parameters)
             for (i in 1 : length(x))
             df[[i]] = data.frame(x = x[[i]], y = y[[i]], group = group)
         }
-        
+
         title.save = title # to use for ellipse
         #if (any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda")) &
         if(length(blocks) == 1 & !any(class(object)%in%c(object.mint, "sgcca", "rgcca"))) # add blocks == 1 to allow "multi" with plsda
@@ -1091,14 +1080,14 @@ plot_parameters)
                 df = data.frame(do.call(rbind, df), "Block" = "PlotIndiv")
                 if (style %in%c("graphics"))
                 title = "PlotIndiv" # to add title to graphics
-                
+
             } else {
                 df = data.frame(do.call(rbind, df), "Block" = title)
                 if (style %in%c("ggplot2", "lattice"))
                 title = NULL # to avoid double title
-                
+
             }
-            
+
             # no subtitle with these objects
             if(size.title != rel(2)) # rel(2) is the default
             size.subtitle = size.title
@@ -1109,23 +1098,23 @@ plot_parameters)
             df = data.frame(do.call(rbind, df), "Block" = paste0("Block: ", unlist(lapply(1 : length(df), function(z){rep(blocks[z], nrow(df[[z]]))}))))
             df$Block = factor(df$Block, levels = unique(df$Block))
         }
-        
+
         if (style == "3d")
         {
             names(df)[1:3] = c("x", "y", "z")
         } else {
             names(df)[1:2] = c("x", "y")
         }
-        
+
         if (display.names)
         df$names = rep(ind.names, length(x))
-        
+
         df$pch = pch; df$pch.levels = pch.levels
         df$cex = cex
         #df$col.per.group = levels.color#[group] #FR: don't understand what is that changing as levels.color is already group?
         df$col = levels.color#as.character(col)
-        
-        
+
+
         if (centroid == TRUE || star == TRUE)
         {
             df = cbind(df, rep(0, nrow(df)))
@@ -1150,10 +1139,10 @@ plot_parameters)
                     df[df$group == levels(group)[i] , n+1] = y0
                     names(df)[c(ncol(df)-1, ncol(df))] = c("x0", "y0")
                 }
-                
+
             }
         }
-        
+
         if (ellipse == TRUE)
         {
             df.ellipse = data.frame(do.call("rbind", lapply(1 : length(x), function(k){do.call("cbind", coord.ellipse[[k]])})), "Block" = paste0("Block: ", rep(blocks, each = 100)))
@@ -1168,7 +1157,7 @@ plot_parameters)
         } else {
             df.ellipse = NULL
         }
-        
+
         if(ellipse == TRUE && length(blocks) == 1 & !any(class(object)%in%c(object.mint, "sgcca", "rgcca"))) # add blocks == 1 to allow "multi" with plsda
         #if (ellipse == TRUE && any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda"))& length(blocks) == 1& !any(class(object)%in%object.mint))
         {
@@ -1179,18 +1168,18 @@ plot_parameters)
                 df.ellipse$Block = title.save
             }
         }
-        
-        
-        
+
+
+
         pch.legend = NULL
         for (i in 1:nlevels(group))
         {
             pch.legend = c(pch.legend, df[df$group == levels(group)[i], ]$pch)
         }
         df$pch.legend = pch.legend
-        
+
     } else {
-        
+
         #mint object
         #display.names = FALSE # so far ggplot and lattice require a unique vector of names. when the code changes, we can use ind.names (list)
         group.mint = split(group, object$study)[study]
@@ -1200,9 +1189,9 @@ plot_parameters)
         pch.levels = as.vector(unlist(split(pch.levels, object$study)[study]))
         col.per.group.mint = as.vector(unlist(split(levels.color, object$study)[study]))
         #col = as.vector(unlist(split(col, object$study)[study]))
-        
-        
-        
+
+
+
         #-- Start: data set
         df = list()
         if (style == "3d")
@@ -1217,48 +1206,48 @@ plot_parameters)
                 df[[i]] = data.frame(x = x[[i]], y = y[[i]], group = group.mint[[i]])
             }
         }
-        
+
         df = data.frame(do.call(rbind, df), "Block" = paste0("Study: ", unlist(lapply(1 : length(df), function(z){rep(blocks[z], nrow(df[[z]]))}))))
         df$Block = factor(df$Block, levels = unique(df$Block))
-        
+
         #print(df)
-        
+
         if (style == "3d")
         {
             names(df)[1:3] = c("x", "y", "z")
         } else {
             names(df)[1:2] = c("x", "y")
         }
-        
+
         # no names for MINT object
         #if (display.names)
         #df$names = rep(ind.names, length(x))
-        
+
         df$pch = pch; df$pch.levels = pch.levels
         df$cex = cex
         #df$col.per.group = col.per.group.mint;
         df$col = col.per.group.mint#as.character(col)
-        
-        
+
+
         pch.legend = NULL
         for (i in 1:nlevels(group))
         pch.legend = c(pch.legend, df[df$group == levels(group)[i], ]$pch)
-        
+
         df$pch.legend = pch.legend
         df.ellipse = NULL # no ellipse so far
     }
-    
+
     if (any(study == "global"))
     study = levels(object$study)
-    
+
     # match study with names of the study
     study.ind = match(study, levels(object$study))
-    
+
     #print(df)
     plot_parameters = list(size.title = size.title, size.subtitle = size.subtitle, size.xlabel = size.xlabel, size.ylabel = size.ylabel,
     size.axis = size.axis, size.legend = size.legend, size.legend.title = size.legend.title, legend.title = legend.title,
     legend.title.pch = legend.title.pch, legend.position = legend.position, point.lwd = point.lwd)
-    
+
     out = list(df = df, study.ind = study.ind, df.ellipse = df.ellipse, col.per.group = col.per.group, title = title, display.names = display.names, xlim = xlim, ylim = ylim, ellipse = ellipse, centroid = centroid, star = star, plot_parameters = plot_parameters)
 }
 

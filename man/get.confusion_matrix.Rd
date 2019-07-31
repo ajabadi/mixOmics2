@@ -42,7 +42,6 @@ towards majority classes during the performance assessment.
 # Example
 # -----------------------------------
 
-data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- as.factor(liver.toxicity$treatment[, 4])
 

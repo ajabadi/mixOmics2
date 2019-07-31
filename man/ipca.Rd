@@ -7,7 +7,8 @@
 \alias{ipca.SummarizedExperiment}
 \title{Independent Principal Component Analysis}
 \usage{
-{ipca}{default}(X, assay=NULL, mode = "deflation", fun = "logcosh", scale = FALSE, w.init = NULL, max.iter = 200, tol = 1e-04)
+{ipca}{default}(X, assay=NULL, mode = "deflation", fun = "logcosh",
+scale = FALSE, w.init = NULL, max.iter = 200, tol = 1e-04)
 
 \method{ipca}{MultiAssayExperiment}(X, assay, ...)
 
@@ -20,6 +21,8 @@
 principal components analysis. It can contain missing values. Alternatively, a \code{MultiAssay-/Summarized-/SingleCellExperiment} object.}
 
 \item{assay}{name or index of an assay from \code{X}.}
+
+\item{...}{Not used.}
 
 \item{mode}{character string. What type of algorithm to use when estimating
 the unmixing matrix, choose one of \code{"deflation"}, \code{"parallel"}.}
@@ -72,6 +75,9 @@ independent loading vectors.
 to obtain the independent principal components.
 }
 \examples{
+#' \dontrun{
+## successful: TRUE
+
 library(mixOmics.data)
 
 # implement IPCA on a microarray dataset
@@ -89,17 +95,18 @@ ipca.res <- ipca(liver.toxicity.mae, assay='gene', ncomp = 3, mode="deflation")
 ipca.res
 
 
-\dontrun{
+
   plotIndiv(ipca.res, cex = 1,
             col = as.numeric(as.factor(liver.toxicity$treatment[, 4])),style="3d")
-}
+
 # variables representation with cutoff
 plotVar(ipca.res, cex = 1, cutoff = 0.5)
 
-\dontrun{
+
   ## 3d
   plotVar(ipca.res, rad.in = 0.5, cex = 0.5,style="3d", cutoff = 0.8)
-}
+
+  #' }
 }
 \references{
 Yao, F., Coquery, J. and Lê Cao, K.-A. (2011) Principal

@@ -106,7 +106,6 @@ supplemental material of the mixOmics article (Rohart et al. 2017).
 }
 \examples{
 
-data(stemcells)
 data = stemcells$gene
 type.id = stemcells$celltype
 exp = stemcells$study

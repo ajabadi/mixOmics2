@@ -78,7 +78,7 @@
 #' \item{X}{the centered data matrix} \item{x}{the indepenent principal
 #' components} \item{loadings}{the independent loading vectors}
 #' \item{kurtosis}{the kurtosis measure of the independent loading vectors}
-## ---------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 #' @author Fangzhou Yao and Jeff Coquery.
 #' @seealso \code{\link{sipca}}, \code{\link{pca}}, \code{\link{plotIndiv}},
 #' \code{\link{plotVar}}, and http://www.mixOmics.org for more details.
@@ -92,7 +92,7 @@
 #' J L Marchini, C Heaton and B D Ripley (2010). fastICA: FastICA Algorithms to
 #' perform ICA and Projection Pursuit. R package version 1.1-13.
 #' @keywords algebra
-## --------------------------------------------------------------------------------------- examples
+## ----------------------------------------------------------------------------- examples
 #' @example examples/ipca-example.R
 
 
@@ -100,7 +100,8 @@
 ## S3 generic
 #############################################################
 #'@rdname ipca
-#'@usage {ipca}{default}(X, assay=NULL, mode = "deflation", fun = "logcosh", scale = FALSE, w.init = NULL, max.iter = 200, tol = 1e-04)
+#'@usage {ipca}{default}(X, assay=NULL, mode = "deflation", fun = "logcosh",
+#'scale = FALSE, w.init = NULL, max.iter = 200, tol = 1e-04)
 #'@export
 ipca <- function(X, assay, ...) UseMethod("ipca")
 
@@ -300,8 +301,8 @@ ipca.MultiAssayExperiment <-   function(X, assay, ...){
     assay <- as.character(substitute(assay)) ## internal_mae2dm will check if it is valid
   }
   ## get all inputs so you can refer to provided names
-  X <- internal_mae2dm(X = X, Assay = assay)
-  .ipca(X=X,...)
+  X <- internal_mae2dm(X, assay)
+  .ipca(X,...)
 }
 ## --------------------------------------------------------------------------------------- SingleCellExperiment
 #'@rdname ipca

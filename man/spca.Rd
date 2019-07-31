@@ -7,7 +7,9 @@
 \alias{spca.SummarizedExperiment}
 \title{Sparse Principal Components Analysis}
 \usage{
-{spca}{default}(X, assay=NULL, ncomp = 2, center = TRUE, scale = TRUE, keepX = rep(ncol(X), ncomp), max.iter = 500, tol = 1e-06, logratio = 'none', multilevel = NULL)
+{spca}{default}(X, assay=NULL, ncomp = 2, center = TRUE, scale = TRUE,
+keepX = rep(ncol(X), ncomp), max.iter = 500, tol = 1e-06, logratio = 'none',
+multilevel = NULL)
 
 \method{spca}{MultiAssayExperiment}(X, assay, ...)
 
@@ -20,6 +22,8 @@
 principal components analysis. It can contain missing values. Alternatively, a \code{MultiAssay-/Summarized-/SingleCellExperiment} object.}
 
 \item{assay}{name or index of an assay from \code{X}.}
+
+\item{...}{Not used.}
 
 \item{keepX}{numeric vector of length ncomp, the number of variables to keep}
 
@@ -70,45 +74,46 @@ count data, we thus advise the normalise raw data with a 1 offset). For ILR
 transformation and additional offset might be needed.
 }
 \examples{
+#' \dontrun{
+## successful: TRUE
+
 library(mixOmics.data)
 spca.rat <- spca(liver.toxicity$gene, ncomp = 3, keepX = rep(50, 3))
 spca.rat
 
 ## variable representation
 plotVar(spca.rat, cex=2)
-# \dontrun{
-  plotVar(spca.rat,style="3d")
+
+plotVar(spca.rat,style="3d")
 # }
 
 # example with MultiAssayExperiment class
 # --------------------------------
 
-spca.rat <- spca(liver.toxicity.mae, Assay='gene', ncomp = 3, keepX = rep(50, 3))
+spca.rat <- spca(liver.toxicity.mae, assay='gene', ncomp = 3, keepX = rep(50, 3))
 spca.rat
-
 
 # \dontrun{
 
 
-  ## samples representation
-  plotIndiv(spca.rat, ind.names = liver.toxicity$treatment[, 3],
-            group = as.numeric(liver.toxicity$treatment[, 3]))
-  plotIndiv(spca.rat, cex = 0.01,
-            col = as.numeric(liver.toxicity$treatment[, 3]),style="3d")
+## samples representation
+plotIndiv(spca.rat, ind.names = liver.toxicity$treatment[, 3],
+          group = as.numeric(liver.toxicity$treatment[, 3]))
+plotIndiv(spca.rat, cex = 0.01,
+          col = as.numeric(liver.toxicity$treatment[, 3]),style="3d")
 
 
-  # example with multilevel decomposition and CLR log ratio transformation
-  # ----------------
+# example with multilevel decomposition and CLR log ratio transformation
+# ----------------
 
-  data("diverse.16S")
-  pca.res = pca(X = diverse.16S$data.TSS, ncomp = 5,
-                logratio = 'CLR', multilevel = diverse.16S$sample)
-  plot(pca.res)
-  plotIndiv(pca.res, ind.names = FALSE, group = diverse.16S$bodysite, title = '16S diverse data',
-            legend=TRUE)
+data("diverse.16S")
+pca.res = pca(X = diverse.16S$data.TSS, ncomp = 5,
+              logratio = 'CLR', multilevel = diverse.16S$sample)
+plot(pca.res)
+plotIndiv(pca.res, ind.names = FALSE, group = diverse.16S$bodysite, title = '16S diverse data',
+          legend=TRUE)
 
-# }
-
+  #' }
 }
 \references{
 Shen, H. and Huang, J. Z. (2008). Sparse principal component

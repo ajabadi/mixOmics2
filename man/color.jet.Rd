@@ -83,7 +83,6 @@ axis(1, at = c(-1, 0, 1))
 # # --------------------------------
 # mixOmics colors
 # # -------------------------------
-data(nutrimouse)
 X <- nutrimouse$lipid
 Y <- nutrimouse$gene
 nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)

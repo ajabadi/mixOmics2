@@ -43,7 +43,6 @@ value.} } These functions are only implemented for the sparse versions.
 \examples{
 
 
-data(liver.toxicity)
 X = liver.toxicity$gene
 Y = liver.toxicity$clinic
 
@@ -67,7 +66,6 @@ liver.spls = spls(X, Y, ncomp = 2, keepX = c(20, 40),keepY = c(5, 5))
 selectVar(liver.spls, comp = 2)
 
 # example with sPLS-DA
-data(srbct)   # an example with no gene name in the data
 X = srbct$gene
 Y = srbct$class
 
@@ -80,9 +78,6 @@ srbct$gene.name[substr(select$select, 2,5),]
 
 # example with sGCCA
 # -----------------
-
-data(nutrimouse)
-
 # ! need to unmap the Y factor
 Y = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid,Y)

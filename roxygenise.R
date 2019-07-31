@@ -1,10 +1,12 @@
 ############# build all documentation for the package and update namespace
-file.remove(list.files('man/', pattern = '.Rd', full.names = TRUE))
+# file.remove(list.files('man/', pattern = '.Rd', full.names = TRUE))
 roxygen2::roxygenise()
 ############# load the pks to access functions
 devtools::load_all()
 ############# run ./tests tests which then redirects to testthat.R. testhat/helper-*.R files are run before tests
 devtools::test()
+############# check without examples
+devtools::check(args = "--no-examples")
 ############# test examples
 devtools::run_examples()
 ## path to Rd files - will let you know if there are any errors/warnings

@@ -33,18 +33,18 @@
 
 #' mixOmics wrapper for Regularised Generalised Canonical Correlation Analysis
 #' (rgcca)
-#' 
+#'
 #' Wrapper function to perform Regularized Generalised Canonical Correlation
 #' Analysis (rGCCA), a generalised approach for the integration of multiple
 #' datasets. For more details, see the \code{help(rgcca)} from the \pkg{RGCCA}
 #' package.
-#' 
+#'
 #' This wrapper function performs rGCCA (see \pkg{RGCCA}) with \eqn{1, \ldots
 #' ,}\code{ncomp} components on each block data set. A supervised or
 #' unsupervised model can be run. For a supervised model, the
 #' \code{\link{unmap}} function should be used as an input data set. More
 #' details can be found on the package \pkg{RGCCA}.
-#' 
+#'
 #' @param X a list of data sets (called 'blocks') matching on the same samples.
 #' Data in the list should be arranged in samples x variables. \code{NA}s are
 #' not allowed.
@@ -78,7 +78,7 @@
 #' (and non-essential) outputs are not calculated. Default = \code{TRUE}.
 #' @return \code{wrapper.rgcca} returns an object of class \code{"rgcca"}, a
 #' list that contains the following components:
-#' 
+#'
 #' \item{data}{the input data set (as a list).} \item{design}{the input
 #' design.} \item{variates}{the sgcca components.} \item{loadings}{the loadings
 #' for each block data set (outer wieght vector).} \item{loadings.star}{the
@@ -94,17 +94,16 @@
 #' \code{\link{plotVar}}, \code{\link{wrapper.sgcca}} and
 #' \url{http://www.mixOmics.org} for more details.
 #' @references
-#' 
+#'
 #' Tenenhaus A. and Tenenhaus M., (2011), Regularized Generalized Canonical
 #' Correlation Analysis, Psychometrika, Vol. 76, Nr 2, pp 257-284.
-#' 
+#'
 #' Schafer J. and Strimmer K., (2005), A shrinkage approach to large-scale
 #' covariance matrix estimation and implications for functional genomics.
 #' Statist. Appl. Genet. Mol. Biol. 4:32.
 #' @keywords multivariate
 #' @examples
-#' 
-#' data(nutrimouse)
+#'\dontrun{
 #' # need to unmap the Y factor diet
 #' Y = unmap(nutrimouse$diet)
 #' data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
@@ -112,7 +111,7 @@
 #' # design = matrix(c(0,0,1,
 #' #                   0,0,1,
 #' #                   1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
-#' 
+#'
 #' # with this design, gene expression and lipids are connected to the diet factor
 #' # and gene expression and lipids are also connected
 #' design = matrix(c(0,1,1,
@@ -123,7 +122,7 @@
 #' ncomp = 2,
 #' scheme = "centroid")
 #' #wrap.result.rgcca
-#' 
+#' }
 #' @export wrapper.rgcca
 wrapper.rgcca = function(
 X,
@@ -150,7 +149,7 @@ all.outputs = TRUE)
     scheme = check$scheme
     nzv.A = check$nzv.A
     keepA = check$keepA
-    
+
     keepA.save=keepA
 
     keepAA = vector("list", length = max(ncomp)) # one keepA per comp
@@ -169,7 +168,7 @@ all.outputs = TRUE)
     mode = "canonical",
     all.outputs = all.outputs
     )
-    
+
 
     out = list(
     call = match.call(),
@@ -195,7 +194,7 @@ all.outputs = TRUE)
     scheme = result.rgcca$scheme,
     explained_variance = result.rgcca$explained_variance
     )
-    
+
     class(out) = c("sparse.rgcca","rgcca")
     return(invisible(out))
 }

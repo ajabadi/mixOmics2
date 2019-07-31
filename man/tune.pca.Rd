@@ -81,11 +81,11 @@ internal pre-processing step, through \code{\link{logratio.transfo}} and
 \code{\link{withinVariation}} respectively.
 }
 \examples{
-
-data(liver.toxicity)
+\dontrun{
+library(mixOmics.data)
 tune <- tune.pca(liver.toxicity$gene, center = TRUE, scale = TRUE)
 tune
-
+}
 }
 \seealso{
 \code{\link{nipals}}, \code{\link{biplot}},

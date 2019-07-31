@@ -7,8 +7,6 @@
 \alias{auroc.mint.plsda}
 \alias{auroc.mint.splsda}
 \alias{auroc.sgccda}
-\alias{auroc.mint.block.splsda}
-\alias{auroc.mint.block.plsda}
 \title{Area Under the Curve (AUC) and Receiver Operating Characteristic (ROC)
 curves for supervised classification}
 \usage{
@@ -18,24 +16,10 @@ auroc(object, ...)
   outcome.test = as.factor(object$Y), multilevel = NULL, plot = TRUE,
   roc.comp = 1, ...)
 
-\method{auroc}{mixo_splsda}(object, ...)
-
 \method{auroc}{mint.plsda}(object, newdata = object$X,
   outcome.test = as.factor(object$Y), study.test = object$study,
   multilevel = NULL, plot = TRUE, roc.comp = 1,
   roc.study = "global", ...)
-
-\method{auroc}{mint.splsda}(object, ...)
-
-\method{auroc}{sgccda}(object, newdata = object$X,
-  outcome.test = as.factor(object$Y), multilevel = NULL, plot = TRUE,
-  roc.block = 1, roc.comp = 1, ...)
-
-\method{auroc}{mint.block.splsda}(object, newdata = object$X,
-  study.test = object$study, outcome.test = as.factor(object$Y),
-  multilevel = NULL, plot = TRUE, roc.block = 1, roc.comp = 1, ...)
-
-auroc.mint.block.plsda(object, ...)
 }
 \arguments{
 \item{object}{Object of class inherited from one of the following supervised
@@ -115,7 +99,9 @@ different from "global", then \code{newdata}), \code{outcome.test} and
 
 ## example with PLSDA, 2 classes
 # ----------------
-# \dontrun{
+#' \dontrun{
+library(mixOmics.data)
+
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
@@ -170,7 +156,7 @@ auc.plsda.breast = auroc(plsda.breast, ncomp = 1)
   list.keepX = list(gene = rep(10, 2), lipid = rep(5,2))
   block.splsda.nutri = block.splsda(X = data, Y = nutrimouse$diet, keepX = list.keepX)
   auc.block.splsda.nutri = auroc(block.splsda.nutri, block = 1)
-# }
+#' }
 }
 \seealso{
 \code{\link{tune}}, \code{\link{perf}}, and http://www.mixOmics.org

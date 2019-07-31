@@ -4,7 +4,10 @@
 \alias{plsda}
 \title{Partial Least Squares Discriminant Analysis (PLS-DA).}
 \usage{
-\S4method{plsda}{ANY}(X, Y, ncomp = 2, scale = TRUE, mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"), multilevel = NULL, all.outputs = TRUE)
+\S4method{plsda}{ANY}(X, Y, ncomp = 2, scale = TRUE,
+mode = c("regression", "canonical", "invariant", "classic"), tol = 1e-06,
+max.iter = 100, near.zero.var = FALSE, logratio = c("none", "CLR"),
+multilevel = NULL, all.outputs = TRUE)
 }
 \arguments{
 \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
@@ -82,9 +85,9 @@ count data, we thus advise the normalise raw data with a 1 offset).
 More details about the PLS modes in \code{?pls}.
 }
 \examples{
-
+\dontrun{
 ## First example
-data(breast.tumors)
+library(mixOmics.data)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
@@ -92,9 +95,7 @@ plsda.breast <- plsda(X, Y, ncomp = 2)
 plotIndiv(plsda.breast, ind.names = TRUE, ellipse = TRUE, legend = TRUE)
 
 
-\dontrun{
 ## Second example
-data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$treatment[, 4]
 

@@ -101,7 +101,6 @@ More details about the PLS modes in \code{?pls}.
 
 ## -- directed towards PLS framework because X is a matrix and the study argument is missing
 # ----------------------------------------------------
-data(liver.toxicity)
 X = liver.toxicity$gene
 Y = liver.toxicity$clinic
 Y.factor = as.factor(liver.toxicity$treatment[, 4])
@@ -122,7 +121,6 @@ out = mixOmics(X, Y.factor, ncomp = 2, keepX = c(20, 20))
 \dontrun{
 ## -- directed towards block.pls framework because X is a list
 # ----------------------------------------------------
-data(nutrimouse)
 Y = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 
@@ -143,7 +141,6 @@ keepX = list(gene = c(10,10), lipid = c(15,15)))
 
 ## -- directed towards mint.pls framework because of the study factor
 # ----------------------------------------------------
-data(stemcells)
 # directed towards PLS
 out = mixOmics(X = stemcells$gene, Y = unmap(stemcells$celltype), ncomp = 2)
 
