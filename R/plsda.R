@@ -262,10 +262,10 @@ setGeneric("plsda", def = function(X, Y, formula=NULL, ncomp = 2, scale = TRUE,
 setMethod("plsda", signature("ANY", "ANY", "ANY"), function(X, Y, formula, ...){
 
   # if(!"NULL" %in% class(tryCatch(X, error = function(e) e))){
-  #   stop_custom(.subclass = "args_conflict", message = "only one of'formula' and 'X' should be provided")
+  #   .stop(.subclass = "args_conflict", message = "only one of'formula' and 'X' should be provided")
   # }
   # if(!"NULL" %in% class(tryCatch(Y, error = function(e) e))){
-  #   stop_custom(.subclass = "args_conflict", message = "only one of'formula' and 'Y' should be provided")
+  #   .stop(.subclass = "args_conflict", message = "only one of'formula' and 'Y' should be provided")
   # }
 
   .plsda(X,Y,...)
@@ -275,11 +275,11 @@ setMethod("plsda", signature("ANY", "ANY", "ANY"), function(X, Y, formula, ...){
 # @rdname plsda
 # setMethod("plsda", signature("ANY", "ANY", "formula"), function(X, formula, Y, ...){
 #   if(!"NULL" %in% class(tryCatch(Y, error = function(e) e))){
-#     stop_custom(.subclass = "args_conflict", message = "only one of'formula' and 'Y' should be provided")
+#     .stop(.subclass = "args_conflict", message = "only one of'formula' and 'Y' should be provided")
 #   }
 #
 #   if(!"NULL" %in% class(tryCatch(X, error = function(e) e))){
-#     stop_custom(.subclass = "args_conflict", message = "only one of'formula' and 'X' should be provided")
+#     .stop(.subclass = "args_conflict", message = "only one of'formula' and 'X' should be provided")
 #   }
 #       ## formula to X and Y
 #       f.terms <- vapply(as.list(formula), as.character, "character")[-1]

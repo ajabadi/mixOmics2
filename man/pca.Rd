@@ -3,30 +3,30 @@
 \docType{methods}
 \name{pca}
 \alias{pca}
-\alias{pca,ANY-method}
 \alias{pca,MultiAssayExperiment-method}
 \title{Principal Components Analysis}
 \usage{
-pca(X, ncomp = 2, ...)
-
-\S4method{pca}{ANY}(X, ncomp = 2, center = TRUE, scale = FALSE,
-  max.iter = 500, tol = 1e-09, logratio = "none",
-  ilr.offset = 0.001, V = NULL, multilevel = NULL)
+\S4method{pca}{ANY}(X, ncomp = 2, center = TRUE, scale = FALSE, max.iter = 500,
+tol = 1e-09, logratio = c('none','CLR','ILR'), ilr.offset = 0.001,
+V = NULL, multilevel = NULL)
 
 \S4method{pca}{MultiAssayExperiment}(X, ncomp = 2, ..., assay = NULL)
 }
 \arguments{
 \item{X}{a numeric matrix (or data frame) which provides the data for the
-principal components analysis. It can contain missing values. Alternatively, a \code{MultiAssay-/Summarized-/SingleCellExperiment} object.}
+principal components analysis. It can contain missing values.
+Alternatively, a \code{MultiAssayExperiment} object.}
 
 \item{ncomp}{integer, if data is complete \code{ncomp} decides the number of
 components and associated eigenvalues to display from the \code{pcasvd}
 algorithm and if the data has missing values, \code{ncomp} gives the number
 of components to keep to perform the reconstitution of the data using the
 NIPALS algorithm. If \code{NULL}, function sets \code{ncomp = min(nrow(X),
-ncol(X))}}
+ncol(X))}.}
 
-\item{...}{Not used.}
+\item{...}{aguments passed to the generic.}
+
+\item{assay}{name or index of an assay from \code{X}.}
 
 \item{center}{a logical value indicating whether the variables should be
 shifted to be zero centered. Alternately, a vector of length equal the
@@ -55,8 +55,6 @@ avoid infinite value after the logratio transform, default to 0.001.}
 \item{V}{Matrix used in the logratio transformation id provided.}
 
 \item{multilevel}{sample information for multilevel decomposition for repeated measurements.}
-
-\item{assay}{name or index of an assay from \code{X}.}
 }
 \value{
 \code{pca} returns a list with class \code{"pca"} and

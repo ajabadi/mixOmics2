@@ -1,116 +1,12 @@
-#############################################################################################################
-# Authors:
-#  Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-#  Kim-Anh Le Cao, French National Institute for Agricultural Research and ARC Centre of Excellence ins Bioinformatics, Institute for Molecular Bioscience, University of Queensland, Australia
-#  Fangzhou Yao, Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia
-#   Al J Abadi, Melbourne Integartive Genomics, The University of Melbourne, Australia
-
-# created: 2009
-# last modified: 2019
-#
-# Copyright (C) 2009
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
-
-#' Sparse Principal Components Analysis
-#'
-#' Performs a sparse principal components analysis to perform variable
-#' selection by using singular value decomposition.
-#'
-#' The calculation employs singular value decomposition of the (centered and
-#' scaled) data matrix and LASSO to generate sparsity on the loading vectors.
-#'
-#' \code{scale= TRUE} is highly recommended as it will help obtaining
-#' orthogonal sparse loading vectors.
-#'
-#' \code{keepX} is the number of variables to keep in loading vectors. The
-#' difference between number of columns of \code{X} and \code{keepX} is the
-#' degree of sparsity, which refers to the number of zeros in each loading
-#' vector.
-#'
-#' Note that \code{spca} does not apply to the data matrix with missing values.
-#' The biplot function for \code{spca} is not available.
-#'
-#' According to Filzmoser et al., a ILR log ratio transformation is more
-#' appropriate for PCA with compositional data. Both CLR and ILR are valid.
-#'
-#' Logratio transform and multilevel analysis are performed sequentially as
-#' internal pre-processing step, through \code{\link{logratio.transfo}} and
-#' \code{\link{withinVariation}} respectively.
-#'
-#' Logratio can only be applied if the data do not contain any 0 value (for
-#' count data, we thus advise the normalise raw data with a 1 offset). For ILR
-#' transformation and additional offset might be needed.
-#'
-## --------------------------------------------------------------------------------------- arguments
-#' @inheritParams pca
-#' @param keepX numeric vector of length ncomp, the number of variables to keep
-#' @param logratio one of ('none','CLR'). Specifies the log ratio
-#' transformation to deal with compositional values that may arise from
-#' specific normalisation in sequencing data. Default to 'none'
-#'
-#' in loading vectors. By default all variables are kept in the model. See
-#' details.
-## --------------------------------------------------------------------------------------- value
-#' @return \code{spca} returns a list with class \code{"spca"} containing the
-#' following components: \item{ncomp}{the number of components to keep in the
-#' calculation.} \item{varX}{the adjusted cumulative percentage of variances
-#' explained.} \item{keepX}{the number of variables kept in each loading
-#' vector.} \item{iter}{the number of iterations needed to reach convergence
-#' for each component.} \item{rotation}{the matrix containing the sparse
-#' loading vectors.} \item{x}{the matrix containing the principal components.}
-## ---------------------------------------------------------------------------------------
-#' @author Kim-Anh Lê Cao, Fangzhou Yao, Leigh Coonan
-#' @seealso \code{\link{pca}} and http://www.mixOmics.org for more details.
-#' @references Shen, H. and Huang, J. Z. (2008). Sparse principal component
-#' analysis via regularized low rank matrix approximation. \emph{Journal of
-#' Multivariate Analysis} \bold{99}, 1015-1034.
-#' @keywords algebra
-## --------------------------------------------------------------------------------------- examples
-#' @example examples/spca-example.R
-
-
-#############################################################
-## S3 generic
-#############################################################
-#'@rdname spca
-#'@usage {spca}{default}(X, assay=NULL, ncomp = 2, center = TRUE, scale = TRUE,
-#'keepX = rep(ncol(X), ncomp), max.iter = 500, tol = 1e-06, logratio = 'none',
-#'multilevel = NULL)
-#'@export
-spca <- function(X, assay, ...) UseMethod("spca")
-
-#############################################################
-## internal function
-#############################################################
-.spca <- function(X,
-                   ncomp = 2,
-                   center = TRUE,
-                   scale = TRUE,
-                   keepX = rep(ncol(X), ncomp),
-                   max.iter = 500,
-                   tol = 1e-06,
-                   logratio = 'none',
-                   multilevel = NULL) {
-
-  #-- checking general input parameters --------------------------------------#
-  #---------------------------------------------------------------------------#
-
-  #-- check that the user did not enter extra arguments
+####################################################################################
+## ---------- internal
+.spca <- function(X, ncomp = 2, center = TRUE, scale = TRUE,
+                  keepX = rep(ncol(X), ncomp),max.iter = 500, tol = 1e-06,
+                  logratio = c('none','CLR'), multilevel = NULL) {
   arg.call = match.call()
+  ## match or set the multi-choice arguments
+  arg.call$logratio <- logratio <- .matchArg(logratio)
+  #-- check that the user did not enter extra arguments
   user.arg = names(arg.call)[-1]
 
   err = tryCatch(mget(names(formals()), sys.frame(sys.nframe())),
@@ -362,33 +258,103 @@ spca <- function(X, assay, ...) UseMethod("spca")
 }
 
 
-#############################################################
-## S3 methods
-#############################################################
-## --------------------------------------------------------------------------------------- default
-#'@export
-spca.default <- function(X, assay=NULL,...) {
-  .spca(X,...)
-}
+#' @title Sparse Principal Components Analysis
+#'
+#' @description Performs a sparse principal components analysis to perform variable
+#' selection by using singular value decomposition.
+#'
+#' The calculation employs singular value decomposition of the (centered and
+#' scaled) data matrix and LASSO to generate sparsity on the loading vectors.
+#'
+#' \code{scale= TRUE} is highly recommended as it will help obtaining
+#' orthogonal sparse loading vectors.
+#'
+#' \code{keepX} is the number of variables to keep in loading vectors. The
+#' difference between number of columns of \code{X} and \code{keepX} is the
+#' degree of sparsity, which refers to the number of zeros in each loading
+#' vector.
+#'
+#' Note that \code{spca} does not apply to the data matrix with missing values.
+#' The biplot function for \code{spca} is not available.
+#'
+#' According to Filzmoser et al., a ILR log ratio transformation is more
+#' appropriate for PCA with compositional data. Both CLR and ILR are valid.
+#'
+#' Logratio transform and multilevel analysis are performed sequentially as
+#' internal pre-processing step, through \code{\link{logratio.transfo}} and
+#' \code{\link{withinVariation}} respectively.
+#'
+#' Logratio can only be applied if the data do not contain any 0 value (for
+#' count data, we thus advise the normalise raw data with a 1 offset). For ILR
+#' transformation and additional offset might be needed.
 
-## --------------------------------------------------------------------------------------- MultiAssayExperiment
-#'@rdname spca
-#'@importFrom SummarizedExperiment assay
-#'@export
-spca.MultiAssayExperiment <-   function(X, assay, ...){
-  try_res <- tryCatch(assay, error = function(e) e)
-  if("simpleError" %in% class(try_res)){
-    assay <- as.character(substitute(assay)) ## internal_mae2dm will check if it is valid
-  }
-  ## get all inputs so you can refer to provided names
-  X <- internal_mae2dm(X, assay)
-  .spca(X,...)
-}
-## --------------------------------------------------------------------------------------- SingleCellExperiment
-#'@rdname spca
-#'@export
-spca.SingleCellExperiment <- function(X, assay="logcounts", ...) spca.MultiAssayExperiment
-## --------------------------------------------------------------------------------------- SummarizedExperiment
-#'@rdname spca
-#'@export
-spca.SummarizedExperiment <- function(X, assay, ...) spca.MultiAssayExperiment
+## ----------------------------------- Parameters
+#' @inheritParams pca
+#' @param keepX numeric vector of length ncomp, the number of variables to keep.
+#' @param logratio one of ('none','CLR'). Specifies the log ratio
+#' transformation to deal with compositional values that may arise from
+#' specific normalisation in sequencing data. Default to 'none'.
+#' in loading vectors. By default all variables are kept in the model. See
+#' details.
+
+## ----------------------------------- Value
+#' @return \code{spca} returns a list with class \code{"spca"} containing the
+#' following components: \item{ncomp}{the number of components to keep in the
+#' calculation.} \item{varX}{the adjusted cumulative percentage of variances
+#' explained.} \item{keepX}{the number of variables kept in each loading
+#' vector.} \item{iter}{the number of iterations needed to reach convergence
+#' for each component.} \item{rotation}{the matrix containing the sparse
+#' loading vectors.} \item{x}{the matrix containing the principal components.}
+
+## ----------------------------------- Misc
+#' @author Ignacio Gonzalez, Kim-Anh Lê Cao, Fangzhou Yao, Al J Abadi
+#' @seealso \code{\link{pca}}, \code{\link{ipca}}, \code{\link{selectVar}},
+#' \code{\link{plotIndiv}}, \code{\link{plotVar}} and http://www.mixOmics.org
+#' for more details.
+#' @keywords algebra
+
+## ----------------------------------- Examples
+#' @example examples/spca-example.R
+####################################################################################
+## ---------- Generic
+#' @param ... currently ignored.
+#' @usage {spca}{default}(X, assay=NULL, ncomp = 2, center = TRUE, scale = TRUE,
+#'keepX = rep(ncol(X), ncomp), max.iter = 500, tol = 1e-06, logratio = 'none',
+#'multilevel = NULL)
+#' @export
+setGeneric('spca', function (X, ncomp=2, keepX, ...) standardGeneric('spca'))
+
+####################################################################################
+## ---------- Generic
+#' @param ... aguments passed to the generic.
+#' @usage \S4method{spca}{ANY}X, ncomp = 2, center = TRUE, scale = TRUE,
+#' keepX = rep(ncol(X), ncomp),max.iter = 500, tol = 1e-06,
+#' logratio = c('none','CLR'), multilevel = NULL)
+#' @export
+setGeneric('spca', function (X, ncomp=2,...) standardGeneric('spca'))
+
+####################################################################################
+## ---------- Methods
+
+## ----------------------------------- ANY
+#' @export
+setMethod('spca', 'ANY', .spca)
+
+## ----------------------------------- MultiAssayExperiment
+#' @importFrom SummarizedExperiment assay assays
+#' @rdname spca
+#' @export
+setMethod('spca', 'MultiAssayExperiment', function(X, ncomp=2,..., assay=NULL){
+  ## refer to pca for code details
+  if(!assay %in% tryCatch(names(assays(X)), error=function(e)e)) .inv_assay()
+  ml <- match.call()
+  ml[[1L]] <- quote(sipca)
+  mli <- ml
+  mli[[1L]] <- quote(.sipca)
+  arg.ind <- match(names(formals(.sipca)), names(mli), 0L)
+  mli <- mli[c(1L,arg.ind)]
+  mli[['X']] <- t(assay(X, assay))
+  result <- eval(mli, parent.frame())
+  result[["call"]] <- ml
+  return(result)
+})

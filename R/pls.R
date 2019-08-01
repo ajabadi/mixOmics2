@@ -167,7 +167,7 @@ formula=NULL)
 {
     mc <- as.list(match.call()[-1])
     ## make sure mode matches given arguments, and if it is not provided put as the first one in the definition
-    mc$mode <- match.arg_custom(mode)
+    mc$mode <- .matchArg(mode)
     mc <- get_XY(mc=mc)
     mc$DA <- FALSE
     # # call to 'internal_wrapper.mint'

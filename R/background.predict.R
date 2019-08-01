@@ -131,7 +131,6 @@
 #'
 #'
 #' }
-#'
 #' @export background.predict
 background.predict = function(object, comp.predicted = 1, dist = "max.dist",
     xlim = NULL, ylim = NULL, resolution = 100)

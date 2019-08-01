@@ -181,7 +181,7 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY,
 mode=c("regression","canonical", "invariant", "classic"), scale, near.zero.var, max.iter, tol, logratio, DA, multilevel)
 {
 
-    mode <-  match.arg_custom(arg=mode)
+    mode <-  .matchArg(arg=mode)
 
     #-- validation des arguments --#
     if (length(dim(X)) != 2)

@@ -264,7 +264,7 @@
 #' plotVar(wrap.result.rgcca, comp = c(1,2), block = c(1,2))
 #'
 #' }
-#'
+#' @importFrom ellipse ellipse
 #' @export plotVar
 plotVar <-
 function(object,

@@ -4,7 +4,7 @@
 \alias{plot.rcc}
 \title{Canonical Correlations Plot}
 \usage{
-\method{plot}{rcc}(x, scree.type = c("pointplot", "barplot"), ...)
+plot.rcc(x, scree.type = c("pointplot", "barplot"), ...)
 }
 \arguments{
 \item{x}{object of class inheriting from \code{"rcc"}.}

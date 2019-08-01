@@ -262,7 +262,6 @@ scheme = "centroid")
 plotVar(wrap.result.rgcca, comp = c(1,2), block = c(1,2))
 
 }
-
 }
 \references{
 González I., Lê Cao K-A., Davis, M.J. and Déjean, S. (2012).

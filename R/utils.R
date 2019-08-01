@@ -3,7 +3,7 @@ squote <- function(char) paste0("'",char,"'")
 
 ##-----------------------------------------------------------------------------------------------------------------------
 ## ---- check that EXP can be evaluated and returned, if not throw error with error_message error  ----
-internal_check_eval <- function(EXP, error_message = paste0(as.expression(substitute(EXP)), " cannot be evaluated")){
+.checkExpr <- function(EXP, error_message = paste0(as.expression(substitute(EXP)), " cannot be evaluated")){
   formals(stop)$call. <-FALSE
   out <- tryCatch(EXP, error = function(e) e)
   if ("simpleError" %in% class(out)) stop(error_message)
@@ -15,30 +15,30 @@ internal_check_eval <- function(EXP, error_message = paste0(as.expression(substi
 ## args.list contains X entry
 #' @importFrom SummarizedExperiment assay
 #' @importFrom SummarizedExperiment assays
-internal_mae2dm <- function(X, assay){ ## MAE to data.matrix
+.getDM <- function(X, assay){ ## MAE to data.matrix
   args.list <- match.call()[-1]
   ## ---------- get the assay name from either name  or index provided and check
   if (is.numeric(assay)){
-    if(assay-floor(assay)!=0) stop_custom(.subclass = "inv_xy", message = paste0(assay, " is not a valid assay index. Use an integer."))
-    if(assay<1 | assay >length(assays(X))) stop_custom(.subclass = "inv_xy", message = paste0("assay index must be positive integer smaller than or equal to the number of assays in ",
+    if(assay-floor(assay)!=0) .stop(.subclass = "inv_xy", message = paste0(assay, " is not a valid assay index. Use an integer."))
+    if(assay<1 | assay >length(assays(X))) .stop(.subclass = "inv_xy", message = paste0("assay index must be positive integer smaller than or equal to the number of assays in ",
                                                                                                      args.list["X"]," (i.e. 1:",length(assays(X)),")"))
     assay <- names(assays(X))[assay]
   } else if(is.null(assay)){
-    stop_custom(.subclass = "inv_xy", message = paste0("Please provide an assay from object ", args.list["X"]))
+    .stop(.subclass = "inv_xy", message = paste0("Please provide an assay from object ", args.list["X"]))
     } else if(is.na(assay)){
-      stop_custom(.subclass = "inv_xy", message = "assay cannot be NA ")
+      .stop(.subclass = "inv_xy", message = "assay cannot be NA ")
     } else if(!is.character(assay)){
     ## if 'assay' it none of acceptable forms
-    stop_custom(.subclass = "inv_xy", message = paste0("'assay' must be either an assay name or index from ", args.list["X"]))
+    .stop(.subclass = "inv_xy", message = paste0("'assay' must be either an assay name or index from ", args.list["X"]))
   }
 
   ## ---------- use assay name to get the data matrix
   if(! assay %in% names(assays(X)))
-    stop_custom(.subclass = "inv_xy", message = paste0(assay, " is not a valid assay from ","'",args.list["X"],"'"))
+    .stop(.subclass = "inv_xy", message = paste0(assay, " is not a valid assay from ","'",args.list["X"],"'"))
   ## transpose and create a data matrix
-  X <- internal_check_eval(EXP = data.matrix(t(assay(X,assay))),
+  X <- .checkExpr(EXP = data.matrix(t(assay(X,assay))),
                                         error_message = paste0("could not create a data matrix from assay '", assay, "' in ", args.list["X"]) )
-  if(!is.numeric(as.matrix(X))) stop_custom(.subclass = "inv_xy", message = paste0("The ", assay, " assay contains non-numeric values"))
+  if(!is.numeric(as.matrix(X))) .stop(.subclass = "inv_xy", message = paste0("The ", assay, " assay contains non-numeric values"))
   return(X)
 }
 
@@ -55,10 +55,10 @@ names2mat <- function(mc, mcc){ ## mc is list(data=MAE, X=X_name, Y=Y_name)
   tryCatch({
     if(any(class(c(mc$X, mc$Y))!="character")) stop("mc must have character X and Y", call. = FALSE)
   }, error=function(e) message("class(mc$X/mc$Y) produced error"))
-  if(!mc$X %in% names(assays(mc$data))) stop_custom("inv_xy", " 'X' is not a valid assay from 'data'")
+  if(!mc$X %in% names(assays(mc$data))) .stop("inv_xy", " 'X' is not a valid assay from 'data'")
   ## --- if 'Y' is a colData
   if(mc$Y %in% names(colData(mc$data))){
-    if(mc$Y %in% names(assays(mc$data))) stop_custom("inv_xy", paste0(mcc$Y, " matches to both colData and assay in 'data', change its name in one and continue."))
+    if(mc$Y %in% names(assays(mc$data))) .stop("inv_xy", paste0(mcc$Y, " matches to both colData and assay in 'data', change its name in one and continue."))
     ## ----- if Y is a colData column subset it using X samples
     Xcoldata <- suppressMessages( as.data.frame(colData(mc$data[,,mc$X]))) ## keep X assay coldata - DataFrame to data.frame
     mc$Y <- Xcoldata[,mc$Y] ## keep the coldata desired for Y
@@ -72,12 +72,12 @@ names2mat <- function(mc, mcc){ ## mc is list(data=MAE, X=X_name, Y=Y_name)
         ## if Y is a character colData and the number of unique terms are less than total,
         ## coerce it to factor and then numeric with a warning
         if(length(unique(mc$Y)) <  length(mc$Y) ){
-          warning_custom("char_Y", message = paste0("The column data ",mcc$Y, " is character vector, coercing to factor and then named numeric for pls"))
+          .warning("char_Y", message = paste0("The column data ",mcc$Y, " is character vector, coercing to factor and then named numeric for pls"))
 
           mc$Y <- structure(as.numeric(as.factor(mc$Y)),
                             names=mc$Y, class="numeric")
         } else {
-          stop_custom(.subclass = "inv_xy", message = paste0(" 'Y' is not a numeric/integer column (or a factor coercible to numeric)"))
+          .stop(.subclass = "inv_xy", message = paste0(" 'Y' is not a numeric/integer column (or a factor coercible to numeric)"))
         }
       }
 
@@ -89,7 +89,7 @@ names2mat <- function(mc, mcc){ ## mc is list(data=MAE, X=X_name, Y=Y_name)
     mc$data <- mc$data[,complete.cases(mc$data[,,c(mc$X, mc$Y)])] ## keep complete data b/w two assays
     mc$X <- assay(mc$data, mc$X)
     mc$Y <- assay(mc$data, mc$Y)
-  } else {stop_custom("inv_xy", paste0(squote(mcc$Y), " is not an assay or column data from the MAE object" ))}
+  } else {.stop("inv_xy", paste0(squote(mcc$Y), " is not an assay or column data from the MAE object" ))}
   mc$X <- t(as.matrix(mc$X))
   mc$Y <- as.matrix(mc$Y)
 
@@ -141,14 +141,14 @@ get_XY <- function(mc){
       mc[c("X", "Y")] <- lapply( mc[c("X", "Y")], as.character)
       ## ensure it is a single character
       if(any(sapply( mc[c("X", "Y")], length)!=1))
-        stop_custom("inv_xy", "'X' and 'Y' must be assay names from 'data'")
+        .stop("inv_xy", "'X' and 'Y' must be assay names from 'data'")
       mc <- names2mat(mc, mcc)
     }
     # ##--- if data, X and Y , expect X and Y to be assays and change them to matrices
     # else if(class(try(mc$formula))!="NULL"){
     #   ## if formula not a fomrula class, expect it to be NULL and X and Y to be assay/colData
     #   if(class(try(mc$formula))!="NULL")
-    #     stop_custom("inv_formula", "'formula' must be a formula object of form Y~X")
+    #     .stop("inv_formula", "'formula' must be a formula object of form Y~X")
     #
     # }
 
@@ -165,3 +165,18 @@ get_XY <- function(mc){
 
 ##------------------------------------------
 ## ----- function to pls methods arguments plus the methods call mode and create internal level arguments
+
+####################################################################################
+## ---------- function to handle MAE methods for pca family #TODO
+# .pcaMethods <- function(ml, fun='pca'){
+#   ## if assay is not valid throw appropriate error
+#   arg.ind <- match(names(formals(.pca)), names(mli), 0L)
+#   ml$assay <- eval.parent(ml$assay)
+#   ml$X <- eval.parent(ml$X)
+#   if(!ml$assay %in% tryCatch(names(assays(ml$X)), error=function(e)e)) .inv_assay()
+#   ml[[1L]] <- as.name(sprintf('.%s',fun))
+#   ml$X <- t(assay(ml$X, ml$assay))
+#   ## evaluate the call in the parent.frame and return
+#   result <- eval(ml, parent.frame())
+#   return(result)
+# }

@@ -82,7 +82,7 @@
 #' BC.diablo = block.splsda(X = data, Y = Y, ncomp = ncomp, keepX = list.keepX, design = design)
 #' plotDiablo(BC.diablo, ncomp = 1)
 #'
-
+#' @importFrom ellipse ellipse
 plot.sgccda = plotDiablo = function(x,
 ncomp = 1,
 legend = TRUE,

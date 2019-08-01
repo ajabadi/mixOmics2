@@ -92,7 +92,6 @@ plotIndiv(plsda.liver, background = background, legend = TRUE)
 
 
 }
-
 }
 \references{
 Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package

@@ -95,7 +95,6 @@
 #'
 #' get.BER(confusion.mat)
 #'
-#'
 #' @export get.confusion_matrix
 get.confusion_matrix = function(truth, all.levels, predicted)
 {

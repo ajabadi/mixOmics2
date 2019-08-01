@@ -1,125 +1,12 @@
-#############################################################################################################
-# Authors:
-#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-#   Kim-Anh Le Cao, French National Institute for Agricultural Research and
-#   ARC Centre of Excellence ins Bioinformatics, Institute for Molecular Bioscience, University of Queensland, Australia
-#   Leigh Coonan, Student, University of Quuensland, Australia
-#   Fangzhou Yao, Student, University of Queensland, Australia
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-#   Al J Abadi, Melbourne Integartive Genomics, The University of Melbourne, Australia
-
-# created: 2009
-# last modified: 2019
-#
-# Copyright (C) 2009
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
-
-#' Independent Principal Component Analysis
-#'
-#' Performs independent principal component analysis on the given data matrix,
-#' a combination of Principal Component Analysis and Independent Component
-#' Analysis.
-#'
-#' In PCA, the loading vectors indicate the importance of the variables in the
-#' principal components. In large biological data sets, the loading vectors
-#' should only assign large weights to important variables (genes, metabolites
-#' ...). That means the distribution of any loading vector should be
-#' super-Gaussian: most of the weights are very close to zero while only a few
-#' have large (absolute) values.
-#'
-#' However, due to the existence of noise, the distribution of any loading
-#' vector is distorted and tends toward a Gaussian distribtion according to the
-#' Central Limit Theroem. By maximizing the non-Gaussianity of the loading
-#' vectors using FastICA, we obtain more noiseless loading vectors. We then
-#' project the original data matrix on these noiseless loading vectors, to
-#' obtain independent principal components, which should be also more noiseless
-#' and be able to better cluster the samples according to the biological
-#' treatment (note, IPCA is an unsupervised approach).
-#'
-#' \bold{Algorithm} 1. The original data matrix is centered.
-#'
-#' 2. PCA is used to reduce dimension and generate the loading vectors.
-#'
-#' 3. ICA (FastICA) is implemented on the loading vectors to generate
-#' independent loading vectors.
-#'
-#' 4. The centered data matrix is projected on the independent loading vectors
-#' to obtain the independent principal components.
-#'
-## --------------------------------------------------------------------------------------- arguments
-#'
-#' @inheritParams pca
-#' @param mode character string. What type of algorithm to use when estimating
-#' the unmixing matrix, choose one of \code{"deflation"}, \code{"parallel"}.
-#' @param fun the function used in approximation to neg-entropy in the FastICA
-#' algorithm. Default set to \code{logcosh}, see details of FastICA.
-#' @param w.init initial un-mixing matrix (unlike FastICA, this matrix is fixed
-#' here).
-## --------------------------------------------------------------------------------------- value
-#' @return \code{ipca} returns a list with class \code{"ipca"} containing the
-#' following components: \item{ncomp}{the number of independent principal
-#' components used.} \item{unmixing}{the unmixing matrix of size (ncomp x
-#' ncomp)} \item{mixing}{the mixing matrix of size (ncomp x ncomp)}
-#' \item{X}{the centered data matrix} \item{x}{the indepenent principal
-#' components} \item{loadings}{the independent loading vectors}
-#' \item{kurtosis}{the kurtosis measure of the independent loading vectors}
-## -----------------------------------------------------------------------------
-#' @author Fangzhou Yao and Jeff Coquery.
-#' @seealso \code{\link{sipca}}, \code{\link{pca}}, \code{\link{plotIndiv}},
-#' \code{\link{plotVar}}, and http://www.mixOmics.org for more details.
-#' @references Yao, F., Coquery, J. and Lê Cao, K.-A. (2011) Principal
-#' component analysis with independent loadings: a combination of PCA and ICA.
-#' (in preparation)
-#'
-#' A. Hyvarinen and E. Oja (2000) Independent Component Analysis: Algorithms
-#' and Applications, \emph{Neural Networks}, \bold{13(4-5)}:411-430
-#'
-#' J L Marchini, C Heaton and B D Ripley (2010). fastICA: FastICA Algorithms to
-#' perform ICA and Projection Pursuit. R package version 1.1-13.
-#' @keywords algebra
-## ----------------------------------------------------------------------------- examples
-#' @example examples/ipca-example.R
-
-
-#############################################################
-## S3 generic
-#############################################################
-#'@rdname ipca
-#'@usage {ipca}{default}(X, assay=NULL, mode = "deflation", fun = "logcosh",
-#'scale = FALSE, w.init = NULL, max.iter = 200, tol = 1e-04)
-#'@export
-ipca <- function(X, assay, ...) UseMethod("ipca")
-
-#############################################################
-## internal function
-#############################################################
-.ipca = function (X,
-                  ncomp = 2,
-                  mode = "deflation",
-                  fun = "logcosh",
-                  scale = FALSE,
-                  w.init = NULL,
-                  max.iter = 200,
-                  tol = 1e-04)
-{
-  #-- checking general input parameters --------------------------------------#
-  #---------------------------------------------------------------------------#
-
+####################################################################################
+## ---------- internal
+.ipca = function (X, ncomp = 2,  mode = c("deflation","parallel"),
+                  fun = c("logcosh", "exp", "kur"), scale = FALSE, w.init = NULL,
+                  max.iter = 200, tol = 1e-04) {
+  arg.call = match.call()
+  ## match or set the multi-choice arguments
+  mode <- arg.call$mode <- .matchArg(mode)
+  fun <- arg.call$fun <- .matchArg(fun)
   #-- X matrix
   if (is.data.frame(X)) X = as.matrix(X)
 
@@ -282,33 +169,105 @@ ipca <- function(X, assay, ...) UseMethod("ipca")
   return(invisible(result))
 }
 
-#############################################################
-## S3 methods
-#############################################################
-## --------------------------------------------------------------------------------------- default
-#'@export
-ipca.default <- function(X, assay=NULL,...) {
-  .ipca(X,...)
-}
 
-## --------------------------------------------------------------------------------------- MultiAssayExperiment
-#'@rdname ipca
-#'@importFrom SummarizedExperiment assay
-#'@export
-ipca.MultiAssayExperiment <-   function(X, assay, ...){
-  try_res <- tryCatch(assay, error = function(e) e)
-  if("simpleError" %in% class(try_res)){
-    assay <- as.character(substitute(assay)) ## internal_mae2dm will check if it is valid
-  }
-  ## get all inputs so you can refer to provided names
-  X <- internal_mae2dm(X, assay)
-  .ipca(X,...)
-}
-## --------------------------------------------------------------------------------------- SingleCellExperiment
-#'@rdname ipca
-#'@export
-ipca.SingleCellExperiment <- function(X, assay="logcounts", ...) ipca.MultiAssayExperiment
-## --------------------------------------------------------------------------------------- SummarizedExperiment
-#'@rdname ipca
-#'@export
-ipca.SummarizedExperiment <- function(X, assay, ...) ipca.MultiAssayExperiment
+#' @title Independent Principal Component Analysis
+#'
+#' @description  Performs independent principal component analysis on the given data matrix,
+#' a combination of Principal Component Analysis and Independent Component
+#' Analysis.
+#'
+#' In PCA, the loading vectors indicate the importance of the variables in the
+#' principal components. In large biological data sets, the loading vectors
+#' should only assign large weights to important variables (genes, metabolites
+#' ...). That means the distribution of any loading vector should be
+#' super-Gaussian: most of the weights are very close to zero while only a few
+#' have large (absolute) values.
+#'
+#' However, due to the existence of noise, the distribution of any loading
+#' vector is distorted and tends toward a Gaussian distribtion according to the
+#' Central Limit Theroem. By maximizing the non-Gaussianity of the loading
+#' vectors using FastICA, we obtain more noiseless loading vectors. We then
+#' project the original data matrix on these noiseless loading vectors, to
+#' obtain independent principal components, which should be also more noiseless
+#' and be able to better cluster the samples according to the biological
+#' treatment (note, IPCA is an unsupervised approach).
+#'
+#' \bold{Algorithm} 1. The original data matrix is centered.
+#'
+#' 2. PCA is used to reduce dimension and generate the loading vectors.
+#'
+#' 3. ICA (FastICA) is implemented on the loading vectors to generate
+#' independent loading vectors.
+#'
+#' 4. The centered data matrix is projected on the independent loading vectors
+#' to obtain the independent principal components.
+#'
+## ----------------------------------- Parameters
+#' @inheritParams pca
+#' @param mode character string. What type of algorithm to use when estimating
+#' the unmixing matrix, choose one of \code{"deflation"}, \code{"parallel"}.
+#' @param fun the function used in approximation to neg-entropy in the FastICA
+#' algorithm. Default set to \code{logcosh}, see details of FastICA.
+#' @param w.init initial un-mixing matrix (unlike FastICA, this matrix is fixed
+#' here).
+
+## ----------------------------------- Value
+#' @return \code{ipca} returns a list with class \code{"ipca"} containing the
+#' following components: \item{ncomp}{the number of independent principal
+#' components used.} \item{unmixing}{the unmixing matrix of size (ncomp x
+#' ncomp)} \item{mixing}{the mixing matrix of size (ncomp x ncomp)}
+#' \item{X}{the centered data matrix} \item{x}{the indepenent principal
+#' components} \item{loadings}{the independent loading vectors}
+#' \item{kurtosis}{the kurtosis measure of the independent loading vectors}
+
+## ----------------------------------- Misc
+#' @author Fangzhou Yao and Jeff Coquery.
+#' @seealso \code{\link{sipca}}, \code{\link{pca}}, \code{\link{plotIndiv}},
+#' \code{\link{plotVar}}, and http://www.mixOmics.org for more details.
+#' @references Yao, F., Coquery, J. and Lê Cao, K.-A. (2011) Principal
+#' component analysis with independent loadings: a combination of PCA and ICA.
+#' (in preparation)
+#'
+#' A. Hyvarinen and E. Oja (2000) Independent Component Analysis: Algorithms
+#' and Applications, \emph{Neural Networks}, \bold{13(4-5)}:411-430
+#'
+#' J L Marchini, C Heaton and B D Ripley (2010). fastICA: FastICA Algorithms to
+#' perform ICA and Projection Pursuit. R package version 1.1-13.
+#' @keywords algebra
+## ----------------------------------- Examples
+#' @example examples/ipca-example.R
+
+####################################################################################
+## ---------- Generic
+#' @param ... aguments passed to the generic.
+#' @usage \S4method{ipca}{ANY}X, ncomp = 2,  mode = c("deflation","parallel"),
+#' fun = c("logcosh", "exp", "kur"), scale = FALSE, w.init = NULL,
+#' max.iter = 200, tol = 1e-04)
+#' @export
+setGeneric('ipca', function (X, ncomp=2,...) standardGeneric('ipca'))
+
+####################################################################################
+## ---------- Methods
+
+## ----------------------------------- ANY
+#' @export
+setMethod('ipca', 'ANY', .ipca)
+
+## ----------------------------------- MultiAssayExperiment
+#' @importFrom SummarizedExperiment assay assays
+#' @rdname ipca
+#' @export
+setMethod('ipca', 'MultiAssayExperiment', function(X, ncomp=2,..., assay=NULL){
+  ## refer to pca for code details
+  if(!assay %in% tryCatch(names(assays(X)), error=function(e)e)) .inv_assay()
+  ml <- match.call()
+  ml[[1L]] <- quote(sipca)
+  mli <- ml
+  mli[[1L]] <- quote(.sipca)
+  arg.ind <- match(names(formals(.sipca)), names(mli), 0L)
+  mli <- mli[c(1L,arg.ind)]
+  mli[['X']] <- t(assay(X, assay))
+  result <- eval(mli, parent.frame())
+  result[["call"]] <- ml
+  return(result)
+})

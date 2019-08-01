@@ -30,7 +30,7 @@
 #----------------------------------------------------------------------------------------------------------#
 #-- Includes plotIndiv for PLS, sPLS, PLS-DA, SPLS-DA,  --#
 #----------------------------------------------------------------------------------------------------------#
-#'@title PLS sample plot methods
+#' @title PLS sample plot methods
 
 #' @export plotIndiv.mixo_pls
 

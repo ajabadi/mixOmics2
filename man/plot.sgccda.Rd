@@ -4,7 +4,7 @@
 \alias{plot.sgccda}
 \title{Graphical output for the DIABLO framework}
 \usage{
-\method{plot}{sgccda}(x, ncomp = 1, legend = TRUE, legend.ncol, ...)
+plot.sgccda(x, ncomp = 1, legend = TRUE, legend.ncol, ...)
 }
 \arguments{
 \item{x}{object of class inheriting from \code{"block.splsda"}.}

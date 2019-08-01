@@ -2,10 +2,10 @@
 % Please edit documentation in R/plot.pca.R
 \name{plot.pca}
 \alias{plot.pca}
-\title{plot}
+\title{plot methods for mixOmics}
 \usage{
-\method{plot}{pca}(x, ncomp = min(10, length(x$sdev)),
-  type = "barplot", explained.var = TRUE, ...)
+plot.pca(x, ncomp = min(10, length(x$sdev)), type = "barplot",
+  explained.var = TRUE, ...)
 }
 \arguments{
 \item{x}{a \code{pca} object obtained from \code{pca} function.}
@@ -18,9 +18,18 @@
 
 \item{...}{other arguments passed to \code{plot}.}
 }
+\value{
+A scree plot of explained variance by the study PCs.
+}
 \description{
 Plot the explained variances from a pca object
 }
 \details{
 Creates a scree plot of explained variance by the study PCs.
 }
+\author{
+Florian Rohart, Kim-Anh Lê Cao, Ignacio González, Al J Abadi
+\code{\link{plotIndiv}}, \code{\link{pca}} and http://www.mixOmics.org
+for more details.
+}
+\keyword{plot}

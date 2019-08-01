@@ -1,48 +1,36 @@
-#############################################################################################################
-# Authors:
-#   Kim-Anh Le Cao, French National Institute for Agricultural Research and ARC Centre of Excellence ins Bioinformatics, Institute for Molecular Bioscience, University of Queensland, Australia
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Leigh Coonan, Queensland Faculty for Advanced Bioinformatics, Australia
-#
-# created: 2010
-# last modified: 19-04-2016
-#
-# Copyright (C) 2010
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
 #' Plot the explained variances from a pca object
 #'
 #' Creates a scree plot of explained variance by the study PCs.
 #'
-#'@title plot
-#'@param x a \code{pca} object obtained from \code{pca} function.
-#'@param ncomp number of PCs to show.
-#'@param type type of the plot, either "barplot" or argument passed to \code{type} in base \code{plot}.
-#'@param explained.var logical. Whether to show proportion of variance explained (TRUE) or the total variance (FALSE).
-#'@param ... other arguments passed to \code{plot}.
-#'
-#'@rdname plot
-#'@export
+#' @title plot methods for mixOmics
+
+## ----------------------------------- Parameters
+#' @param x a \code{pca} object obtained from \code{pca} function.
+#' @param ncomp number of PCs to show.
+#' @param type type of the plot, either "barplot" or argument passed to \code{type} in base \code{plot}.
+#' @param explained.var logical. Whether to show proportion of variance explained (TRUE) or the total variance (FALSE).
+#' @param ... other arguments passed to \code{plot}.
+
+## ----------------------------------- Value
+#' @return A scree plot of explained variance by the study PCs.
+## ----------------------------------- Misc
+#' @author Florian Rohart, Kim-Anh Lê Cao, Ignacio González, Al J Abadi
+#' \code{\link{plotIndiv}}, \code{\link{pca}} and http://www.mixOmics.org
+#' for more details.
+#' @keywords plot
+
+## ----------------------------------- Examples
+#' @example examples/plt.pca-example.R
+
+## ----------------------------------- Method
+#' @rdname plot
+#' @export
 plot.pca <-  function(x,
             ncomp = min(10, length(x$sdev)),
             type = "barplot", # either barplot or any other type available in plot, as "l","b","p",..
             explained.var=TRUE,
             ...)
 {
-
     #-- checking general input parameters --------------------------------------#
     #---------------------------------------------------------------------------#
 

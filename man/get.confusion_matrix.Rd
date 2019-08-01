@@ -60,7 +60,6 @@ predicted = Prediction)
 
 get.BER(confusion.mat)
 
-
 }
 \references{
 mixOmics article:

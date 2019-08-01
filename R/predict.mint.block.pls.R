@@ -49,7 +49,7 @@
 # is.na.newdata: hidden parameter. used in tune/perf functions. where are the missing values in `newdata'
 # noAveragePredict: hidden parameter. used in tune/perf functions. no calculation of Average Prediction (gain in computational time)
 
-#'@export predict
+#' @export predict
 
 predict.block.pls <-predict.block.spls <- predict.mint.splsda <-
 predict.mixo_pls <-predict.mixo_spls <-

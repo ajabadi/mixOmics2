@@ -3,6 +3,14 @@
 roxygen2::roxygenise()
 ############# load the pks to access functions
 devtools::load_all()
+fun='pca'
+fun=NULL
+if(!is.null(fun)){
+  source(sprintf('tests/testthat/test-%s.R', fun))
+  source(sprintf('examples/%s-example.R', fun))
+}
+
+
 ############# run ./tests tests which then redirects to testthat.R. testhat/helper-*.R files are run before tests
 devtools::test()
 ############# check without examples

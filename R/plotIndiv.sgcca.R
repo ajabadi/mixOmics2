@@ -29,8 +29,8 @@
 #----------------------------------------------------------------------------------------------------------#
 #-- Includes plotIndiv rGCCA, sGCCA, sGCCDA --#
 #----------------------------------------------------------------------------------------------------------#
-#'@export plotIndiv.sgcca
-#'@export plotIndiv.rgcca
+#' @export plotIndiv.sgcca
+#' @export plotIndiv.rgcca
 plotIndiv.sgcca <- plotIndiv.rgcca <-  function(object,
       comp = NULL,
       blocks = NULL, # to choose which block data to plot, when using GCCA module

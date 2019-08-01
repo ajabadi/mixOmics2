@@ -1,7 +1,7 @@
 ## -----------------------------------------------------------------------------------
 ## ---------------  custom stop to define specific error classes
 ## -----------------------------------------------------------------------------------
-stop_custom <- function(.subclass, message, call = NULL, ...) {
+.stop<- function(.subclass, message, call = NULL, ...) {
   formals(stop)$call. <- FALSE
   err <- structure(
     list(
@@ -14,22 +14,22 @@ stop_custom <- function(.subclass, message, call = NULL, ...) {
   stop(err)
 }
 
-
+##TODO remove the first two
 ## ----------- for invalid signature
-.inv_signature <- function() stop_custom("inv_signature", "incorrect input format to 'pls'. See ?spls for supported signatures")
+.inv_signature <- function() .stop("inv_signature", "incorrect input format")
 ## ----------- for invalid data
-.inv_mae <- function(data) stop_custom("inv_mae", paste0(squote(data), " must be a MultiAssayExperiment object"))
+.inv_mae <- function(data) .stop("inv_mae", paste0(squote(data), " must be a MultiAssayExperiment object"))
 ## ----------- for invalid formula for single
-.inv_sformula <- function() stop_custom("inv_sformula", "'formula' must be a formula object of form Y~X where X and Y are numeric matrices")
+.inv_sformula <- function() .stop("inv_sformula", "'formula' must be a formula object of form Y~X where X and Y are numeric matrices")
 ## ----------- for invalid formula for blocks
-.inv_bformula <- function() stop_custom("inv_bformula", "'formula' must be a formula object of form Y~X where X is a list of numeric matrices")
+.inv_bformula <- function() .stop("inv_bformula", "'formula' must be a formula object of form Y~X where X is a list of numeric matrices")
 ## ----------- for invalid X/Y
-.inv_assay <- function() stop_custom("inv_assay", "invalid assay/colData name(s).")
+.inv_assay <- function() .stop("inv_assay", "invalid assay/colData name(s).")
 
 ## -----------------------------------------------------------------------------------
 ## ---------------  custom warnings with specified class
 ## -----------------------------------------------------------------------------------
-warning_custom <- function(.subclass, message, call=NULL, ...){
+.warning <- function(.subclass, message, call=NULL, ...){
   formals(warning)$call. <- FALSE
   warn <- structure(
     list(
@@ -45,7 +45,7 @@ warning_custom <- function(.subclass, message, call=NULL, ...){
 ## -----------------------------------------------------------------------------------
 ## --------------- custom match.arg with call.=FALSE for stop()
 ## -----------------------------------------------------------------------------------
-match.arg_custom <- function (arg, choices, several.ok = FALSE)
+.matchArg <- function (arg, choices, several.ok = FALSE)
 {
   if (missing(choices)) {
     formal.args <- formals(sys.function(sysP <- sys.parent()))

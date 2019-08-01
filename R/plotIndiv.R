@@ -371,6 +371,7 @@
 #'
 #' }
 #'
+#' @importFrom ellipse ellipse
 #' @export plotIndiv
 plotIndiv  =
 function(object, ...) UseMethod("plotIndiv")
