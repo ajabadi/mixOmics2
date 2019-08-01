@@ -1,9 +1,8 @@
 context("pls")
-## the tests are parameterised so we can try different datasets if need be, and also to cope with object inputs (e.g. formyla stored in a variable)
-
-
-##TODO
-
+## the tests are parameterised in helper-pls.R (any helper-*.R file in ./testthatis run
+## before tests) so we can try different datasets if need be, and also to cope with
+## object inputs (e.g. formla stored in a variable)
+##
 
 ## ------ pls works with numeric ~ matrix
 test_that("pls produces identical 'mixo_pls' classes for designated valid signatures when Y is a column data",{
@@ -19,7 +18,7 @@ test_that("pls produces identical 'mixo_pls' classes for designated valid signat
     pls.res.formula.mae <- pls(formula = f_Yc, data = mae_data)
     expect_equal(pls.res.xy[-1] ,pls.res.formula.mae[-1])
 
-    pls.res.xy.mae <-      pls(X=X , Y=Yc , data = mae_data)
+    pls.res.xy.mae <-      pls(X=Xa , Y=Yc , data = mae_data)
     expect_equal(pls.res.formula.mae[-1] , pls.res.xy.mae[-1] )
     })
 })
@@ -77,6 +76,5 @@ test_that("pls fails with invalid formula formats and produces expected errors",
 
 ## ------ correct error with non-numeric/factor Y coldata
 test_that("pls fails with invalid Y",{
-  expect_condition(pls(X=X , Y=Y_inv , data = mae_data), class = "inv_xy")
-  expect_warning(pls(X=X , Y=Y_char , data = mae_data), class = "char_Y")
+  expect_condition(pls(X=Xa , Y=Y_inv , data = mae_data), class = "inv_xy")
 })

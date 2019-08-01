@@ -261,10 +261,10 @@ setMethod('ipca', 'MultiAssayExperiment', function(X, ncomp=2,..., assay=NULL){
   ## refer to pca for code details
   if(!assay %in% tryCatch(names(assays(X)), error=function(e)e)) .inv_assay()
   ml <- match.call()
-  ml[[1L]] <- quote(sipca)
+  ml[[1L]] <- quote(ipca)
   mli <- ml
-  mli[[1L]] <- quote(.sipca)
-  arg.ind <- match(names(formals(.sipca)), names(mli), 0L)
+  mli[[1L]] <- quote(.ipca)
+  arg.ind <- match(names(formals(.ipca)), names(mli), 0L)
   mli <- mli[c(1L,arg.ind)]
   mli[['X']] <- t(assay(X, assay))
   result <- eval(mli, parent.frame())

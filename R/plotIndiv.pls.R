@@ -136,7 +136,7 @@ plotIndiv.mixo_pls <-
     stop("'background' must have been obtained with the 'background.predict' function")
 
     #-- check inputs
-    check  = check.input.plotIndiv(object = object, comp  = comp , blocks  = blocks, ind.names  = ind.names,
+    check  = .plotIndivCheckInput(object = object, comp  = comp , blocks  = blocks, ind.names  = ind.names,
     style = style, ellipse  = ellipse, ellipse.level  = ellipse.level, centroid = centroid,
     star = star, legend = legend, X.label  = X.label, Y.label  = Y.label, Z.label  = Z.label, abline  = abline,
     xlim  = xlim, ylim  = ylim, alpha = alpha, axes.box  = axes.box, plot_parameters = plot_parameters)
@@ -149,7 +149,7 @@ plotIndiv.mixo_pls <-
     display.names = check$display.names
 
     #-- get the variates
-    variate = internal_getVariatesAndLabels(object, comp, blocks = blocks, rep.space = rep.space, style = style, X.label = X.label,
+    variate = .getVariatesAndLabels(object, comp, blocks = blocks, rep.space = rep.space, style = style, X.label = X.label,
         Y.label = Y.label, Z.label = Z.label)
     #-- retrieve outputs
     x = variate$x
@@ -162,7 +162,7 @@ plotIndiv.mixo_pls <-
     n = nrow(object$X)
 
     # create data frame df that contains (almost) all the ploting information
-    out = shape.input.plotIndiv(object = object, n = n, blocks  = blocks, x = x, y = y, z = z, ind.names  = ind.names, group = group,
+    out = .inputShapePlotIndiv(object = object, n = n, blocks  = blocks, x = x, y = y, z = z, ind.names  = ind.names, group = group,
     col.per.group = col.per.group, style = style, study = "global", ellipse  = ellipse, ellipse.level  = ellipse.level,
     centroid = centroid, star = star, title = title, xlim  = xlim, ylim  = ylim,
     col = col, cex = cex, pch = pch, pch.levels = pch.levels, display.names = display.names, plot_parameters = plot_parameters)

@@ -199,7 +199,7 @@ For customized plots (i.e. adding points, text), use the style = 'graphics'
 Note: the ellipse options were borrowed from the \pkg{ellipse}.
 }
 \examples{
-\dontrun{
+#' @\dontrun{
 ## plot of individuals for objects of class 'rcc'
 # ----------------------------------------------------
 library(mixOmics.data)
@@ -394,15 +394,14 @@ plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet)
 plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet,
 ellipse = TRUE, legend = TRUE, title = 'my sample plot')
 
-}
-
+#' }
 }
 \seealso{
 \code{\link{text}}, \code{\link{background.predict}},
 \code{\link{points}} and http://mixOmics.org/graphics for more details.
 }
 \author{
-Ignacio González, Benoit Gautier, Francois Bartolo, Florian Rohart
+Ignacio González, Benoit Gautier, Francois Bartolo, Florian Rohart, Al J Abadi
 }
 \keyword{dplot}
 \keyword{hplot}

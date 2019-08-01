@@ -1,31 +1,3 @@
-#############################################################################################################
-# Authors:
-#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Kim-Anh Le Cao, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Al J Abadi, Melbourne Integartive Genomics, The University of Melbourne, Australia
-#
-# created: 2009
-# last modified: 2019
-#
-# Copyright (C) 2009
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
-
-
 # ========================================================================================================
 # pls: perform a PLS
 # this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint
@@ -77,8 +49,10 @@
 #' internal pre-processing step, through \code{\link{logratio.transfo}} and
 #' \code{\link{withinVariation}} respectively.
 ## --------------------------------------------------------------------------------------- parameters
-#' @param X numeric matrix of predictors, or name of such an assay from \code{data} . \code{NA}s are allowed.
-#' @param Y numeric vector or matrix of responses (for multi-response models), or name of such an \code{assay} or
+#' @param X numeric matrix of predictors, or name of such an assay from \code{data} .
+#' \code{NA}s are allowed.
+#' @param Y numeric vector or matrix of responses (for multi-response models),
+#' or name of such an \code{assay} or
 #' \code{colData} from \code{data}. \code{NA}s are allowed.
 #' @param ncomp the number of components to include in the model. Default to 2.
 #' @param scale boleean. If scale = TRUE, each block is standardized to zero
@@ -100,9 +74,12 @@
 #' columns indicate those factors. See examples in \code{?spls}).
 #' @param all.outputs boolean. Computation can be faster when some specific
 #' (and non-essential) outputs are not calculated. Default = \code{TRUE}.
-#' @param formula formula of form \code{Y~X} (names of objects without quotations) where Y and X are
-#' numeric matrices. \code{X} and \code{Y} can also be an assay names from \code{data}. \code{Y} can also be a column data.
-#' Y can also be a \code{colData} name from \code{data}.
+#' @param formula (\code{X} and \code{Y} must be \code{NULL})
+#' formula of form \code{LHS~RHS} (names of objects without quotations) where
+#' \code{LHS} and \code{RHS} (in effect \code{Y} and \code{X}, respectively) are
+#'  numeric matrices . \code{LHS} and \code{RHS} can also be an assay names from
+#'  \code{data}. \code{LHS} can also be a numeric \code{colData} name from \code{data}.
+#'  see examples.
 #' @param data A \code{MultiAssayExperiment} object.
 ## --------------------------------------------------------------------------------------- value
 #' @return \code{pls} returns an object of class \code{"pls"}, a list that
@@ -151,8 +128,8 @@
 #' @importFrom matrixStats colSds
 #' @importFrom matrixStats colVars
 #' @export pls
-pls = function(X,
-Y,
+pls = function(X=NULL,
+Y=NULL,
 ncomp = 2,
 scale = TRUE,
 mode = c("regression", "canonical", "invariant", "classic"),
@@ -163,12 +140,15 @@ logratio = "none",
 multilevel = NULL,
 all.outputs = TRUE,
 data=NULL,
-formula=NULL)
-{
+formula=NULL){
     mc <- as.list(match.call()[-1])
+
     ## make sure mode matches given arguments, and if it is not provided put as the first one in the definition
     mc$mode <- .matchArg(mode)
-    mc <- get_XY(mc=mc)
+    ## if formula or data is given, process arguments to match default pls
+    if(any(c("formula", "data") %in% names(mc))){
+        mc <- .getXY(mc=mc)
+    }
     mc$DA <- FALSE
     # # call to 'internal_wrapper.mint'
     result <- do.call(internal_wrapper.mint, mc)

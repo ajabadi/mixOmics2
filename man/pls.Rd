@@ -4,15 +4,18 @@
 \alias{pls}
 \title{Partial Least Squares (PLS) Regression}
 \usage{
-pls(X, Y, ncomp = 2, scale = TRUE, mode = c("regression",
-  "canonical", "invariant", "classic"), tol = 1e-06, max.iter = 100,
-  near.zero.var = FALSE, logratio = "none", multilevel = NULL,
-  all.outputs = TRUE, data = NULL, formula = NULL)
+pls(X = NULL, Y = NULL, ncomp = 2, scale = TRUE,
+  mode = c("regression", "canonical", "invariant", "classic"),
+  tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
+  logratio = "none", multilevel = NULL, all.outputs = TRUE,
+  data = NULL, formula = NULL)
 }
 \arguments{
-\item{X}{numeric matrix of predictors, or name of such an assay from \code{data} . \code{NA}s are allowed.}
+\item{X}{numeric matrix of predictors, or name of such an assay from \code{data} .
+\code{NA}s are allowed.}
 
-\item{Y}{numeric vector or matrix of responses (for multi-response models), or name of such an \code{assay} or
+\item{Y}{numeric vector or matrix of responses (for multi-response models),
+or name of such an \code{assay} or
 \code{colData} from \code{data}. \code{NA}s are allowed.}
 
 \item{ncomp}{the number of components to include in the model. Default to 2.}
@@ -46,9 +49,12 @@ columns indicate those factors. See examples in \code{?spls}).}
 
 \item{data}{A \code{MultiAssayExperiment} object.}
 
-\item{formula}{formula of form \code{Y~X} (names of objects without quotations) where Y and X are
-numeric matrices. \code{X} and \code{Y} can also be an assay names from \code{data}. \code{Y} can also be a column data.
-Y can also be a \code{colData} name from \code{data}.}
+\item{formula}{(\code{X} and \code{Y} must be \code{NULL})
+formula of form \code{LHS~RHS} (names of objects without quotations) where
+\code{LHS} and \code{RHS} (in effect \code{Y} and \code{X}, respectively) are
+ numeric matrices . \code{LHS} and \code{RHS} can also be an assay names from
+ \code{data}. \code{LHS} can also be a numeric \code{colData} name from \code{data}.
+ see examples.}
 }
 \value{
 \code{pls} returns an object of class \code{"pls"}, a list that
@@ -129,23 +135,36 @@ internal pre-processing step, through \code{\link{logratio.transfo}} and
 
 library(mixOmics.data)
 
+## ---------------- X and Y matrices using linnerud dataset
 X <- linnerud$exercise
 Y <- linnerud$physiological
-linn.pls <- pls(X, Y, mode = "classic")
-
+linn.pls1 <- pls(X=X, Y=Y, mode = "classic")
 plotVar(linn.pls)
 
+## ---------------- formula method for numerics
+## 'formula' argument should be explicitly mentioned for correct method dispatch
+linn.pls2 <- pls(formula = Y ~ X, mode = "classic")
+## exclude calls and see if all outputs  are identical
+identical(linn.pls1[-1], linn.pls2[-1])
+#> TRUE
+## ---------------- MultiAssayExperiment using linnerud.mae
+## 'data' argument should be explicitly mentioned for correct method dispatch
+linn.pls3 <- pls(X='exercise', Y='physiological', mode = "classic", data = linnerud.mae)
+identical(linn.pls1[-1], linn.pls3[-1])
+#> TRUE
 
+## ---------------- MultiAssayExperiment and formula
+linn.pls4 <- pls(formula = physiological ~ exercise, data = linnerud.mae, mode = "classic",)
+identical(linn.pls1[-1], linn.pls4[-1])
+#> TRUE
+
+## ---------------- colData of MultiAssayExperiment and formula
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
-toxicity.pls <- pls(X, Y, ncomp = 3)
+toxicity.pls <- pls(formula = Y~X, ncomp = 3)
 
 plotVar(toxicity.pls, cutoff = 0.8)
-
-## ---- example with formula
-# linn.pls.form <- pls(formula = Y~X)
-
-## --- example with MultiAssayExperiment:
+plotLoadings(toxicity.pls, ndisplay = 10)
 
 #' }
 }

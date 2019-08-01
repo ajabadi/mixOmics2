@@ -643,11 +643,11 @@ label.axes.box = "both"  )
     } else if (((is.vector(pch, mode = "double") || is.vector(pch, mode = "integer")) && !(style=="3d"))
     || (is.vector(pch, mode = "character") && style=="3d")) {
         if (length(pch) != length(sample.X))
-        stop.message('pch', sample.X)
+        .plotStop('pch', sample.X)
         pch = unlist(lapply(seq_len(length(cord.X)), function(x){rep(pch[x], sum(sapply(cord.X[x], nrow)))}))
     } else if (is.list(pch)) {
         if (length(pch) != length(sample.X) || length(unlist(pch)) != sum(sapply(sample.X, length)))
-        stop.message('pch', sample.X)
+        .plotStop('pch', sample.X)
         if (length(ind.var.sel) != 0)
         pch = lapply(seq_len(length(pch)), function(x){pch[[x]][ind.var.sel[[x]]]})
         pch = unlist(pch)
@@ -657,7 +657,7 @@ label.axes.box = "both"  )
         call. = FALSE)
     }
     else {
-        stop.message('pch', sample.X)
+        .plotStop('pch', sample.X)
     }
 
     #-- col argument
@@ -669,16 +669,16 @@ label.axes.box = "both"  )
         }
     } else if (is.vector(col, mode = "double") | is.vector(col, mode = "character")) {
         if (length(col) != length(sample.X))
-        stop.message('col', sample.X)
+        .plotStop('col', sample.X)
         col = unlist(lapply(seq_len(length(cord.X)), function(x){rep(col[x], sum(sapply(cord.X[x], nrow)))}))
     } else if (is.list(col)) {
         if (length(col) != length(sample.X) || length(unlist(col)) != sum(sapply(sample.X, length)))
-        stop.message('col', sample.X)
+        .plotStop('col', sample.X)
         if (length(ind.var.sel) != 0)
         col = lapply(seq_len(length(col)), function(x){col[[x]][ind.var.sel[[x]]]})
         col = unlist(col)
     } else {
-        stop.message('col', sample.X)
+        .plotStop('col', sample.X)
     }
 
     #-- cex argument
@@ -690,16 +690,16 @@ label.axes.box = "both"  )
         }
     } else if (is.vector(cex, mode = "double")) {
         if (length(cex) != length(cord.X))
-        stop.message('cex', sample.X)
+        .plotStop('cex', sample.X)
         cex = unlist(lapply(seq_len(length(cord.X)), function(x){rep(cex[x], sum(sapply(cord.X[x], nrow)))}))
     } else if (is.list(cex)) {
         if (length(cex) != length(sample.X) || length(unlist(cex)) != sum(sapply(sample.X, length)))
-        stop.message('cex', sample.X)
+        .plotStop('cex', sample.X)
         if (length(ind.var.sel) != 0)
         cex = lapply(seq_len(length(cex)), function(x){cex[[x]][ind.var.sel[[x]]]})
         cex = unlist(cex)
     } else {
-        stop.message('cex', sample.X)
+        .plotStop('cex', sample.X)
     }
 
     #-- font argument
@@ -707,16 +707,16 @@ label.axes.box = "both"  )
         font = rep(1, sum(sapply(cord.X, nrow)))
     } else if (is.vector(font, mode = "numeric")) {
         if (length(font) != length(cord.X))
-        stop.message('font', sample.X)
+        .plotStop('font', sample.X)
         font = unlist(lapply(seq_len(length(cord.X)), function(x){rep(font[x], sum(sapply(cord.X[x], nrow)))}))
     } else if (is.list(font)) {
         if (length(font) != length(sample.X) || length(unlist(font)) != sum(sapply(sample.X, length)))
-        stop.message('font', sample.X)
+        .plotStop('font', sample.X)
         if (length(ind.var.sel) != 0)
         font = lapply(seq_len(length(font)), function(x){font[[x]][ind.var.sel[[x]]]})
         font = unlist(font)
     } else {
-        stop.message('font', sample.X)
+        .plotStop('font', sample.X)
     }
 
     #-- var.names
@@ -732,12 +732,12 @@ label.axes.box = "both"  )
         if (length(var.names) == 1){
             var.names = rep(var.names,length(cord.X))}
         else if (length(var.names) != length(cord.X))
-        stop.message('var.names', sample.X)
+        .plotStop('var.names', sample.X)
         var.names.list = unlist(lapply(seq_len(length(var.names)), function(x){if(var.names[x]){rownames(cord.X[[x]])}
             else {pch[(ind.group[x] + 1) : ind.group[x + 1]]}}))
     } else if (is.list(var.names)) {
         if (length(var.names) != length(cord.X))
-        stop.message('var.names', sample.X)
+        .plotStop('var.names', sample.X)
 
         if (sum(sapply(seq_len(length(var.names)), function(x){if(!lapply(var.names, is.logical)[[x]]){
             if(is.null(ind.var.sel[[x]])){
@@ -747,7 +747,7 @@ label.axes.box = "both"  )
             }
         } else {0}})) !=
         sum(sapply(seq_len(length(var.names)), function(x){if(!lapply(var.names, is.logical)[[x]]){nrow(cord.X[[x]])}else {0}}))){
-            stop.message('var.names', sample.X)
+            .plotStop('var.names', sample.X)
         }
 
         var.names.list = unlist(sapply(seq_len(length(var.names)), function(x){if(lapply(var.names, is.logical)[[x]]){
@@ -766,7 +766,7 @@ label.axes.box = "both"  )
         }))
         var.names = sapply(var.names, function(x){if(is.logical(x)){x}else{TRUE}})
     } else {
-        stop.message('var.names', sample.X)
+        .plotStop('var.names', sample.X)
     }
 
     #-- Start: Computation ellipse

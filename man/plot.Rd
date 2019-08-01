@@ -27,6 +27,16 @@ Plot the explained variances from a pca object
 \details{
 Creates a scree plot of explained variance by the study PCs.
 }
+\examples{
+#' \dontrun{
+## successful: TRUE
+## final: TRUE
+
+library(mixOmics.data)
+pca.res <- pca(multidrug$ABC.trans, ncomp = 10, scale = TRUE)
+plot(pca.res)
+#' }
+}
 \author{
 Florian Rohart, Kim-Anh Lê Cao, Ignacio González, Al J Abadi
 \code{\link{plotIndiv}}, \code{\link{pca}} and http://www.mixOmics.org

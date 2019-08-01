@@ -226,7 +226,7 @@ plotIndiv.mint.pls   <-
                 object$variates = object$variates["XYvariates"]
                 blocks = "XY combined"
             }
-            blocks.init = blocks #save for "internal_getVariatesAndLabels"
+            blocks.init = blocks #save for ".getVariatesAndLabels"
             blocks = study
 
 
@@ -280,7 +280,7 @@ plotIndiv.mint.pls   <-
         if (!style %in% c("ggplot2", "lattice", "graphics"))
         stop("'style' must be one of 'ggplot2', 'lattice' or 'graphics'.", call. = FALSE)
 
-        check = check.input.plotIndiv(object = object, comp = comp, blocks = blocks, ind.names = ind.names,
+        check = .plotIndivCheckInput(object = object, comp = comp, blocks = blocks, ind.names = ind.names,
         style = style, ellipse = ellipse, ellipse.level = ellipse.level, centroid = centroid,
         star = star, legend = legend, X.label = X.label, Y.label = Y.label, abline = abline,
         xlim = xlim, ylim = ylim, plot_parameters = plot_parameters)
@@ -293,7 +293,7 @@ plotIndiv.mint.pls   <-
 
 
         #-- get the variates
-        variate = internal_getVariatesAndLabels(object, comp, blocks.init = blocks.init, blocks = blocks, rep.space = rep.space,
+        variate = .getVariatesAndLabels(object, comp, blocks.init = blocks.init, blocks = blocks, rep.space = rep.space,
         style = style, X.label = X.label, Y.label = Y.label, Z.label = NULL)
         #-- retrieve outputs
         x = variate$x
@@ -305,7 +305,7 @@ plotIndiv.mint.pls   <-
         n = nrow(object$X)
 
         # create data frame df that contains (almost) all the ploting information
-        out = shape.input.plotIndiv(object = object, n = n, blocks = blocks, x = x, y = y, z = z, ind.names = ind.names, group = group,
+        out = .inputShapePlotIndiv(object = object, n = n, blocks = blocks, x = x, y = y, z = z, ind.names = ind.names, group = group,
         col.per.group = col.per.group, style = style, study = study, ellipse = ellipse, ellipse.level = ellipse.level,
         centroid = centroid, star = star, title = title, xlim = xlim, ylim = ylim,
         col = col, cex = cex, pch = pch, display.names = display.names, plot_parameters = plot_parameters)

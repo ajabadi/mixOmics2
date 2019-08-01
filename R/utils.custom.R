@@ -18,7 +18,7 @@
 ## ----------- for invalid signature
 .inv_signature <- function() .stop("inv_signature", "incorrect input format")
 ## ----------- for invalid data
-.inv_mae <- function(data) .stop("inv_mae", paste0(squote(data), " must be a MultiAssayExperiment object"))
+.inv_mae <- function(data='data') .stop("inv_mae", paste0(squote(data), " is not a MultiAssayExperiment object"))
 ## ----------- for invalid formula for single
 .inv_sformula <- function() .stop("inv_sformula", "'formula' must be a formula object of form Y~X where X and Y are numeric matrices")
 ## ----------- for invalid formula for blocks

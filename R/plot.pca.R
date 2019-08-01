@@ -20,7 +20,7 @@
 #' @keywords plot
 
 ## ----------------------------------- Examples
-#' @example examples/plt.pca-example.R
+#' @example examples/plot-example.R
 
 ## ----------------------------------- Method
 #' @rdname plot

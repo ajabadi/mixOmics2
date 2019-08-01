@@ -54,7 +54,7 @@ squote <- function(char) paste0("'",char,"'")
 names2mat <- function(mc, mcc){ ## mc is list(data=MAE, X=X_name, Y=Y_name)
   tryCatch({
     if(any(class(c(mc$X, mc$Y))!="character")) stop("mc must have character X and Y", call. = FALSE)
-  }, error=function(e) message("class(mc$X/mc$Y) produced error"))
+  }, error=function(e) message("oops! something went wrong! please check X and Y again or contact us if you had no luck!"))
   if(!mc$X %in% names(assays(mc$data))) .stop("inv_xy", " 'X' is not a valid assay from 'data'")
   ## --- if 'Y' is a colData
   if(mc$Y %in% names(colData(mc$data))){
@@ -101,10 +101,12 @@ names2mat <- function(mc, mcc){ ## mc is list(data=MAE, X=X_name, Y=Y_name)
 
 ##------------------------------------------
 ## -----  get call list including potentiall X, Y, formula, and data and retain only valid X and Y
-get_XY <- function(mc){
-  mcc <- mc
-  mc[c("formula", "data")] <- lapply(mc[c("formula", "data")], eval.parent)
-
+.getXY <- function(mc){
+  mc[c('data', 'formula')]<- lapply( mc[c('data', 'formula')], eval.parent)
+  mc$formula <- eval.parent(mc$formula)
+  mcc <- mc ## copy so can change mc but keep the call for names2mat
+  # expectedArgs <- c('X', 'Y', 'formula', 'data')
+  # mc[expectedArgs] <- lapply(mc[expectedArgs], eval.parent)
   ## function to check formula's class and ensure non-NULL X and Y are not provided with it
   .sformula_checker <- function(mc){
     if(class(try(mc$formula))!="formula")
@@ -120,8 +122,10 @@ get_XY <- function(mc){
   ##============================= if data
   if(!is.null(try(mc$data))){
     ## ensure it's MAE class
-    if(class(try(mc$data))!="MultiAssayExperiment")
-      .inv_mae()
+    if(class(try(mc$data))!="MultiAssayExperiment"){
+      .inv_mae(mc$data)
+      }
+
     ##--------------- if data & formula≠NULL
     ##--- i) if (data,formula) given change it to X and Y matrices
     if(class(try(mc$formula))!="NULL"){
@@ -134,11 +138,10 @@ get_XY <- function(mc){
       ## check X and Y exist
       if(any(sapply(mc[c("X", "Y")], function(xy) {class(try(xy))=="NULL"})))
         .inv_assay()
-      ## if they're characters stored in variables, evaluate them
-      if(!any(sapply(mc[c("X", "Y")], function(xy) {class(try(xy))=="try-error"})))
-        mc[c("X", "Y")] <- lapply( mc[c("X", "Y")], eval.parent)
       ## in case X and Y are non-standard
       mc[c("X", "Y")] <- lapply( mc[c("X", "Y")], as.character)
+      ## in case they're stored in variables
+      mc[c("X", "Y")] <- lapply( mc[c("X", "Y")], eval.parent)
       ## ensure it is a single character
       if(any(sapply( mc[c("X", "Y")], length)!=1))
         .stop("inv_xy", "'X' and 'Y' must be assay names from 'data'")
@@ -153,12 +156,13 @@ get_XY <- function(mc){
     # }
 
   }
-  ##============================= if data=NULL and fornmula≠NULL
+  ##============================= if data=NULL and formula≠NULL
   else if (class(try(mc$formula))!="NULL"){
+    mc$formula <- as.formula(mc$formula)
     .sformula_checker(mc=mc)
-    mc$Y <- eval.parent(as.list(mc$formula)[[2]])
-    mc$X <- eval.parent(as.list(mc$formula)[[3]])
+    mc[c('Y','X')] <- as.list(mc$formula)[2:3]
   }
+  mc[c("X", "Y")] <- lapply( mc[c("X", "Y")], eval.parent)
   mc$data <- mc$formula <- NULL
   return(mc)
 }

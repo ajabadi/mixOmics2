@@ -10,9 +10,11 @@ spls(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant",
   multilevel = NULL, all.outputs = TRUE)
 }
 \arguments{
-\item{X}{numeric matrix of predictors, or name of such an assay from \code{data} . \code{NA}s are allowed.}
+\item{X}{numeric matrix of predictors, or name of such an assay from \code{data} .
+\code{NA}s are allowed.}
 
-\item{Y}{numeric vector or matrix of responses (for multi-response models), or name of such an \code{assay} or
+\item{Y}{numeric vector or matrix of responses (for multi-response models),
+or name of such an \code{assay} or
 \code{colData} from \code{data}. \code{NA}s are allowed.}
 
 \item{ncomp}{the number of components to include in the model. Default to 2.}

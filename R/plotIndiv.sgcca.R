@@ -114,7 +114,7 @@ plotIndiv.sgcca <- plotIndiv.rgcca <-  function(object,
 
 
     #-- check inputs
-    check = check.input.plotIndiv(object = object, comp = comp, blocks = blocks, ind.names = ind.names,
+    check = .plotIndivCheckInput(object = object, comp = comp, blocks = blocks, ind.names = ind.names,
     style = style, ellipse = ellipse, ellipse.level = ellipse.level, centroid = centroid,
     star = star, legend = legend, X.label = X.label, Y.label = Y.label, Z.label = Z.label, abline = abline,
     xlim = xlim, ylim = ylim, alpha = alpha, axes.box = axes.box, plot_parameters = plot_parameters)
@@ -128,7 +128,7 @@ plotIndiv.sgcca <- plotIndiv.rgcca <-  function(object,
 
 
     #-- get the variates
-    variate = internal_getVariatesAndLabels(object, comp, blocks = blocks, style = style, X.label = X.label, Y.label = Y.label, Z.label = Z.label, rep.space = rep.space)
+    variate = .getVariatesAndLabels(object, comp, blocks = blocks, style = style, X.label = X.label, Y.label = Y.label, Z.label = Z.label, rep.space = rep.space)
     #-- retrieve outputs
     x = variate$x
     y = variate$y
@@ -140,7 +140,7 @@ plotIndiv.sgcca <- plotIndiv.rgcca <-  function(object,
     n = nrow(object$X[[1]])
 
     # create data frame df that contains (almost) all the ploting information
-    out = shape.input.plotIndiv(object = object, n = n, blocks = blocks, x = x, y = y, z = z, ind.names = ind.names, group, col.per.group = col.per.group,
+    out = .inputShapePlotIndiv(object = object, n = n, blocks = blocks, x = x, y = y, z = z, ind.names = ind.names, group, col.per.group = col.per.group,
     style = style, study = "global", ellipse = ellipse, ellipse.level = ellipse.level,
     centroid = centroid, star = star, title = title, xlim = xlim, ylim = ylim,
     col = col, cex = cex, pch = pch, pch.levels = pch.levels, display.names = display.names, plot_parameters = plot_parameters)

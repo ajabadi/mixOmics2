@@ -214,16 +214,16 @@ legend = TRUE)
     } else if (is.list(var.names)) {
         if (length(var.names) != length(object$loadings[
         -length(object$loadings)]))
-        stop.message('var.names', sample.X)
+        .plotStop('var.names', sample.X)
 
         if(sum(sapply(1 : length(var.names), function(x){
             length(var.names[[x]]) == length(sample.X[[x]])})) !=
         length(var.names))
-        stop.message('var.names', sample.X)
+        .plotStop('var.names', sample.X)
 
         var.names.list = var.names
     } else {
-        stop.message('var.names', sample.X)
+        .plotStop('var.names', sample.X)
     }
 
 
