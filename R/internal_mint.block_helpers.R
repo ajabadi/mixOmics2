@@ -81,7 +81,7 @@ get.weights = function(variates, indY)
 
 #' divides a data matrix in a list of matrices defined by a factor
 #'
-#' \code{study_spli} divides a data matrix in a list of matrices defined by a
+#' \code{study_split} divides a data matrix in a list of matrices defined by a
 #' \code{study} input.
 #'
 #'

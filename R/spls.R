@@ -153,15 +153,21 @@ max.iter = 100,
 near.zero.var = FALSE,
 logratio = "none",   # one of "none", "CLR"
 multilevel = NULL,
-all.outputs = TRUE)
+all.outputs = TRUE,
+data=NULL,
+formula=NULL)
 {
+    mc <- as.list(match.call()[-1])
 
-    # call to 'internal_wrapper.mint'
-    result = internal_wrapper.mint(X = X, Y = Y, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
-    keepX = keepX, keepY = keepY, max.iter = max.iter,
-    tol = tol, logratio = logratio,
-    multilevel = multilevel, DA = FALSE, all.outputs= all.outputs)
-
+    ## make sure mode matches given arguments, and if it is not provided put as the first one in the definition
+    mc$mode <- .matchArg(mode)
+    ## if formula or data is given, process arguments to match default pls
+    if(any(c("formula", "data") %in% names(mc))){
+        mc <- .getXY(mc=mc)
+    }
+    mc$DA <- FALSE
+    # # call to '.wrapperMINT'
+    result <- do.call(.wrapperMINT, mc)
     # choose the desired output from 'result'
     out = list(
         call = match.call(),

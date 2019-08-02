@@ -45,7 +45,7 @@ test_that("pls produces identical 'mixo_pls' classes for designated valid signat
 test_that("pls fails with invalid signature and produces appropriate error",{
 
   expect_error(pls(X=Xm_Ya, Y=Ycn,formula = Y~X ))
-  expect_condition(pls(X=Y~Z ))
+  expect_condition(pls(X=Y~Z), regexp = 'must be a numeric matrix')
   expect_condition(pls(X=NULL, Y=Yam,formula = RNASeq2GeneNorm ~ gistict, data = mae_data ), class = "inv_signature")
 })
 

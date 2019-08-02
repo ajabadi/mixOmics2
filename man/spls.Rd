@@ -7,7 +7,8 @@
 spls(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant",
   "classic"), keepX, keepY, scale = TRUE, tol = 1e-06,
   max.iter = 100, near.zero.var = FALSE, logratio = "none",
-  multilevel = NULL, all.outputs = TRUE)
+  multilevel = NULL, all.outputs = TRUE, data = NULL,
+  formula = NULL)
 }
 \arguments{
 \item{X}{numeric matrix of predictors, or name of such an assay from \code{data} .
@@ -51,6 +52,15 @@ columns indicate those factors. See examples in \code{?spls}).}
 
 \item{all.outputs}{boolean. Computation can be faster when some specific
 (and non-essential) outputs are not calculated. Default = \code{TRUE}.}
+
+\item{data}{A \code{MultiAssayExperiment} object.}
+
+\item{formula}{(\code{X} and \code{Y} must be \code{NULL})
+formula of form \code{LHS~RHS} (names of objects without quotations) where
+\code{LHS} and \code{RHS} (in effect \code{Y} and \code{X}, respectively) are
+ numeric matrices . \code{LHS} and \code{RHS} can also be an assay names from
+ \code{data}. \code{LHS} can also be a numeric \code{colData} name from \code{data}.
+ see examples.}
 }
 \value{
 \code{spls} returns an object of class \code{"spls"}, a list that
