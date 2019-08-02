@@ -36,7 +36,7 @@
 # study_split: used in 'internal_mint.block.R' and 'predict.mint.block.pls.R'
 # --------------------------------------
 #' @importFrom rARPACK svds
-get.weights = function(variates, indY)
+.getWeights = function(variates, indY)
 {
     ncomp = min(sapply(variates, ncol))
     x.xList <- list()

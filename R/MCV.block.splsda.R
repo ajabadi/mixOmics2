@@ -417,7 +417,7 @@ parallel
                 {if(ncol(x)!=ncomp) {x[,colnames(x)%in%names.to.pick,
                     drop=FALSE]}else{x}})
                 
-                result$weights = get.weights(result$variates, indY=result$indY)
+                result$weights = .getWeights(result$variates, indY=result$indY)
 
                 # do the prediction, we are passing to the function some
                 # invisible parameters:the scaled newdata and the missing values

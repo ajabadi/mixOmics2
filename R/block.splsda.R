@@ -279,7 +279,7 @@ all.outputs = TRUE)
     all.outputs = all.outputs)
 
     # calculate weights for each dataset
-    weights = get.weights(result$variates, indY = result$indY)
+    weights = .getWeights(result$variates, indY = result$indY)
 
     # choose the desired output from 'result'
     out=list(call=match.call(),
