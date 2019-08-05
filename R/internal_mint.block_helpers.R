@@ -26,14 +26,14 @@
 
 
 # =============================================================================
-# Internal helpers functions to run "mixOmics" and "internal_mint.block"
+# Internal helpers functions to run "mixOmics" and ".mintBlock"
 # =============================================================================
 
 # Some of these functions have been borrowed from the RGCCA package,
 #   as indicated below
 
 # --------------------------------------
-# study_split: used in 'internal_mint.block.R' and 'predict.mint.block.pls.R'
+# study_split: used in '.mintBlock.R' and 'predict.mint.block.pls.R'
 # --------------------------------------
 #' @importFrom rARPACK svds
 .getWeights = function(variates, indY)
@@ -71,7 +71,7 @@
 
 
 # --------------------------------------
-# study_split: used in 'internal_mint.block.R' and 'predict.mint.block.pls.R'
+# study_split: used in '.mintBlock.R' and 'predict.mint.block.pls.R'
 # --------------------------------------
 
 
@@ -197,7 +197,7 @@ norm2 = function(vec)
 
 
 # --------------------------------------
-# sparsity function: used in 'internal_mint.block.R'
+# sparsity function: used in '.mintBlock.R'
 # --------------------------------------
 sparsity=function(loadings.A, keepA, penalty=NULL)
 {
@@ -282,7 +282,7 @@ scale.function=function(temp, scale = TRUE)
 
 
 # --------------------------------------
-# Mean centering/scaling per study: used in 'internal_mint.block.R'
+# Mean centering/scaling per study: used in '.mintBlock.R'
 # --------------------------------------
 mean_centering_per_study=function(data, study, scale)
 {
@@ -338,7 +338,7 @@ mean_centering_per_study=function(data, study, scale)
 
 
 # --------------------------------------
-# l2.norm: used in 'internal_mint.block.R'
+# l2.norm: used in '.mintBlock.R'
 # --------------------------------------
 l2.norm=function(x)
 {
@@ -351,7 +351,7 @@ l2.norm=function(x)
 # ---------------------------------------------------
 # tau.estimate() - Estimation of tau accoring to Strimmer formula
 # ---------------------------------------------------
-#used in 'internal_mint.block.R'
+#used in '.mintBlock.R'
 tau.estimate = function (x)
 {
     if (is.matrix(x) == TRUE && is.numeric(x) == FALSE)
@@ -380,7 +380,7 @@ tau.estimate = function (x)
 # ------------------------------------------------------------------------------
 # cov2() - Compute biased and unbiased covariance and variance estimates
 # ------------------------------------------------------------------------------
-# used in 'internal_mint.block.R'
+# used in '.mintBlock.R'
 cov2 = function (x, y = NULL, bias = FALSE) {
     n = NROW(x)
     if (is.null(y)) {
@@ -404,7 +404,7 @@ cov2 = function (x, y = NULL, bias = FALSE) {
 # ------------------------------------------------------------------------------
 # miscrossprod() - Compute cross-product between vectors x and y
 # ------------------------------------------------------------------------------
-# used in 'internal_mint.block.R'
+# used in '.mintBlock.R'
 miscrossprod = function (x, y) {
     d.p = sum(drop(x) * drop(y), na.rm = TRUE)
     #d.p = as.vector(d.p)/norm2(d.p)     ## change made
@@ -468,7 +468,7 @@ deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
 # ------------------------------------------------------------------------------
 # defl.select() - computes residual matrices
 # ------------------------------------------------------------------------------
-# used in 'internal_mint.block.R'
+# used in '.mintBlock.R'
 defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL,
 mode = "canonical", aa = NULL, misdata, is.na.A, ind.NA) {
     ### Start: Add new parameter for estimation classic mode
@@ -521,7 +521,7 @@ mode = "canonical", aa = NULL, misdata, is.na.A, ind.NA) {
 # ------------------------------------------------------------------------------
 # initsvd() - performs SVD on matrix X
 # ------------------------------------------------------------------------------
-# used in 'internal_mint.block.R'
+# used in '.mintBlock.R'
 initsvd = function (X) {
     n = NROW(X)
     p = NCOL(X)

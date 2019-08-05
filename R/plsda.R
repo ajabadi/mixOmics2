@@ -26,7 +26,7 @@
 
 # ========================================================================================================
 # plsda: perform a PLS-DA
-# this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint
+# this function is a particular setting of .mintBlock, the formatting of the input is checked in .mintWrapper
 # ========================================================================================================
 
 #' Partial Least Squares Discriminant Analysis (PLS-DA).
@@ -210,8 +210,8 @@ setGeneric("plsda", def = function(X, Y, formula=NULL, ncomp = 2, scale = TRUE,
   }
 
 
-  # call to 'internal_wrapper.mint'
-  result = internal_wrapper.mint(X = X, Y = Y.mat, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
+  # call to '.mintWrapper'
+  result = .mintWrapper(X = X, Y = Y.mat, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
                                  max.iter = max.iter, tol = tol, logratio = logratio, multilevel = multilevel, DA = TRUE, all.outputs=all.outputs)
 
   # choose the desired output from 'result'

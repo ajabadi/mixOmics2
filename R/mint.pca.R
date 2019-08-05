@@ -26,8 +26,8 @@
 
 # ========================================================================================================
 # mint.pca: perform a vertical PCA on a combination of experiments, input as a matrix in X
-# this function is a particular setting of internal_mint.block,
-# the formatting of the input is checked in internal_wrapper.mint, which then call 'internal_mint.block'
+# this function is a particular setting of .mintBlock,
+# the formatting of the input is checked in .mintWrapper, which then call '.mintBlock'
 # ========================================================================================================
 
 # X: numeric matrix of predictors
@@ -206,7 +206,7 @@ max.iter = 100)
     #-- end checking --#
     #------------------#
 
-    # call to 'internal_wrapper.mint'
+    # call to '.mintWrapper'
     mean_centered = mean_centering_per_study(data = X, study = study, scale = scale)
     X_mean_centered = as.matrix(mean_centered$concat.data)
 

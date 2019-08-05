@@ -322,9 +322,9 @@ parallel
             ind.NA.temp[1:length(X)] = ind.NA.train
             ind.NA.col.temp[1:length(X)] = ind.NA.col.train
                         
-            # shape input for `internal_mint.block' (keepA, test.keepA, etc)
+            # shape input for `.mintBlock' (keepA, test.keepA, etc)
             result <- suppressMessages(
-            internal_wrapper.mint.block(
+            .mintWrapperBlock(
             X=X.train, Y=Y.train.mat, study=factor(rep(1,length(Y.train))),
             ncomp=ncomp, keepX=choice.keepX,
             keepY=rep(ncol(Y.train.mat), ncomp-1),

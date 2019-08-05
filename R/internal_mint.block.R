@@ -30,12 +30,12 @@
 # Functions modified from RGCCA R-library
 #   sgcca(), sgccak()
 #
-# Functions acquired from RGCCA R-library, see 'internal_mint.block_helpers.R'
+# Functions acquired from RGCCA R-library, see '.mintBlock_helpers.R'
 #   cov2(), initsvd(), crossprod(),
 #   defl.select(),
 ################################################################################
 
-internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),
+.mintBlock = function (A, indY = NULL,  design = 1 - diag(length(A)),
 tau=NULL,#rep(1, length(A)),
 ncomp = rep(1, length(A)), scheme = "horst", scale = TRUE,
 init = "svd.single", tol = 1e-06,
@@ -527,7 +527,7 @@ penalty=NULL, all.outputs = FALSE)
     #   numbers: variables to select for that block (component is fixed)
     # study is a vector
     # no check needed as this function is only used in
-    #   internal_mint.block, in which the checks are conducted
+    #   .mintBlock, in which the checks are conducted
     
     
     ### Start: Initialization parameters

@@ -28,7 +28,7 @@
 # -----------------------------------------------------------------------------
 
 
-internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type,
+.graphicPerf<- function (error.rate, error.rate.sd, overlay, type,
 measure, dist, legend.position, xlab, ylab, color, ...)
 {
     # error.rate is a list [[measure]]

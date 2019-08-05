@@ -27,8 +27,8 @@
 
 # ========================================================================================================
 # mint.block.plsda: perform a horizontal and vertical PLS-DA on a combination of datasets, input as a list in X
-# this function is a particular setting of internal_mint.block,
-# the formatting of the input is checked in internal_wrapper.mint.block, which then call 'internal_mint.block'
+# this function is a particular setting of .mintBlock,
+# the formatting of the input is checked in .mintWrapperBlock, which then call '.mintBlock'
 # ========================================================================================================
 
 # X: a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.
@@ -238,8 +238,8 @@ all.outputs = TRUE)
         stop("Either 'Y' or 'indY' is needed")
     }
 
-    # call to 'internal_wrapper.mint.block'
-    result = internal_wrapper.mint.block(X=X, Y=Y, indY=indY, study=study, ncomp=ncomp, design=design, scheme=scheme, mode=mode,
+    # call to '.mintWrapperBlock'
+    result = .mintWrapperBlock(X=X, Y=Y, indY=indY, study=study, ncomp=ncomp, design=design, scheme=scheme, mode=mode,
     scale=scale, init=init, tol=tol, max.iter=max.iter, near.zero.var=near.zero.var, all.outputs = all.outputs)
 
     # choose the desired output from 'result'

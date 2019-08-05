@@ -26,8 +26,8 @@
 
 # ========================================================================================================
 # mint.plsda: perform a vertical PLS-DA on a combination of experiments, input as a matrix in X
-# this function is a particular setting of internal_mint.block,
-# the formatting of the input is checked in internal_wrapper.mint, which then call 'internal_mint.block'
+# this function is a particular setting of .mintBlock,
+# the formatting of the input is checked in .mintWrapper, which then call '.mintBlock'
 # ========================================================================================================
 
 # X: numeric matrix of predictors
@@ -166,7 +166,7 @@ all.outputs = TRUE)
 
 
     #-- validation des arguments --#
-    # most of the checks are done in 'internal_wrapper.mint'
+    # most of the checks are done in '.mintWrapper'
 
     if (is.null(Y))
     stop("'Y' has to be something else than NULL.")
@@ -191,8 +191,8 @@ all.outputs = TRUE)
     if(sum(apply(table(Y,study)==0,2,sum)>0) >0)
     warning("At least one study does not contain all the levels of the outcome Y. The MINT algorithm might not perform as expected.")
 
-    # call to 'internal_wrapper.mint'
-    result = internal_wrapper.mint(X = X, Y = Y.mat, study = study, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
+    # call to '.mintWrapper'
+    result = .mintWrapper(X = X, Y = Y.mat, study = study, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
     max.iter = max.iter, tol = tol, all.outputs = all.outputs)
 
 

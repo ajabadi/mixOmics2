@@ -24,9 +24,9 @@
 
 
 # ==============================================================================
-# internal_wrapper.mint: perform a vertical PLS on a combination of experiments,
+# .mintWrapper: perform a vertical PLS on a combination of experiments,
 #   input as a matrix in X
-# this function is a particular setting of internal_mint.block, the formatting
+# this function is a particular setting of .mintBlock, the formatting
 #   of the input is checked in Check.entry.pls
 # internal function. Do not export in NAMESPACE.
 # ==============================================================================
@@ -52,7 +52,7 @@
 # multilevel: multilevel is passed to multilevel(design=) in withinVariation.
 #   Y is ommited and should be included in multilevel design
 
-internal_wrapper.mint = function(X,
+.mintWrapper = function(X,
 Y,
 study,
 ncomp = 2,
@@ -200,7 +200,7 @@ remove.object=NULL
 
     #--------------------------------------------------------------------------#
     #-- pls approach ----------------------------------------------------#
-    result = internal_mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode,
+    result = .mintBlock(A = list(X = X, Y = Y), indY = 2, mode = mode,
     ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
     design = design, keepA = keepA, scale = scale, scheme = "horst",init="svd",
     study = study, misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA,

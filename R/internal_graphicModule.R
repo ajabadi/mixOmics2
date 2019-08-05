@@ -44,7 +44,7 @@
 # legend
 # display.names
 
-internal_graphicModule=function(df,
+.graphicModule=function(df,
 centroid,
 col.per.group,
 title,

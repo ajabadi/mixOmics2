@@ -28,7 +28,7 @@
 
 # ========================================================================================================
 # spls: perform a sPLS
-# this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint
+# this function is a particular setting of .mintBlock, the formatting of the input is checked in .mintWrapper
 # ========================================================================================================
 
 #' Sparse Partial Least Squares (sPLS)
@@ -166,8 +166,8 @@ formula=NULL)
         mc <- .getXY(mc=mc)
     }
     mc$DA <- FALSE
-    # # call to '.wrapperMINT'
-    result <- do.call(.wrapperMINT, mc)
+    # # call to '.mintWrapper'
+    result <- do.call(.mintWrapper, mc)
     # choose the desired output from 'result'
     out = list(
         call = match.call(),

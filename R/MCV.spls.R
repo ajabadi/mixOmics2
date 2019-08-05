@@ -371,8 +371,8 @@ parallel
             }
             
             
-            # shape input for `internal_mint.block' (keepA, test.keepA, etc)
-            result = suppressWarnings(internal_wrapper.mint(X=X.train, Y=Y.train.mat, study=factor(rep(1,nrow(X.train))), ncomp=ncomp,
+            # shape input for `.mintBlock' (keepA, test.keepA, etc)
+            result = suppressWarnings(.mintWrapper(X=X.train, Y=Y.train.mat, study=factor(rep(1,nrow(X.train))), ncomp=ncomp,
             keepX=choice.keepX, keepY=rep(ncol(Y.train.mat), ncomp-1), test.keepX=test.keepX, test.keepY=test.keepY,
             mode="regression", scale=scale, near.zero.var=near.zero.var,
             max.iter=max.iter, logratio="none", DA=TRUE, multilevel=NULL,

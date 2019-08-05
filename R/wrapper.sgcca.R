@@ -175,7 +175,7 @@ all.outputs = TRUE
 
     keepA = lapply(keepAA, expand.grid)
 
-    result.sgcca = internal_mint.block(A = A, design = design, tau = NULL,
+    result.sgcca = .mintBlock(A = A, design = design, tau = NULL,
     ncomp = ncomp,
     scheme = scheme, scale = scale,
     init = init, tol = tol,

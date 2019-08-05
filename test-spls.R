@@ -9,16 +9,16 @@ test_that("spls produces identical 'mixo_spls' classes for designated valid sign
 
   ## suppress NZV warnings
   suppressMessages({
-    spls.res.xy <-          spls(X =Xm_Yc, Y=Ycn )
+    spls.res.xy <-          spls(keepX=c(10,10), X =Xm_Yc, Y=Ycn )
     expect_true(class( spls.res.xy)=="mixo_spls")
 
-    spls.res.formula <-     spls(formula =Ycn ~ Xm_Yc)
+    spls.res.formula <-     spls(keepX=c(10,10), formula =Ycn ~ Xm_Yc)
     expect_equal(spls.res.xy[-1] ,spls.res.formula[-1])
 
-    spls.res.formula.mae <- spls(formula = f_Yc, data = mae_data)
+    spls.res.formula.mae <- spls(keepX=c(10,10), formula = f_Yc, data = mae_data)
     expect_equal(spls.res.xy[-1] ,spls.res.formula.mae[-1])
 
-    spls.res.xy.mae <-      spls(X=Xa , Y=Yc , data = mae_data)
+    spls.res.xy.mae <-      spls(keepX=c(10,10), X=Xa , Y=Yc , data = mae_data)
     expect_equal(spls.res.formula.mae[-1] , spls.res.xy.mae[-1] )
   })
 })

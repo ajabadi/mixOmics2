@@ -157,7 +157,7 @@ Check.entry.single = function(X,  ncomp, q)
 
 # --------------------------------------
 # Check.entry.pls: check the entry associated with (s)PLS.
-#   Used in 'internal_wrapper.mint.R'
+#   Used in '.mintWrapper.R'
 # --------------------------------------
 # X: numeric matrix of predictors
 # Y: numeric vector or matrix of responses
@@ -368,7 +368,7 @@ mode=c("regression","canonical", "invariant", "classic"), scale, near.zero.var, 
 
 
 # --------------------------------------
-# Check.entry.wrapper.mint.block: used in 'internal_wrapper.mint.block.R'
+# Check.entry.wrapper.mint.block: used in '.mintWrapperBlock.R'
 # --------------------------------------
 # X: a list of data sets (called 'blocks') matching on the same samples.
 #   Data in the list should be arranged in samples x variables, with samples

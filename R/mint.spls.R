@@ -26,8 +26,8 @@
 
 # ========================================================================================================
 # mint.spls: perform a vertical sPLS on a combination of experiments, input as a matrix in X
-# this function is a particular setting of internal_mint.block,
-# the formatting of the input is checked in internal_wrapper.mint, which then call 'internal_mint.block'
+# this function is a particular setting of .mintBlock,
+# the formatting of the input is checked in .mintWrapper, which then call '.mintBlock'
 # ========================================================================================================
 
 # X: numeric matrix of predictors
@@ -177,8 +177,8 @@ near.zero.var = FALSE,
 all.outputs = TRUE)
 {
 
-    # call to 'internal_wrapper.mint'
-    result = internal_wrapper.mint(X = X, Y = Y, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, study = study, mode = mode,
+    # call to '.mintWrapper'
+    result = .mintWrapper(X = X, Y = Y, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, study = study, mode = mode,
     keepX = keepX, keepY = keepY,
     max.iter = max.iter, tol = tol, all.outputs = all.outputs)
 

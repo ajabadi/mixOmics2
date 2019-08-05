@@ -36,7 +36,7 @@ test_that("pls produces identical 'mixo_pls' classes for designated valid signat
     pls.res.formula.mae <- pls(formula = f_Ya, data = mae_data)
     expect_equal(pls.res.xy[-1] ,pls.res.formula.mae[-1])
 
-    pls.res.xy.mae <-      pls(X=X , Y=Ya , data = mae_data)
+    pls.res.xy.mae <-      pls(X=Xa , Y=Ya , data = mae_data)
     expect_equal(pls.res.formula.mae[-1] , pls.res.xy.mae[-1] )
   })
 })

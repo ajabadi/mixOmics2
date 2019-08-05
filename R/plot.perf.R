@@ -229,7 +229,7 @@ sd = TRUE,
     }
     def.par = par(no.readonly = TRUE)
     
-    internal_graphic.perf(error.rate = error.rate, error.rate.sd = error.rate.sd,
+    .graphicPerf(error.rate = error.rate, error.rate.sd = error.rate.sd,
     overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
     xlab = xlab, ylab = ylab, sd = sd, color = col, ...)
     
@@ -308,7 +308,7 @@ legend.position=c("vertical", "horizontal"),
         
         def.par = par(no.readonly = TRUE)
         
-        internal_graphic.perf(error.rate = error.rate, error.rate.sd = NULL,
+        .graphicPerf(error.rate = error.rate, error.rate.sd = NULL,
         overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
         xlab = xlab, ylab = ylab, color = col, ...)
         
@@ -355,7 +355,7 @@ legend.position=c("vertical", "horizontal"),
         {
             error.rate = x$study.specific.error[[stu]]
 
-            internal_graphic.perf(error.rate = error.rate, error.rate.sd = NULL,
+            .graphicPerf(error.rate = error.rate, error.rate.sd = NULL,
             overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
             xlab = xlab, ylab = ylab, color = col, ...)
             
@@ -487,7 +487,7 @@ sd = TRUE,
     
     def.par = par(no.readonly = TRUE)
     
-    internal_graphic.perf(error.rate = error.rate, error.rate.sd = error.rate.sd,
+    .graphicPerf(error.rate = error.rate, error.rate.sd = error.rate.sd,
     overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
     xlab = xlab, ylab = ylab, color = col, ...)
     

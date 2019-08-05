@@ -32,13 +32,13 @@
 # not for pls/spls as they would be overlapping batch effects
 
 # ==============================================================================
-# internal_wrapper.mint.block: this function is a particular setting of
-#   internal_mint.block,
-# the formatting of the input is checked in internal_wrapper.mint.block
+# .mintWrapperBlock: this function is a particular setting of
+#   .mintBlock,
+# the formatting of the input is checked in .mintWrapperBlock
 # ==============================================================================
 # used in (mint).block approaches
 
-internal_wrapper.mint.block = function(X,
+.mintWrapperBlock = function(X,
 Y,
 indY,
 study,
@@ -129,7 +129,7 @@ all.outputs=TRUE
     #   Each entry must be of the same length (max ncomp)
     # near.zero.var: do you want to remove variables with very small variance
     
-    result=internal_mint.block(A = A,
+    result=.mintBlock(A = A,
     indY = indY,
     design = design,
     ncomp = ncomp,

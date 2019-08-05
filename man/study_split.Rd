@@ -17,7 +17,7 @@ study}
 number of levels of \code{study} tha contains submatrices of \code{data}.
 }
 \description{
-\code{study_spli} divides a data matrix in a list of matrices defined by a
+\code{study_split} divides a data matrix in a list of matrices defined by a
 \code{study} input.
 }
 \examples{

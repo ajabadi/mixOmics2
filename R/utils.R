@@ -138,8 +138,6 @@ names2mat <- function(mc, mcc){ ## mc is list(data=MAE, X=X_name, Y=Y_name)
       ## check X and Y exist
       if(any(sapply(mc[c("X", "Y")], function(xy) {class(try(xy))=="NULL"})))
         .inv_assay()
-      ## in case X and Y are non-standard
-      mc[c("X", "Y")] <- lapply( mc[c("X", "Y")], as.character)
       ## in case they're stored in variables
       mc[c("X", "Y")] <- lapply( mc[c("X", "Y")], eval.parent)
       ## ensure it is a single character

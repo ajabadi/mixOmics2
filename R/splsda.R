@@ -26,7 +26,7 @@
 
 # ========================================================================================================
 # splsda: perform a sPLS-DA
-# this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint
+# this function is a particular setting of .mintBlock, the formatting of the input is checked in .mintWrapper
 # ========================================================================================================
 
 #' Sparse Partial Least Squares Discriminant Analysis (sPLS-DA)
@@ -243,8 +243,8 @@ setGeneric("splsda", def = function(X, Y, formula=NULL, ncomp = 2, mode = c("reg
     Y.mat = NULL
   }
 
-  # call to 'internal_wrapper.mint'
-  result = internal_wrapper.mint(X = X, Y = Y.mat, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
+  # call to '.mintWrapper'
+  result = .mintWrapper(X = X, Y = Y.mat, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
                                  keepX = keepX, max.iter = max.iter, tol = tol, logratio = logratio,
                                  multilevel = multilevel, DA = TRUE, all.outputs = all.outputs, remove.object=c("X"))
 

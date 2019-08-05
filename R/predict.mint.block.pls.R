@@ -576,7 +576,7 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         }
 
 
-        # creating temporary 'blocks' outputs to pass into the internal_predict.DA function
+        # creating temporary 'blocks' outputs to pass into the .predictDA function
         out.temp=list(predict=Y.hat[which(!is.na(ind.match))],variates=t.pred[which(!is.na(ind.match))],B.hat=B.hat[which(!is.na(ind.match))])
         out.temp$newdata=concat.newdata[which(!is.na(ind.match))]
 
@@ -585,7 +585,7 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         object.temp$X = object.temp$X[which(!is.na(ind.match))]
         object.temp$variates = object.temp$variates[c(which(!is.na(ind.match)),J+1)] #J+1 is Y
 
-        classif.DA=internal_predict.DA(object=object.temp, q=q, out=out.temp, dist=dist, weights = object$weights[which(!is.na(ind.match))])
+        classif.DA=.predictDA(object=object.temp, q=q, out=out.temp, dist=dist, weights = object$weights[which(!is.na(ind.match))])
         out=c(out,classif.DA)
 
     }

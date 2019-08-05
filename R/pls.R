@@ -1,6 +1,6 @@
 # ========================================================================================================
 # pls: perform a PLS
-# this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint
+# this function is a particular setting of .mintBlock, the formatting of the input is checked in .mintWrapper
 # ========================================================================================================
 
 #' Partial Least Squares (PLS) Regression
@@ -150,8 +150,8 @@ formula=NULL){
         mc <- .getXY(mc=mc)
     }
     mc$DA <- FALSE
-    # # call to 'internal_wrapper.mint'
-    result <- do.call(internal_wrapper.mint, mc)
+    # # call to '.mintWrapper'
+    result <- do.call(.mintWrapper, mc)
     # choose the desired output from 'result'
     out = list(
         call = match.call(),

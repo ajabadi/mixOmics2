@@ -23,7 +23,7 @@
 ################################################################################
 
 # ==============================================================================
-# internal_predict.DA: prediction module for Discriminant Analysis.
+# .predictDA: prediction module for Discriminant Analysis.
 #   Used in 'predict.mint.block.pls.R'
 # ==============================================================================
 
@@ -41,7 +41,7 @@
 #Y
 
 
-internal_predict.DA = function(object, out, q, dist, weights)
+.predictDA = function(object, out, q, dist, weights)
 {
     # a DA analysis (mint).(block).(s)plsda
     if (!is(object, "DA"))

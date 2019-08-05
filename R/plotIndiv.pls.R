@@ -198,7 +198,7 @@ plotIndiv.mixo_pls <-
     #save(list = ls(), file = "temp.Rdata")
 
     #call plot module (ggplot2, lattice, graphics, 3d)
-    res = internal_graphicModule(df = df, centroid = centroid, col.per.group = col.per.group, title = title,
+    res = .graphicModule(df = df, centroid = centroid, col.per.group = col.per.group, title = title,
     X.label = X.label, Y.label = Y.label, Z.label = Z.label, xlim = xlim, ylim = ylim, class.object = class(object),
     display.names = display.names, legend = legend, abline = abline, star = star,
     ellipse = ellipse, df.ellipse = df.ellipse, style = style, layout = layout, #missing.col = missing.col,
