@@ -1,37 +1,34 @@
 #' \dontrun{
-## successful: FALSE
-
 library(mixOmics.data)
 
-## ---------------- X and Y matrices using linnerud dataset
+## ---------------- with X and Y as matrices
 X <- linnerud$exercise
 Y <- linnerud$physiological
-linn.pls1 <- pls(X=X, Y=Y, mode = "classic")
-plotVar(linn.pls)
+pls.res1 <- pls(X=X, Y=Y)
+plotVar(pls.res1)
 
-## ---------------- formula method for numerics
-## 'formula' argument should be explicitly mentioned for correct method dispatch
-linn.pls2 <- pls(formula = Y ~ X, mode = "classic")
+## ---------------- formula method for matrices
+## 'formula' argument should be explicitly mentioned (formula = ...)
+## for correct method dispatch
+pls.res2 <- pls(formula = Y ~ X)
 ## exclude calls and see if all outputs  are identical
-identical(linn.pls1[-1], linn.pls2[-1])
+identical(pls.res1[-1], pls.res2[-1])
 #> TRUE
-## ---------------- MultiAssayExperiment using linnerud.mae
+## ---------------- MultiAssayExperiment and assay names as X and Y
 ## 'data' argument should be explicitly mentioned for correct method dispatch
-linn.pls3 <- pls(X='exercise', Y='physiological', mode = "classic", data = linnerud.mae)
-identical(linn.pls1[-1], linn.pls3[-1])
+pls.res3 <- pls(X='exercise', Y='physiological', data = linnerud.mae)
+identical(pls.res1[-1], pls.res3[-1])
 #> TRUE
 
-## ---------------- MultiAssayExperiment and formula
-linn.pls4 <- pls(formula = physiological ~ exercise, data = linnerud.mae, mode = "classic",)
-identical(linn.pls1[-1], linn.pls4[-1])
+## ---------------- MultiAssayExperiment and formula with assay names
+pls.res4 <- pls(formula = physiological ~ exercise, data = linnerud.mae, mode = "classic",)
+identical(pls.res1[-1], pls.res4[-1])
 #> TRUE
 
-## ---------------- colData of MultiAssayExperiment and formula
-X <- liver.toxicity$gene
-Y <- liver.toxicity$clinic
-toxicity.pls <- pls(formula = Y~X, ncomp = 3)
-
-plotVar(toxicity.pls, cutoff = 0.8)
-plotLoadings(toxicity.pls, ndisplay = 10)
+## ---------------- MultiAssayExperiment; X=assay and Y=colData
+toxicity.pls1 <- pls(data = liver.toxicity.mae,  formula = Dose.Group~gene, ncomp = 3)
+toxicity.pls2 <- pls(data = liver.toxicity.mae,  Y='Dose.Group', X='gene', ncomp = 3)
+identical(toxicity.pls1[-1], toxicity.pls2[-1])
+#> TRUE
 
 #' }

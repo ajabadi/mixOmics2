@@ -1,15 +1,44 @@
 #' \dontrun{
-## successful: TRUE
+## 1st example: accepted input formats
+#--------------------------------------------------------------
+
 library(mixOmics.data)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
+keepX <- c(50, 50)
+keepY <- c(5, 5)
+spls.res1 <- spls(X=X, Y=Y, keepX = keepX, keepY = keepY)
+plotVar(spls.res1)
 
-toxicity.spls <- spls(X, Y, ncomp = 2, keepX = c(50, 50),
-                      keepY = c(10, 10))
+## ---------------- formula method for matrices
+## 'formula' argument should be explicitly mentioned (formula = ...)
+## for correct method dispatch
+spls.res2 <- spls(formula = Y ~ X, keepX = keepX, keepY = keepY)
+## exclude calls and see if all outputs  are identical
+identical(spls.res1[-1], spls.res2[-1])
+#> TRUE
+## ---------------- MultiAssayExperiment and assay names as X and Y
+## 'data' argument should be explicitly mentioned for correct method dispatch
+spls.res3 <- spls(X='gene', Y='clinic', data = liver.toxicity.mae,
+                  keepX = keepX, keepY = keepY)
+identical(spls.res1[-1], spls.res3[-1])
+#> TRUE
 
-toxicity.spls <- spls(X, Y[,1:2,drop=FALSE], ncomp = 5, keepX = c(50, 50))#,  mode="canonical")
+## ---------------- MultiAssayExperiment and formula with assay names
+spls.res4 <- spls(formula = clinic ~ gene, data = liver.toxicity.mae,
+                  keepX = keepX, keepY = keepY)
+identical(spls.res1[-1], spls.res4[-1])
+#> TRUE
 
-## Second example: one-factor multilevel analysis with sPLS, selecting a subset of variables
+## ---------------- MultiAssayExperiment; X=assay and Y=colData
+toxicity.spls1 <- spls(data = liver.toxicity.mae, formula = Dose.Group~gene,
+                       ncomp = 2, keepX=keepX)
+toxicity.spls2 <- spls(data = liver.toxicity.mae, Y='Dose.Group', X='gene',
+                       ncomp = 2, keepX=keepX)
+identical(toxicity.spls1[-1], toxicity.spls2[-1])
+#> TRUE
+
+## 2nd example: one-factor multilevel analysis with sPLS, selecting a subset of variables
 #--------------------------------------------------------------
 
 # note: we made up those data, pretending they are repeated measurements
@@ -48,7 +77,7 @@ plotIndiv(res.spls.1level, rep.space = 'XY-variate', ind.names = FALSE,
           pch = 20, main = 'Both Gene expression and Clinical subspaces',
           legend = TRUE)
 
-## Third example: two-factor multilevel analysis with sPLS, selecting a subset of variables
+## 3rd example: two-factor multilevel analysis with sPLS, selecting a subset of variables
 #--------------------------------------------------------------
 
 dose <- as.factor(liver.toxicity$treatment$Dose.Group)
@@ -67,4 +96,4 @@ res.spls.2level = spls(liver.toxicity$gene,
                        ncomp=2,
                        keepX = c(10,10), keepY = c(5,5))
 
-  #' }
+#' }

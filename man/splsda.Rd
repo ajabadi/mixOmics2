@@ -14,6 +14,13 @@ logratio = c("none", "CLR"),  multilevel = NULL, all.outputs = TRUE)
 
 \item{Y}{a factor or a class vector for the discrete outcome.}
 
+\item{formula}{(\code{X} and \code{Y} must be \code{NULL})
+formula of form \code{LHS~RHS} (names of objects without quotations) where
+\code{LHS} and \code{RHS} (in effect \code{Y} and \code{X}, respectively) are
+ numeric matrices . \code{LHS} and \code{RHS} can also be an assay names from
+ \code{data}. \code{LHS} can also be a numeric \code{colData} name from \code{data}.
+ see examples.}
+
 \item{ncomp}{the number of components to include in the model. Default to 2.}
 
 \item{mode}{character string. What type of algorithm to use, (partially)

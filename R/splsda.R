@@ -47,8 +47,9 @@
 #' More details about the PLS modes in \code{?pls}.
 ## --------------------------------------------------------------------------------------- arguments
 #' @inheritParams plsda
-#' @param keepX numeric vector of length \code{ncomp}, the number of variables
-#' to keep in \eqn{X}-loadings. By default all variables are kept in the model.
+#' @inheritParams spls
+# @param keepX numeric vector of length \code{ncomp}, the number of variables
+# to keep in \eqn{X}-loadings. By default all variables are kept in the model.
 ## --------------------------------------------------------------------------------------- value
 #' @return \code{splsda} returns an object of class \code{"splsda"}, a list that contains the following components:
 #' \item{X}{the centered and standardized original predictor matrix.}

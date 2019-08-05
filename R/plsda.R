@@ -46,31 +46,16 @@
 #' count data, we thus advise the normalise raw data with a 1 offset).
 #'
 #' More details about the PLS modes in \code{?pls}.
-## ----------------------------------------------------------------------------- arguments
-#' @param X numeric matrix of predictors. \code{NA}s are allowed.
+
+## ----------------------------------- Parameters
+#' @inheritParams pls
 #' @param Y a factor or a class vector for the discrete outcome.
-#' @param ncomp the number of components to include in the model. Default to 2.
-#' @param scale boleean. If scale = TRUE, each block is standardized to zero
-#' means and unit variances (default: TRUE)
-#' @param mode character string. What type of algorithm to use, (partially)
-#' matching one of \code{"regression"}, \code{"canonical"}, \code{"invariant"}
-#' or \code{"classic"}. See Details.
-#' @param tol Convergence stopping value.
-#' @param max.iter integer, the maximum number of iterations.
-#' @param near.zero.var boolean, see the internal \code{\link{nearZeroVar}}
-#' function (should be set to TRUE in particular for data with many zero
-#' values). Setting this argument to FALSE (when appropriate) will speed up the
-#' computations. Default value is FALSE
-#' @param logratio one of ('none','CLR') specifies the log ratio transformation
-#' to deal with compositional values that may arise from specific normalisation
-#' in sequencing dadta. Default to 'none'
 #' @param multilevel sample information for multilevel decomposition for
 #' repeated measurements. A numeric matrix or data frame indicating the
 #' repeated measures on each individual, i.e. the individuals ID. See examples
 #' in \code{?splsda}.
-#' @param all.outputs boolean. Computation can be faster when some specific
-#' (and non-essential) outputs are not calculated. Default = \code{TRUE}.
-## ----------------------------------------------------------------------------- value
+
+## ----------------------------------- Value
 #' @return \code{plsda} returns an object of class \code{"plsda"}, a list that
 #' contains the following components:
 #'
@@ -91,7 +76,8 @@
 #' matrix Y).} \item{mat.c}{matrix of coefficients from the regression of X /
 #' residual matrices X on the X-variates, to be used internally by
 #' \code{predict}.} \item{defl.matrix}{residual matrices X for each dimension.}
-## -----------------------------------------------------------------------------
+
+## ----------------------------------- Misc
 #' @author Ignacio González, Kim-Anh Lê Cao.
 #' @seealso \code{\link{splsda}}, \code{\link{summary}},
 #' \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}},
@@ -116,26 +102,9 @@
 #' of repeated measures experiments from two assays. BMC bioinformatics 13(1),
 #' 325 (2012)
 #' @keywords regression multivariate
-## -----------------------------------------------------------------------------examples
-#' @examples
-#' \dontrun{
-#' ## First example
-#' library(mixOmics.data)
-#' X <- breast.tumors$gene.exp
-#' Y <- breast.tumors$sample$treatment
-#'
-#' plsda.breast <- plsda(X, Y, ncomp = 2)
-#' plotIndiv(plsda.breast, ind.names = TRUE, ellipse = TRUE, legend = TRUE)
-#'
-#'
-#' ## Second example
-#' X <- liver.toxicity$gene
-#' Y <- liver.toxicity$treatment[, 4]
-#'
-#' plsda.liver <- plsda(X, Y, ncomp = 2)
-#' plotIndiv(plsda.liver, ind.names = Y, ellipse = TRUE, legend =TRUE)
-#'
-#' }
+
+## ----------------------------------- Examples
+#' @example examples/plsda-example.R
 #'
 
 ###########################################################

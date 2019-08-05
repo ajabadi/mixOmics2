@@ -64,9 +64,9 @@
 #' included.
 ## --------------------------------------------------------------------------------------- parameters
 #' @inheritParams pls
-#' @param keepX numeric vector of length \code{ncomp}, the number of variables
+#' @param keepX Numeric vector of length \code{ncomp}, the number of variables
 #' to keep in \eqn{X}-loadings. By default all variables are kept in the model.
-#' @param keepY numeric vector of length \code{ncomp}, the number of variables
+#' @param keepY Numeric vector of length \code{ncomp}, the number of variables
 #' to keep in \eqn{Y}-loadings. By default all variables are kept in the model.
 ## --------------------------------------------------------------------------------------- value
 #' @return \code{spls} returns an object of class \code{"spls"}, a list that
@@ -188,7 +188,7 @@ formula=NULL)
         logratio = logratio,
         explained_variance = result$explained_variance,
         input.X = result$input.X,
-        mat.c = result$mat.c#,
+        mat.c = result$mat.c
         )
 
 

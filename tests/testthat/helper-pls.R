@@ -17,7 +17,8 @@ Yc_index <- 2 ## "years_to_birth" - must be numeric
 iYc_index_num <- 1 ## "patientID" - must be numeric
 ## index of invalid non-numeric Y in colData(MAE data) (this will test informative error messages)
 iYc_index_char <- 7 ## pathologic_stage" - is in fact a valid class but not factor
-
+## phenotypes column name for discriminatory analyses
+phen_col <- "gender" ## uses Xa for single plsda and list(Xa, Ya) for block.plsda
 ## ----------------------------------------------------- no need to change the following
 
 Xa <- names(assays(mae_data))[X_index] ## X assay
@@ -38,3 +39,6 @@ Y_inv.vec <- colData(mae_data)[,iYc_index_num] ## vector
 
 Y_char <-colnames(colData(mae_data))[iYc_index_char]
 Y_char.vec <- colData(mae_data)[,iYc_index_char]
+
+phenXa <- colData(mae_data[,,Xa])[,phen_col] ## phenotype for plsda with Xa
+phenXaYa <- colData(mae_data[,complete.cases(mae_data[,,c(Xa, Ya)])])[,phen_col] ## phenotype for block.plsda with Xa, Ya

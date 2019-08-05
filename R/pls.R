@@ -48,31 +48,32 @@
 #' logratio transform and multilevel analysis are performed sequentially as
 #' internal pre-processing step, through \code{\link{logratio.transfo}} and
 #' \code{\link{withinVariation}} respectively.
-## --------------------------------------------------------------------------------------- parameters
-#' @param X numeric matrix of predictors, or name of such an assay from \code{data} .
+
+## ----------------------------------- Parameters
+#' @param X Numeric matrix of predictors, or name of such an assay from \code{data} .
 #' \code{NA}s are allowed.
-#' @param Y numeric vector or matrix of responses (for multi-response models),
+#' @param Y Numeric vector or matrix of responses (for multi-response models),
 #' or name of such an \code{assay} or
 #' \code{colData} from \code{data}. \code{NA}s are allowed.
-#' @param ncomp the number of components to include in the model. Default to 2.
-#' @param scale boleean. If scale = TRUE, each block is standardized to zero
+#' @param ncomp The number of components to include in the model. Default to 2.
+#' @param scale Boleean. If scale = TRUE, each block is standardized to zero
 #' means and unit variances (default: TRUE)
-#' @param mode character string. What type of algorithm to use, (partially)
+#' @param mode Character string. What type of algorithm to use, (partially)
 #' matching one of \code{"regression"}, \code{"canonical"}, \code{"invariant"}
 #' or \code{"classic"}. See Details.
 #' @param tol Convergence stopping value.
-#' @param max.iter integer, the maximum number of iterations.
-#' @param near.zero.var boolean, see the internal \code{\link{nearZeroVar}}
+#' @param max.iter Integer, the maximum number of iterations.
+#' @param near.zero.var Boolean, see the internal \code{\link{nearZeroVar}}
 #' function (should be set to TRUE in particular for data with many zero
 #' values). Setting this argument to FALSE (when appropriate) will speed up the
 #' computations. Default value is FALSE
-#' @param logratio one of ('none','CLR'). Default to 'none'
+#' @param logratio One of ('none','CLR'). Default to 'none'
 #' @param multilevel Design matrix for repeated measurement analysis, where
 #' multlevel decomposition is required. For a one factor decomposition, the
 #' repeated measures on each individual, i.e. the individuals ID is input as
 #' the first column. For a 2 level factor decomposition then 2nd AND 3rd
 #' columns indicate those factors. See examples in \code{?spls}).
-#' @param all.outputs boolean. Computation can be faster when some specific
+#' @param all.outputs Boolean. Computation can be faster when some specific
 #' (and non-essential) outputs are not calculated. Default = \code{TRUE}.
 #' @param formula (\code{X} and \code{Y} must be \code{NULL})
 #' formula of form \code{LHS~RHS} (names of objects without quotations) where
@@ -81,8 +82,9 @@
 #'  \code{data}. \code{LHS} can also be a numeric \code{colData} name from \code{data}.
 #'  see examples.
 #' @param data A \code{MultiAssayExperiment} object.
-## --------------------------------------------------------------------------------------- value
-#' @return \code{pls} returns an object of class \code{"pls"}, a list that
+
+## ----------------------------------- Value
+#' @return \code{pls} returns an object of class \code{"mixo_pls"}, a list that
 #' contains the following components:
 #'
 #' \item{X}{the centered and standardized original predictor matrix.}
@@ -107,7 +109,8 @@
 #' coefficients from the regression of X / residual matrices X on the
 #' X-variates, to be used internally by \code{predict}.}
 #' \item{defl.matrix}{residual matrices X for each dimension.}
-## ---------------------------------------------------------------------------------------
+
+## ----------------------------------- Misc
 #' @author Sébastien Déjean, Ignacio González, Kim-Anh Lê Cao, Al J Abadi.
 #' @seealso \code{\link{spls}}, \code{\link{summary}}, \code{\link{plotIndiv}},
 #' \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and
@@ -123,7 +126,8 @@
 #' structure regression (PLS Regression). \emph{Wiley Interdisciplinary
 #' Reviews: Computational Statistics}, 2(1), 97-106.
 #' @keywords regression multivariate
-## --------------------------------------------------------------------------------------- examples
+
+## ----------------------------------- Examples
 #' @example examples/pls-example.R
 #' @importFrom matrixStats colSds
 #' @importFrom matrixStats colVars

@@ -4,8 +4,8 @@
 \alias{plot.pca}
 \title{plot methods for mixOmics}
 \usage{
-plot.pca(x, ncomp = min(10, length(x$sdev)), type = "barplot",
-  explained.var = TRUE, ...)
+\method{plot}{pca}(x, ncomp = min(10, length(x$sdev)),
+  type = "barplot", explained.var = TRUE, ...)
 }
 \arguments{
 \item{x}{a \code{pca} object obtained from \code{pca} function.}
