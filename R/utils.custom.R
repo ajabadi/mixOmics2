@@ -1,7 +1,7 @@
 ## -----------------------------------------------------------------------------------
 ## ---------------  custom stop to define specific error classes
 ## -----------------------------------------------------------------------------------
-.stop<- function(.subclass, message, call = NULL, ...) {
+.stop <- function(.subclass, message, call = NULL, ...) {
   formals(stop)$call. <- FALSE
   err <- structure(
     list(
@@ -16,15 +16,18 @@
 
 ##TODO remove the first two
 ## ----------- for invalid signature
-.inv_signature <- function() .stop("inv_signature", "incorrect input format")
+.inv_signature <- function(msg="incorrect input format") .stop("inv_signature", msg)
 ## ----------- for invalid data
-.inv_mae <- function(data='data') .stop("inv_mae", paste0(squote(data), " is not a MultiAssayExperiment object"))
+.inv_mae <- function(data='data', msg=" is not a MultiAssayExperiment object") .stop("inv_mae", paste0(squote(data), msg))
 ## ----------- for invalid formula for single
-.inv_sformula <- function() .stop("inv_sformula", "'formula' must be a formula object of form Y~X where X and Y are numeric matrices")
+.inv_sformula <- function(msg="'formula' must be a formula object of form Y~X where X and
+                          Y are numeric matrices, or assay names from 'data'") .stop("inv_sformula", msg)
 ## ----------- for invalid formula for blocks
-.inv_bformula <- function() .stop("inv_bformula", "'formula' must be a formula object of form Y~X where X is a list of numeric matrices")
+.inv_bformula <- function(msg="'formula' must be a formula object of form Y~X where Y is a
+                          numeric matrix (or name of such an assay from 'data') and X is a
+                          list of numeric matrices (or assay names)") .stop("inv_bformula", msg)
 ## ----------- for invalid X/Y
-.inv_assay <- function() .stop("inv_assay", "invalid assay/colData name(s).")
+.inv_assay <- function(msg="invalid assay/colData name(s).") .stop("inv_assay", msg)
 
 ## -----------------------------------------------------------------------------------
 ## ---------------  custom warnings with specified class
@@ -45,7 +48,7 @@
 ## -----------------------------------------------------------------------------------
 ## --------------- custom match.arg with call.=FALSE for stop()
 ## -----------------------------------------------------------------------------------
-.matchArg <- function (arg, choices, several.ok = FALSE)
+.matchArg <- function(arg, choices, several.ok = FALSE)
 {
   if (missing(choices)) {
     formal.args <- formals(sys.function(sysP <- sys.parent()))
@@ -67,7 +70,7 @@
   i <- pmatch(arg, choices, nomatch = 0L, duplicates.ok = TRUE)
   if (all(i == 0L))
     stop(paste(match.call()$arg,gettextf("should be one of %s", paste(dQuote(choices),
-                                                                      collapse = ", "))), call.=FALSE, domain = NA)
+                                                                      collapse = ", "))), call. = FALSE, domain = NA)
   i <- i[i > 0L]
   if (!several.ok && length(i) > 1)
     stop("there is more than one match in 'match.arg'")
