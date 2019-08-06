@@ -253,36 +253,36 @@
 #' transformation and additional offset might be needed.
 
 ## ----------------------------------- Parameters
-#' @param X a numeric matrix (or data frame) which provides the data for the
+#' @param X A numeric matrix (or data frame) which provides the data for the
 #' principal components analysis. It can contain missing values.
 #' Alternatively, a \code{MultiAssayExperiment} object.
-#' @param assay name or index of an assay from \code{X}.
-#' @param ncomp integer, if data is complete \code{ncomp} decides the number of
+#' @param assay Name or index of an assay from \code{X}.
+#' @param ncomp Integer, if data is complete \code{ncomp} decides the number of
 #' components and associated eigenvalues to display from the \code{pcasvd}
 #' algorithm and if the data has missing values, \code{ncomp} gives the number
 #' of components to keep to perform the reconstitution of the data using the
 #' NIPALS algorithm. If \code{NULL}, function sets \code{ncomp = min(nrow(X),
 #' ncol(X))}.
-#' @param center a logical value indicating whether the variables should be
+#' @param center A logical value indicating whether the variables should be
 #' shifted to be zero centered. Alternately, a vector of length equal the
 #' number of columns of \code{X} can be supplied. The value is passed to
 #' \code{\link{scale}}.
-#' @param scale a logical value indicating whether the variables should be
+#' @param scale A logical value indicating whether the variables should be
 #' scaled to have unit variance before the analysis takes place. The default is
 #' \code{FALSE} for consistency with \code{prcomp} function, but in general
 #' scaling is advisable. Alternatively, a vector of length equal the number of
 #' columns of \code{X} can be supplied. The value is passed to
 #' \code{\link{scale}}.
-#' @param max.iter integer, the maximum number of iterations in the NIPALS
+#' @param max.iter Integer, the maximum number of iterations in the NIPALS
 #' algorithm.
-#' @param tol a positive real, the tolerance used in the NIPALS algorithm.
-#' @param logratio one of ('none','CLR','ILR'). Specifies the log ratio
+#' @param tol A positive real, the tolerance used in the NIPALS algorithm.
+#' @param logratio One of ('none','CLR','ILR'). Specifies the log ratio
 #' transformation to deal with compositional values that may arise from
 #' specific normalisation in sequencing data. Default to 'none'
 #' @param ilr.offset When logratio is set to 'ILR', an offset must be input to
 #' avoid infinite value after the logratio transform, default to 0.001.
 #' @param V Matrix used in the logratio transformation id provided.
-#' @param multilevel sample information for multilevel decomposition for repeated measurements.
+#' @param multilevel Sample information for multilevel decomposition for repeated measurements.
 
 ## ----------------------------------- Value
 #' @return \code{pca} returns a list with class \code{"pca"} and
@@ -332,7 +332,7 @@
 ## If only there was a workaround to get the full IDE arg suggestions too!
 ## It is possible to repeat all args and no '...', but any change will be a nightmare.
 
-#' @param ... aguments passed to the generic.
+#' @param ... Aguments passed to the generic.
 #' @usage \S4method{pca}{ANY}(X, ncomp = 2, center = TRUE, scale = FALSE, max.iter = 500,
 #' tol = 1e-09, logratio = c('none','CLR','ILR'), ilr.offset = 0.001,
 #' V = NULL, multilevel = NULL)

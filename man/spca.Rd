@@ -17,11 +17,11 @@ logratio = c('none','CLR'), multilevel = NULL)
 \S4method{spca}{MultiAssayExperiment}(X, ncomp = 2, ..., assay = NULL)
 }
 \arguments{
-\item{X}{a numeric matrix (or data frame) which provides the data for the
+\item{X}{A numeric matrix (or data frame) which provides the data for the
 principal components analysis. It can contain missing values.
 Alternatively, a \code{MultiAssayExperiment} object.}
 
-\item{ncomp}{integer, if data is complete \code{ncomp} decides the number of
+\item{ncomp}{Integer, if data is complete \code{ncomp} decides the number of
 components and associated eigenvalues to display from the \code{pcasvd}
 algorithm and if the data has missing values, \code{ncomp} gives the number
 of components to keep to perform the reconstitution of the data using the
@@ -30,7 +30,7 @@ ncol(X))}.}
 
 \item{...}{currently ignored.}
 
-\item{assay}{name or index of an assay from \code{X}.}
+\item{assay}{Name or index of an assay from \code{X}.}
 
 \item{keepX}{numeric vector of length ncomp, the number of variables to keep.}
 

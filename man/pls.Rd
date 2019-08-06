@@ -11,32 +11,32 @@ pls(X = NULL, Y = NULL, ncomp = 2, scale = TRUE,
   data = NULL, formula = NULL)
 }
 \arguments{
-\item{X}{numeric matrix of predictors, or name of such an assay from \code{data} .
+\item{X}{Numeric matrix of predictors, or name of such an assay from \code{data} .
 \code{NA}s are allowed.}
 
-\item{Y}{numeric vector or matrix of responses (for multi-response models),
+\item{Y}{Numeric vector or matrix of responses (for multi-response models),
 or name of such an \code{assay} or
 \code{colData} from \code{data}. \code{NA}s are allowed.}
 
-\item{ncomp}{the number of components to include in the model. Default to 2.}
+\item{ncomp}{The number of components to include in the model. Default to 2.}
 
-\item{scale}{boleean. If scale = TRUE, each block is standardized to zero
+\item{scale}{Boleean. If scale = TRUE, each block is standardized to zero
 means and unit variances (default: TRUE)}
 
-\item{mode}{character string. What type of algorithm to use, (partially)
+\item{mode}{Character string. What type of algorithm to use, (partially)
 matching one of \code{"regression"}, \code{"canonical"}, \code{"invariant"}
 or \code{"classic"}. See Details.}
 
 \item{tol}{Convergence stopping value.}
 
-\item{max.iter}{integer, the maximum number of iterations.}
+\item{max.iter}{Integer, the maximum number of iterations.}
 
-\item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}}
+\item{near.zero.var}{Boolean, see the internal \code{\link{nearZeroVar}}
 function (should be set to TRUE in particular for data with many zero
 values). Setting this argument to FALSE (when appropriate) will speed up the
 computations. Default value is FALSE}
 
-\item{logratio}{one of ('none','CLR'). Default to 'none'}
+\item{logratio}{One of ('none','CLR'). Default to 'none'}
 
 \item{multilevel}{Design matrix for repeated measurement analysis, where
 multlevel decomposition is required. For a one factor decomposition, the
@@ -44,7 +44,7 @@ repeated measures on each individual, i.e. the individuals ID is input as
 the first column. For a 2 level factor decomposition then 2nd AND 3rd
 columns indicate those factors. See examples in \code{?spls}).}
 
-\item{all.outputs}{boolean. Computation can be faster when some specific
+\item{all.outputs}{Boolean. Computation can be faster when some specific
 (and non-essential) outputs are not calculated. Default = \code{TRUE}.}
 
 \item{data}{A \code{MultiAssayExperiment} object.}
@@ -57,7 +57,7 @@ formula of form \code{LHS~RHS} (names of objects without quotations) where
  see examples.}
 }
 \value{
-\code{pls} returns an object of class \code{"pls"}, a list that
+\code{pls} returns an object of class \code{"mixo_pls"}, a list that
 contains the following components:
 
 \item{X}{the centered and standardized original predictor matrix.}
@@ -131,40 +131,37 @@ internal pre-processing step, through \code{\link{logratio.transfo}} and
 }
 \examples{
 #' \dontrun{
-## successful: FALSE
-
 library(mixOmics.data)
 
-## ---------------- X and Y matrices using linnerud dataset
+## ---------------- with X and Y as matrices
 X <- linnerud$exercise
 Y <- linnerud$physiological
-linn.pls1 <- pls(X=X, Y=Y, mode = "classic")
-plotVar(linn.pls)
+pls.res1 <- pls(X=X, Y=Y)
+plotVar(pls.res1)
 
-## ---------------- formula method for numerics
-## 'formula' argument should be explicitly mentioned for correct method dispatch
-linn.pls2 <- pls(formula = Y ~ X, mode = "classic")
+## ---------------- formula method for matrices
+## 'formula' argument should be explicitly mentioned (formula = ...)
+## for correct method dispatch
+pls.res2 <- pls(formula = Y ~ X)
 ## exclude calls and see if all outputs  are identical
-identical(linn.pls1[-1], linn.pls2[-1])
+identical(pls.res1[-1], pls.res2[-1])
 #> TRUE
-## ---------------- MultiAssayExperiment using linnerud.mae
+## ---------------- MultiAssayExperiment and assay names as X and Y
 ## 'data' argument should be explicitly mentioned for correct method dispatch
-linn.pls3 <- pls(X='exercise', Y='physiological', mode = "classic", data = linnerud.mae)
-identical(linn.pls1[-1], linn.pls3[-1])
+pls.res3 <- pls(X='exercise', Y='physiological', data = linnerud.mae)
+identical(pls.res1[-1], pls.res3[-1])
 #> TRUE
 
-## ---------------- MultiAssayExperiment and formula
-linn.pls4 <- pls(formula = physiological ~ exercise, data = linnerud.mae, mode = "classic",)
-identical(linn.pls1[-1], linn.pls4[-1])
+## ---------------- MultiAssayExperiment and formula with assay names
+pls.res4 <- pls(formula = physiological ~ exercise, data = linnerud.mae, mode = "classic",)
+identical(pls.res1[-1], pls.res4[-1])
 #> TRUE
 
-## ---------------- colData of MultiAssayExperiment and formula
-X <- liver.toxicity$gene
-Y <- liver.toxicity$clinic
-toxicity.pls <- pls(formula = Y~X, ncomp = 3)
-
-plotVar(toxicity.pls, cutoff = 0.8)
-plotLoadings(toxicity.pls, ndisplay = 10)
+## ---------------- MultiAssayExperiment; X=assay and Y=colData
+toxicity.pls1 <- pls(data = liver.toxicity.mae,  formula = Dose.Group~gene, ncomp = 3)
+toxicity.pls2 <- pls(data = liver.toxicity.mae,  Y='Dose.Group', X='gene', ncomp = 3)
+identical(toxicity.pls1[-1], toxicity.pls2[-1])
+#> TRUE
 
 #' }
 }

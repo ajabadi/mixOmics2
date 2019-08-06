@@ -11,38 +11,38 @@ spls(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant",
   formula = NULL)
 }
 \arguments{
-\item{X}{numeric matrix of predictors, or name of such an assay from \code{data} .
+\item{X}{Numeric matrix of predictors, or name of such an assay from \code{data} .
 \code{NA}s are allowed.}
 
-\item{Y}{numeric vector or matrix of responses (for multi-response models),
+\item{Y}{Numeric vector or matrix of responses (for multi-response models),
 or name of such an \code{assay} or
 \code{colData} from \code{data}. \code{NA}s are allowed.}
 
-\item{ncomp}{the number of components to include in the model. Default to 2.}
+\item{ncomp}{The number of components to include in the model. Default to 2.}
 
-\item{mode}{character string. What type of algorithm to use, (partially)
+\item{mode}{Character string. What type of algorithm to use, (partially)
 matching one of \code{"regression"}, \code{"canonical"}, \code{"invariant"}
 or \code{"classic"}. See Details.}
 
-\item{keepX}{numeric vector of length \code{ncomp}, the number of variables
+\item{keepX}{Numeric vector of length \code{ncomp}, the number of variables
 to keep in \eqn{X}-loadings. By default all variables are kept in the model.}
 
-\item{keepY}{numeric vector of length \code{ncomp}, the number of variables
+\item{keepY}{Numeric vector of length \code{ncomp}, the number of variables
 to keep in \eqn{Y}-loadings. By default all variables are kept in the model.}
 
-\item{scale}{boleean. If scale = TRUE, each block is standardized to zero
+\item{scale}{Boleean. If scale = TRUE, each block is standardized to zero
 means and unit variances (default: TRUE)}
 
 \item{tol}{Convergence stopping value.}
 
-\item{max.iter}{integer, the maximum number of iterations.}
+\item{max.iter}{Integer, the maximum number of iterations.}
 
-\item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}}
+\item{near.zero.var}{Boolean, see the internal \code{\link{nearZeroVar}}
 function (should be set to TRUE in particular for data with many zero
 values). Setting this argument to FALSE (when appropriate) will speed up the
 computations. Default value is FALSE}
 
-\item{logratio}{one of ('none','CLR'). Default to 'none'}
+\item{logratio}{One of ('none','CLR'). Default to 'none'}
 
 \item{multilevel}{Design matrix for repeated measurement analysis, where
 multlevel decomposition is required. For a one factor decomposition, the
@@ -50,7 +50,7 @@ repeated measures on each individual, i.e. the individuals ID is input as
 the first column. For a 2 level factor decomposition then 2nd AND 3rd
 columns indicate those factors. See examples in \code{?spls}).}
 
-\item{all.outputs}{boolean. Computation can be faster when some specific
+\item{all.outputs}{Boolean. Computation can be faster when some specific
 (and non-essential) outputs are not calculated. Default = \code{TRUE}.}
 
 \item{data}{A \code{MultiAssayExperiment} object.}
@@ -125,17 +125,46 @@ included.
 }
 \examples{
 #' \dontrun{
-## successful: TRUE
+## 1st example: accepted input formats
+#--------------------------------------------------------------
+
 library(mixOmics.data)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
+keepX <- c(50, 50)
+keepY <- c(5, 5)
+spls.res1 <- spls(X=X, Y=Y, keepX = keepX, keepY = keepY)
+plotVar(spls.res1)
 
-toxicity.spls <- spls(X, Y, ncomp = 2, keepX = c(50, 50),
-                      keepY = c(10, 10))
+## ---------------- formula method for matrices
+## 'formula' argument should be explicitly mentioned (formula = ...)
+## for correct method dispatch
+spls.res2 <- spls(formula = Y ~ X, keepX = keepX, keepY = keepY)
+## exclude calls and see if all outputs  are identical
+identical(spls.res1[-1], spls.res2[-1])
+#> TRUE
+## ---------------- MultiAssayExperiment and assay names as X and Y
+## 'data' argument should be explicitly mentioned for correct method dispatch
+spls.res3 <- spls(X='gene', Y='clinic', data = liver.toxicity.mae,
+                  keepX = keepX, keepY = keepY)
+identical(spls.res1[-1], spls.res3[-1])
+#> TRUE
 
-toxicity.spls <- spls(X, Y[,1:2,drop=FALSE], ncomp = 5, keepX = c(50, 50))#,  mode="canonical")
+## ---------------- MultiAssayExperiment and formula with assay names
+spls.res4 <- spls(formula = clinic ~ gene, data = liver.toxicity.mae,
+                  keepX = keepX, keepY = keepY)
+identical(spls.res1[-1], spls.res4[-1])
+#> TRUE
 
-## Second example: one-factor multilevel analysis with sPLS, selecting a subset of variables
+## ---------------- MultiAssayExperiment; X=assay and Y=colData
+toxicity.spls1 <- spls(data = liver.toxicity.mae, formula = Dose.Group~gene,
+                       ncomp = 2, keepX=keepX)
+toxicity.spls2 <- spls(data = liver.toxicity.mae, Y='Dose.Group', X='gene',
+                       ncomp = 2, keepX=keepX)
+identical(toxicity.spls1[-1], toxicity.spls2[-1])
+#> TRUE
+
+## 2nd example: one-factor multilevel analysis with sPLS, selecting a subset of variables
 #--------------------------------------------------------------
 
 # note: we made up those data, pretending they are repeated measurements
@@ -174,7 +203,7 @@ plotIndiv(res.spls.1level, rep.space = 'XY-variate', ind.names = FALSE,
           pch = 20, main = 'Both Gene expression and Clinical subspaces',
           legend = TRUE)
 
-## Third example: two-factor multilevel analysis with sPLS, selecting a subset of variables
+## 3rd example: two-factor multilevel analysis with sPLS, selecting a subset of variables
 #--------------------------------------------------------------
 
 dose <- as.factor(liver.toxicity$treatment$Dose.Group)
@@ -193,7 +222,7 @@ res.spls.2level = spls(liver.toxicity$gene,
                        ncomp=2,
                        keepX = c(10,10), keepY = c(5,5))
 
-  #' }
+#' }
 }
 \references{
 Sparse PLS: canonical and regression modes:

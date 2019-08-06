@@ -13,39 +13,39 @@ V = NULL, multilevel = NULL)
 \S4method{pca}{MultiAssayExperiment}(X, ncomp = 2, ..., assay = NULL)
 }
 \arguments{
-\item{X}{a numeric matrix (or data frame) which provides the data for the
+\item{X}{A numeric matrix (or data frame) which provides the data for the
 principal components analysis. It can contain missing values.
 Alternatively, a \code{MultiAssayExperiment} object.}
 
-\item{ncomp}{integer, if data is complete \code{ncomp} decides the number of
+\item{ncomp}{Integer, if data is complete \code{ncomp} decides the number of
 components and associated eigenvalues to display from the \code{pcasvd}
 algorithm and if the data has missing values, \code{ncomp} gives the number
 of components to keep to perform the reconstitution of the data using the
 NIPALS algorithm. If \code{NULL}, function sets \code{ncomp = min(nrow(X),
 ncol(X))}.}
 
-\item{...}{aguments passed to the generic.}
+\item{...}{Aguments passed to the generic.}
 
-\item{assay}{name or index of an assay from \code{X}.}
+\item{assay}{Name or index of an assay from \code{X}.}
 
-\item{center}{a logical value indicating whether the variables should be
+\item{center}{A logical value indicating whether the variables should be
 shifted to be zero centered. Alternately, a vector of length equal the
 number of columns of \code{X} can be supplied. The value is passed to
 \code{\link{scale}}.}
 
-\item{scale}{a logical value indicating whether the variables should be
+\item{scale}{A logical value indicating whether the variables should be
 scaled to have unit variance before the analysis takes place. The default is
 \code{FALSE} for consistency with \code{prcomp} function, but in general
 scaling is advisable. Alternatively, a vector of length equal the number of
 columns of \code{X} can be supplied. The value is passed to
 \code{\link{scale}}.}
 
-\item{max.iter}{integer, the maximum number of iterations in the NIPALS
+\item{max.iter}{Integer, the maximum number of iterations in the NIPALS
 algorithm.}
 
-\item{tol}{a positive real, the tolerance used in the NIPALS algorithm.}
+\item{tol}{A positive real, the tolerance used in the NIPALS algorithm.}
 
-\item{logratio}{one of ('none','CLR','ILR'). Specifies the log ratio
+\item{logratio}{One of ('none','CLR','ILR'). Specifies the log ratio
 transformation to deal with compositional values that may arise from
 specific normalisation in sequencing data. Default to 'none'}
 
@@ -54,7 +54,7 @@ avoid infinite value after the logratio transform, default to 0.001.}
 
 \item{V}{Matrix used in the logratio transformation id provided.}
 
-\item{multilevel}{sample information for multilevel decomposition for repeated measurements.}
+\item{multilevel}{Sample information for multilevel decomposition for repeated measurements.}
 }
 \value{
 \code{pca} returns a list with class \code{"pca"} and

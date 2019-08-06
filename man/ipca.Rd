@@ -13,11 +13,11 @@ max.iter = 200, tol = 1e-04)
 \S4method{ipca}{MultiAssayExperiment}(X, ncomp = 2, ..., assay = NULL)
 }
 \arguments{
-\item{X}{a numeric matrix (or data frame) which provides the data for the
+\item{X}{A numeric matrix (or data frame) which provides the data for the
 principal components analysis. It can contain missing values.
 Alternatively, a \code{MultiAssayExperiment} object.}
 
-\item{ncomp}{integer, if data is complete \code{ncomp} decides the number of
+\item{ncomp}{Integer, if data is complete \code{ncomp} decides the number of
 components and associated eigenvalues to display from the \code{pcasvd}
 algorithm and if the data has missing values, \code{ncomp} gives the number
 of components to keep to perform the reconstitution of the data using the
@@ -26,7 +26,7 @@ ncol(X))}.}
 
 \item{...}{aguments passed to the generic.}
 
-\item{assay}{name or index of an assay from \code{X}.}
+\item{assay}{Name or index of an assay from \code{X}.}
 
 \item{mode}{character string. What type of algorithm to use when estimating
 the unmixing matrix, choose one of \code{"deflation"}, \code{"parallel"}.}
