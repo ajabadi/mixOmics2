@@ -1,0 +1,46 @@
+```{r setup-news, include=FALSE}
+library(knitr)
+opts_chunk$set( echo = TRUE, eval = FALSE, warning = FALSE, fig.path = './images/', fig.asp = 1, out.width = "50%", cache = FALSE)
+opts_knit$set(root.dir = "./images/", cache.path = "./images/")
+```
+
+## News
+
+ 
+  * <span style="color:blue"><big>**August 2019**</big></span>: `pls` family functions now support `MultiAssayExperiment` and `formula` classes as input. [check out example](#pls-mae-formula).
+  * <span style="color:blue"><big>**July 2019**</big></span>: `pca` family functions now support `MultiAssayExperiment` data. [see example](#pca-mae).
+
+### PLS family now supports `MultiAssayExperiment` and `formula` classes  {#pls-mae-formula}
+```{r news-pls-mae, eval=TRUE, message='hide', fig.asp=1, out.width="50%"}
+suppressMessages({library(mixOmics2); library(mixOmics.data)})
+
+## with X and Y as matrices
+X <- linnerud$exercise
+Y <- linnerud$physiological
+
+pls.res_XY <- pls(X = X, Y = Y)
+pls.res_fm <- pls(formula = Y ~ X)
+pls.res_fm_MAE <- pls(data = linnerud.mae, formula = physiological~exercise)
+## same output for all three
+identical(pls.res_XY[-1], pls.res_fm[-1])
+identical(pls.res_XY[-1], pls.res_fm_MAE[-1])
+plotVar(pls.res_fm)
+```
+
+
+See `examples/pls.R`, `examples/spls.R`, `examples/splsda.R`,... for more.
+
+### PCA family now supports `MultiAssayExperiment` data {#pca-mae}
+
+```{r news-pca-mae, eval=TRUE, message='hide'}
+suppressMessages({library(mixOmics2); library(mixOmics.data)})
+
+## example with MultiAssayExperiment class
+pca.res <- pca(X = multidrug.mae, assay = 'ABC.trans', ncomp = 4, scale = TRUE)
+plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
+          group = as.numeric(as.factor(multidrug$cell.line$Class)))
+
+```
+
+ See `examples/pca.R`, `examples/spca.R`, ... for more.
+ 

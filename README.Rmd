@@ -1,0 +1,39 @@
+---
+output: github_document
+---
+
+```{r setup-readme, include=FALSE}
+library(knitr)
+opts_chunk$set( echo = TRUE, eval = FALSE, warning = FALSE, fig.path = './images/', fig.asp = 1, out.width = "50%", cache = FALSE)
+opts_knit$set(root.dir = "./images/", cache.path = "./images/")
+```
+
+![](http://mixomics.org/wp-content/uploads/2019/07/MixOmics-Logo-1.png)
+
+
+This package is a developing implementation of [mixOmics](https://github.com/mixOmicsTeam/mixOmics) Bioconductor package.
+
+The aim is to:
+
+* implement [_roxygen2_](https://cran.r-project.org/web/packages/roxygen2/index.html) documentation, and
+* support [_MultiAssayExperiment_](http://bioconductor.org/packages/release/bioc/html/MultiAssayExperiment.html) datasets.
+* support more intuitve input formats tailored to data integration such as `formula` class entry and support of `assay` names.
+
+
+# Installation:
+
+The package is not complete/tested yet, but feel free to try it using:
+
+```{r}
+devtools::install_github("ajabadi/mixOmics2")
+```
+
+You need to install the data package to be able to run the examples:
+
+```{r}
+devtools::install_github("ajabadi/mixOmics.data")
+```
+
+
+```{r, eval=TRUE, child = 'NEWS_of_README.Rmd'}
+```
