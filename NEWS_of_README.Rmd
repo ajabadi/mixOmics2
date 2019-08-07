@@ -1,16 +1,21 @@
+---
+description: "This is a child document for README to isolate NEWS updates - see README's last chunk"
+---
+
 ```{r setup-news, include=FALSE}
 library(knitr)
 opts_chunk$set( echo = TRUE, eval = FALSE, warning = FALSE, fig.path = './images/', fig.asp = 1, out.width = "50%", cache = FALSE)
 opts_knit$set(root.dir = "./images/", cache.path = "./images/")
 ```
 
-## News
+# News
 
  
   * <span style="color:blue"><big>**August 2019**</big></span>: `pls` family functions now support `MultiAssayExperiment` and `formula` classes as input. [check out example](#pls-mae-formula).
   * <span style="color:blue"><big>**July 2019**</big></span>: `pca` family functions now support `MultiAssayExperiment` data. [see example](#pca-mae).
 
-### PLS family now supports `MultiAssayExperiment` and `formula` classes  {#pls-mae-formula}
+### PLS family now supports `MultiAssayExperiment` and `formula` classes {#pls-mae-formula}
+
 ```{r news-pls-mae, eval=TRUE, message='hide', fig.asp=1, out.width="50%"}
 suppressMessages({library(mixOmics2); library(mixOmics.data)})
 

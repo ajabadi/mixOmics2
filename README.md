@@ -30,7 +30,7 @@ You need to install the data package to be able to run the examples:
 devtools::install_github("ajabadi/mixOmics.data")
 ```
 
-## News
+# News
 
   - <span style="color:blue"><big>**August 2019**</big></span>: `pls`
     family functions now support `MultiAssayExperiment` and `formula`
