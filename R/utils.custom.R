@@ -1,6 +1,8 @@
 ## -----------------------------------------------------------------------------------
 ## ---------------  custom stop to define specific error classes
 ## -----------------------------------------------------------------------------------
+vdc <- c("MultiAssayExperiment", "SummarizedExperiment", "SingleCellExperiment")
+
 .stop <- function(.subclass, message, call = NULL, ...) {
   formals(stop)$call. <- FALSE
   err <- structure(
@@ -14,10 +16,11 @@
   stop(err)
 }
 
-##TODO remove the first two
+##TODO remove irrelevant ones
 ## ----------- for invalid signature
 .inv_signature <- function(msg="incorrect input format") .stop("inv_signature", msg)
 ## ----------- for invalid data
+.inv_data <- function(data='data', msg=" must be an object of class: ", vdc=vdc) .stop("inv_data", paste0(sQuote(data), msg, paste0(vdc, collapse = ", or "),"."))
 .inv_mae <- function(data='data', msg=" is not a MultiAssayExperiment object") .stop("inv_mae", paste0(squote(data), msg))
 ## ----------- for invalid formula for single
 .inv_sformula <- function(msg="'formula' must be a formula object of form Y~X where X and
@@ -75,4 +78,28 @@
   if (!several.ok && length(i) > 1)
     stop("there is more than one match in 'match.arg'")
   choices[i]
+}
+
+## get a list(name_data=object_data, name_assay=object_assay) and check
+#' @importFrom SummarizedExperiment assay assays
+.check_data_assay <- function(mc, valid_classes = c("MultiAssayExperiment",
+                                                    "SummarizedExperiment",
+                                                    "SingleCellExperiment")){
+  data <- eval.parent(mc$data, 2L)
+  X <-    eval.parent(mc$X, 2L)
+  ## check that data is provided
+  if (missing(data) || is.null(data)) {
+    .stop("inv_data", "'X' is character but 'data' not provided. See ?pca.")
+
+    ## check it is of valid class
+  } else if ( !class(try(data)) %in%  valid_classes) {
+    .stop("inv_data", message = paste0("'data' must be of class: ",
+                                       paste0(valid_classes, collapse = ", or ")))
+  }
+
+  ## if X is not a valid assay throw appropriate error
+  if (!X %in% tryCatch(names(assays(data)), error = function(e) e)) {
+    .stop("inv_assay", message = "'X' is not a valid assay name from 'data',
+          It should be one of: ",  paste0(names(assays(data)), collapse = ", "))
+  }
 }
