@@ -25,32 +25,37 @@
 # --------------------------------------
 # check and construct keepA
 # --------------------------------------
-get.keepA=function(X,keepX,ncomp)
+get.keepA = function(X, keepX, ncomp)
 {
     # X:data
     # keepA
 
     keepA = list()
-    if (missing(keepX) || length(keepX)==0)
+    if (missing(keepX) || length(keepX) == 0)
     {
         #if keepX is missing, pls-like: keepX=ncol(X)
         for (q in 1:length(X))
-        keepA[[q]]=rep(ncol(X[[q]]),max(ncomp)) #keepX
+            keepA[[q]] = rep(ncol(X[[q]]), max(ncomp)) #keepX
 
-        names(keepA)=names(X)
+        names(keepA) = names(X)
     } else {
-
         if (!is.list(keepX))
-        stop("'keepX' must be a list")
+            stop("'keepX' must be a list")
 
         if (length(keepX) > length(X))
-        stop(paste0("length(keepX) is higher than the number of blocks in X,
-        which is ", length(X), "."))
+            stop(
+                paste0(
+                    "length(keepX) is higher than the number of blocks in X,
+        which is ",
+                    length(X),
+                    "."
+                )
+            )
 
         # error if no names on keepX or not matching the names in X
-        if(length(unique(names(keepX)))!=length(keepX) |
-        sum(is.na(match(names(keepX),names(X)))) > 0)
-        stop("Each entry of 'keepX' must have a unique name corresponding to
+        if (length(unique(names(keepX))) != length(keepX) |
+            sum(is.na(match(names(keepX), names(X)))) > 0)
+            stop("Each entry of 'keepX' must have a unique name corresponding to
         a block of 'X'")
 
         # I want to match keepX to X by names
@@ -58,35 +63,60 @@ get.keepA=function(X,keepX,ncomp)
 
         for (q in 1:length(X))
         {
-
             if (!is.na(ind.match[q]))
-            # means there is a keepX with the same name as X[q]
-            #(q <= length(keepX))
+                # means there is a keepX with the same name as X[q]
+                #(q <= length(keepX))
             {
                 #checking entries of keepX
                 if (is.list(keepX[[ind.match[q]]]))
-                stop(paste0("keepX[[",ind.match[q],"]]' must be a vector"))
+                    stop(paste0("keepX[[", ind.match[q], "]]' must be a vector"))
 
                 if (any(keepX[[ind.match[q]]] > ncol(X[[q]])))
-                stop(paste0("each component of 'keepX[[",ind.match[q],"]]'
-                must be lower or equal to ncol(X[[",q,"]])=",ncol(X[[q]]),"."))
+                    stop(
+                        paste0(
+                            "each component of 'keepX[[",
+                            ind.match[q],
+                            "]]'
+                must be lower or equal to ncol(X[[",
+                            q,
+                            "]])=",
+                            ncol(X[[q]]),
+                            "."
+                        )
+                    )
 
                 if (any(keepX[[ind.match[q]]] < 0))
-                stop(paste0("each component of 'keepX[[",ind.match[q],"]]'
-                must be non negative."))
+                    stop(
+                        paste0(
+                            "each component of 'keepX[[",
+                            ind.match[q],
+                            "]]'
+                must be non negative."
+                        )
+                    )
 
                 if (length(keepX[[ind.match[q]]]) > ncomp[q])
-                stop(paste0("length of 'keepX[[",ind.match[q],"]]'
-                must be lower or equal to ncomp[",q,"]=",ncomp[q], "."))
+                    stop(
+                        paste0(
+                            "length of 'keepX[[",
+                            ind.match[q],
+                            "]]'
+                must be lower or equal to ncomp[",
+                            q,
+                            "]=",
+                            ncomp[q],
+                            "."
+                        )
+                    )
 
                 keepA[[q]] = keepX[[ind.match[q]]]
                 if (length(keepA[[q]]) < max(ncomp))
-                keepA[[q]] = c(keepA[[q]], rep(ncol(X[[q]]),
-                max(ncomp) - length(keepA[[q]])))
+                    keepA[[q]] = c(keepA[[q]], rep(ncol(X[[q]]),
+                                                   max(ncomp) - length(keepA[[q]])))
                 #complete the keepX already provided
 
-            }else{
-                keepA[[q]]=rep(ncol(X[[q]]),max(ncomp))
+            } else{
+                keepA[[q]] = rep(ncol(X[[q]]), max(ncomp))
             }
         }
 
@@ -95,7 +125,7 @@ get.keepA=function(X,keepX,ncomp)
     #print(keepA)
 
     names(keepA) = names(X)
-    return(list(keepA=keepA))
+    return(list(keepA = keepA))
 }
 
 

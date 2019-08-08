@@ -1,14 +1,20 @@
 ####################################################################################
 ## ---------- internal
-.ipca = function (X, ncomp = 2,  mode = c("deflation","parallel"),
-                  fun = c("logcosh", "exp", "kur"), scale = FALSE, w.init = NULL,
-                  max.iter = 200, tol = 1e-04) {
+.ipca = function(X,
+                 ncomp = 2,
+                 mode = c("deflation", "parallel"),
+                 fun = c("logcosh", "exp", "kur"),
+                 scale = FALSE,
+                 w.init = NULL,
+                 max.iter = 200,
+                 tol = 1e-04) {
   arg.call = match.call()
   ## match or set the multi-choice arguments
   mode <- arg.call$mode <- .matchArg(mode)
   fun <- arg.call$fun <- .matchArg(fun)
   #-- X matrix
-  if (is.data.frame(X)) X = as.matrix(X)
+  if (is.data.frame(X))
+    X = as.matrix(X)
 
   if (!is.matrix(X) || is.character(X))
     stop("'X' must be a numeric matrix.", call. = FALSE)
@@ -32,7 +38,8 @@
     ind.names = 1:nr
 
   #-- ncomp
-  if (is.null(ncomp) || !is.numeric(ncomp) || ncomp < 1 || !is.finite(ncomp))
+  if (is.null(ncomp) ||
+      !is.numeric(ncomp) || ncomp < 1 || !is.finite(ncomp))
     stop("invalid value for 'ncomp'.", call. = FALSE)
 
   ncomp = round(ncomp)
@@ -44,8 +51,10 @@
   if (!is.logical(scale))
   {
     if (!is.numeric(scale) || (length(scale) != nc))
-      stop("'scale' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
-           call. = FALSE)
+      stop(
+        "'scale' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
+        call. = FALSE
+      )
   }
 
   X = scale(X, center = TRUE, scale = scale)
@@ -74,28 +83,32 @@
   {
     w.init = matrix(1 / sqrt(ncomp), ncomp, ncomp)
   } else {
-    if(!is.matrix(w.init) || length(w.init) != (ncomp^2) || !is.numeric(w.init))
+    if (!is.matrix(w.init) ||
+        length(w.init) != (ncomp ^ 2) || !is.numeric(w.init))
       stop("'w.init' is not a numeric matrix or is the wrong size", call. = FALSE)
   }
 
   if (any(is.infinite(w.init)))
     stop("infinite values in 'w.init'.", call. = FALSE)
 
-  if(sum(w.init==0,na.rm=TRUE)==length(w.init))
+  if (sum(w.init == 0, na.rm = TRUE) == length(w.init))
     stop("'w.init' has to be a non-zero matrix", call. = FALSE)
 
-  if(any(is.na(w.init)))
-    stop("'w.init' has to be a numeric matrix matrix with non-NA values", call. = FALSE)
+  if (any(is.na(w.init)))
+    stop("'w.init' has to be a numeric matrix matrix with non-NA values",
+         call. = FALSE)
 
 
   #-- max.iter
-  if (is.null(max.iter) || !is.numeric(max.iter) || max.iter < 1 || !is.finite(max.iter))
+  if (is.null(max.iter) ||
+      !is.numeric(max.iter) || max.iter < 1 || !is.finite(max.iter))
     stop("invalid value for 'max.iter'.", call. = FALSE)
 
   max.iter = round(max.iter)
 
   #-- tol
-  if (is.null(tol) || !is.numeric(tol) || tol < 0 || !is.finite(tol))
+  if (is.null(tol) ||
+      !is.numeric(tol) || tol < 0 || !is.finite(tol))
     stop("invalid value for 'tol'.", call. = FALSE)
 
 
@@ -112,24 +125,44 @@
 
   if (mode == "deflation")
   {
-    W = ica.def(V, ncomp = ncomp, tol = tol, fun = fun, alpha = 1,
-                max.iter = max.iter, verbose = FALSE, w.init = w.init)
-  }else if (mode == "parallel") {
-    W = ica.par(V, ncomp = ncomp, tol = tol, fun = fun, alpha = 1,
-                max.iter = max.iter, verbose = FALSE, w.init = w.init)
+    W = ica.def(
+      V,
+      ncomp = ncomp,
+      tol = tol,
+      fun = fun,
+      alpha = 1,
+      max.iter = max.iter,
+      verbose = FALSE,
+      w.init = w.init
+    )
+  } else if (mode == "parallel") {
+    W = ica.par(
+      V,
+      ncomp = ncomp,
+      tol = tol,
+      fun = fun,
+      alpha = 1,
+      max.iter = max.iter,
+      verbose = FALSE,
+      w.init = w.init
+    )
   }
 
   #-- independent loadings --#
   S = matrix(W %*% V, nrow = ncomp)
 
   #-- order independent loadings by kurtosis --#
-  kurt = apply(S, 1, function(x) { n = length(x)
-  x = x - mean(x)
-  n * sum(x^4) / (sum(x^2)^2) - 3 } )
+  kurt = apply(S, 1, function(x) {
+    n = length(x)
+    x = x - mean(x)
+    n * sum(x ^ 4) / (sum(x ^ 2) ^ 2) - 3
+  })
   ord = order(kurt, decreasing = TRUE)
   kurt = kurt[ord]
   S = S[ord, , drop = FALSE]
-  norm = apply(S, 1, function(x) { crossprod(x) })
+  norm = apply(S, 1, function(x) {
+    crossprod(x)
+  })
   S = t(sweep(S, 1, norm, "/"))
 
   #-- independent PCs / force orthonormality --#
@@ -155,16 +188,25 @@
   cl = match.call()
   cl[[1]] = as.name('ipca')
 
-  result = list(call = cl, X = X, ncomp = ncomp, x = ipc,
-                loadings=list(X=S),rotation=S,variates=list(X=ipc), kurtosis = kurt, unmixing = t(W),
-                mixing = t(t(W) %*% solve(W %*% t(W))),
-                names = list(var = X.names, sample = ind.names))
+  result = list(
+    call = cl,
+    X = X,
+    ncomp = ncomp,
+    x = ipc,
+    loadings = list(X = S),
+    rotation = S,
+    variates = list(X = ipc),
+    kurtosis = kurt,
+    unmixing = t(W),
+    mixing = t(t(W) %*% solve(W %*% t(W))),
+    names = list(var = X.names, sample = ind.names)
+  )
 
   class(result) = c("ipca", "pca")
 
   #calcul explained variance
-  explX=explained_variance(X,result$variates$X,ncomp)
-  result$explained_variance=explX
+  explX = explained_variance(X, result$variates$X, ncomp)
+  result$explained_variance = explX
 
   return(invisible(result))
 }
@@ -244,7 +286,8 @@
 #' fun = c("logcosh", "exp", "kur"), scale = FALSE, w.init = NULL,
 #' max.iter = 200, tol = 1e-04)
 #' @export
-setGeneric('ipca', function (X, ncomp=2,...) standardGeneric('ipca'))
+setGeneric('ipca', function(X, ncomp = 2, ...)
+  standardGeneric('ipca'))
 
 ####################################################################################
 ## ---------- Methods
@@ -257,15 +300,22 @@ setMethod('ipca', 'ANY', .ipca)
 #' @importFrom SummarizedExperiment assay assays
 #' @rdname ipca
 #' @export
-setMethod('ipca', 'MultiAssayExperiment', function(X, ncomp=2,..., assay=NULL){
+setMethod('ipca', 'MultiAssayExperiment', function(X,
+                                                   ncomp = 2,
+                                                   ...,
+                                                   assay = NULL) {
   ## refer to pca for code details
-  if(!assay %in% tryCatch(names(assays(X)), error=function(e)e)) .inv_assay()
+  if (!assay %in% tryCatch(
+    names(assays(X)),
+    error = function(e)
+      e))
+    .inv_assay()
   ml <- match.call()
   ml[[1L]] <- quote(ipca)
   mli <- ml
   mli[[1L]] <- quote(.ipca)
   arg.ind <- match(names(formals(.ipca)), names(mli), 0L)
-  mli <- mli[c(1L,arg.ind)]
+  mli <- mli[c(1L, arg.ind)]
   mli[['X']] <- t(assay(X, assay))
   result <- eval(mli, parent.frame())
   result[["call"]] <- ml
