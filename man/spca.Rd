@@ -19,7 +19,7 @@ logratio = c('none','CLR'), multilevel = NULL)
 \arguments{
 \item{X}{A numeric matrix (or data frame) which provides the data for the
 principal components analysis. It can contain missing values.
-Alternatively, a \code{MultiAssayExperiment} object.}
+Alternatively, name of an assay from \code{data}.}
 
 \item{ncomp}{Integer, if data is complete \code{ncomp} decides the number of
 components and associated eigenvalues to display from the \code{pcasvd}
@@ -29,8 +29,6 @@ NIPALS algorithm. If \code{NULL}, function sets \code{ncomp = min(nrow(X),
 ncol(X))}.}
 
 \item{...}{currently ignored.}
-
-\item{assay}{Name or index of an assay from \code{X}.}
 
 \item{keepX}{numeric vector of length ncomp, the number of variables to keep.}
 

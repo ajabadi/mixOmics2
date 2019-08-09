@@ -76,3 +76,31 @@
     stop("there is more than one match in 'match.arg'")
   choices[i]
 }
+
+## get a call list including (data = data, X = assay) and check if both are valid
+#' @importFrom SummarizedExperiment assay assays
+.check_data_assay <- function(mc, ## the call
+                              vcs = c("MultiAssayExperiment", ## valid classes for 'data'
+                                      "SummarizedExperiment",
+                                      "SingleCellExperiment")){
+  data <- eval.parent(mc$data, 2L)
+  X <-    eval.parent(mc$X, 2L)
+  ## check that data is provided
+  if (missing(data) || is.null(data)) {
+    .stop(.subclass = "inv_data",
+          "'X' is character but 'data' containing 'X' assay not provided. See ?pca.")
+
+    ## check it is of valid class
+  } else if ( !class(try(data)) %in%  vcs) {
+    .stop(.subclass = "inv_data",
+          message = paste0("'data' must be of class: ",
+                                       paste0(vcs, collapse = ", or ")))
+  }
+
+  ## if X is not a valid assay throw appropriate error
+  if (!X %in% tryCatch(names(assays(data)), error = function(e) e)) {
+    .stop(.subclass = "inv_assay",
+    message = "'X' is not a valid assay name from 'data', it should be one of: ",
+    paste0(names(assays(data)), collapse = ", "))
+  }
+}

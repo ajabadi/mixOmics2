@@ -6,8 +6,6 @@
  arg.call = match.call()
  ## match or set the multi-choice arguments
  arg.call$logratio <- logratio <- .matchArg(logratio)
- #-- check that the user did not enter extra arguments
- user.arg = names(arg.call)[-1]
 
  err = tryCatch(mget(names(formals()), sys.frame(sys.nframe())),
                 error = function(e) e)
@@ -255,8 +253,8 @@
 ## ----------------------------------- Parameters
 #' @param X A numeric matrix (or data frame) which provides the data for the
 #' principal components analysis. It can contain missing values.
-#' Alternatively, a \code{MultiAssayExperiment} object.
-#' @param assay Name or index of an assay from \code{X}.
+#' Alternatively, name of an assay from \code{data}.
+#' @param data  An object of class \code{MultiAssayExperiment} or similar. See Details.
 #' @param ncomp Integer, if data is complete \code{ncomp} decides the number of
 #' components and associated eigenvalues to display from the \code{pcasvd}
 #' algorithm and if the data has missing values, \code{ncomp} gives the number
@@ -297,7 +295,11 @@
 #' matrix), also called the principal components.} \item{variates}{same as 'x'
 #' to keep the mixOmics spirit} \item{center, scale}{the centering and scaling
 #' used, or \code{FALSE}.} \item{explained_variance}{explained variance from
-#' the multivariate model, used for plotIndiv}
+#' the multivariate model, used for plotIndiv}.
+#' \code{pca} can take numeric matrices/data.frames as \code{X},
+#' or \code{data} of class \code{MultiAssayExperiment} (or any other class that inherits
+#' from \code{SummarizedExperiment} class for which the following methods are defined:
+#' \code{assay}, \code{assays}, and \code{colData}).
 
 ## ----------------------------------- Misc
 #' @author Florian Rohart, Kim-Anh Lê Cao, Ignacio González, Al J Abadi
@@ -321,54 +323,31 @@
 #' @example examples/pca-example.R
 ####################################################################################
 ## ---------- Generic
-## DOC NOTE:
-## For better documentation, I manually demonstrate the usage of the 'ANY' signature
-## in the generic section.
-## The reason is, as is, you'll get the first usage for the generic with (X, ncomp, ...)
-## which is really not informative. At the same time, you can't just not document the
-## generic as oit HAS to come before the methods and defines the name of the function
-## to document. So by doing this, we're poiting roxygen2 to the right name for the
-## .Rd file, while showing the right usage form.
-## If only there was a workaround to get the full IDE arg suggestions too!
-## It is possible to repeat all args and no '...', but any change will be a nightmare.
-
 #' @param ... Aguments passed to the generic.
-#' @usage \S4method{pca}{ANY}(X, ncomp = 2, center = TRUE, scale = FALSE, max.iter = 500,
-#' tol = 1e-09, logratio = c('none','CLR','ILR'), ilr.offset = 0.001,
-#' V = NULL, multilevel = NULL)
 #' @export
-setGeneric('pca', function (X, ncomp=2,...) standardGeneric('pca'))
+pca <- function(X=NULL, data=NULL, ncomp=2, ...) UseMethod('pca')
 
 ####################################################################################
 ## ---------- Methods
 
-## ----------------------------------- ANY
-#' @export
-setMethod('pca', 'ANY', .pca)
-
-## ----------------------------------- MultiAssayExperiment
-#' @importFrom SummarizedExperiment assay assays
+## ----------------------------------- X=matrix
 #' @rdname pca
 #' @export
-setMethod('pca', 'MultiAssayExperiment', function(X, ncomp=2,..., assay=NULL){
-  ## if assay is not valid throw appropriate error
-  if(!assay %in% tryCatch(names(assays(X)), error=function(e)e)) .inv_assay()
-  ## match the call and change the call name from '.local' to 'pca' for output
-  ml <- match.call()
-  ml[[1L]] <- quote(pca)
-  ## get a copy to alter the call for internal call's use
-  mli <- ml
-  mli[[1L]] <- quote(.pca)
-  ## get the indices of call args that match the internal args and re-order mc
-  ## by doing this, we delibrately drop the 'assay' or any other non-internal args as well
-  arg.ind <- match(names(formals(.pca)), names(mli), 0L)
-  ## put the internal name in mli call object and sort the args in internal's order
-  mli <- mli[c(1L,arg.ind)]
-  ## change X to the transpose of the assay matrix
-  mli[['X']] <- t(assay(X, assay))
-  ## evaluate the call in the parent.frame and return
-  result <- eval(mli, parent.frame())
-  ## change the 'call' slot in the output list to the method call
-  result[["call"]] <- ml
-  return(result)
-})
+pca.default <- .pca
+
+## ----------------------------------- X= assay name from data
+#' @rdname pca
+#' @export
+pca.character <- function(X=NULL, data=NULL, ncomp=2, ...){
+   mc <- match.call()
+   .check_data_assay(mc)
+   mc[-1L] <- lapply(mc[-1L], eval.parent)
+   mcr <- mc ## to return as output
+   mcr[[1L]] <- quote(pca) ## returned call to have 'pca' as function
+   mc$X <- t(assay(data, X)) ## change X into matrix of assay name
+   mc$data <- NULL ## remove data as not needed in internal
+   mc[[1L]] <- quote(.pca) ## add internal to the call's function
+   result <- eval(mc) ## evaluate the call
+   result$call <- mcr ## replace the returned call from internal by the current one
+   return(result)
+}

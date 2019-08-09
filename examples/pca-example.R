@@ -12,7 +12,7 @@ biplot(pca.res, xlabs = multidrug$cell.line$Class, cex = 0.7)
 
 ## example with MultiAssayExperiment class
 ## --------------------------------
-pca.res <- pca(multidrug.mae, assay='ABC.trans', ncomp = 4, scale = TRUE)
+pca.res <- pca(data = multidrug.mae, X = 'ABC.trans', ncomp = 4, scale = TRUE)
 plot(pca.res)
 print(pca.res)
 biplot(pca.res, xlabs = multidrug$cell.line$Class, cex = 0.7)
