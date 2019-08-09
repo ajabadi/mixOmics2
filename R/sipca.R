@@ -1,113 +1,170 @@
 ####################################################################################
 ## ---------- internal
-.sipca <- function (X, ncomp  = 3, mode = c("deflation","parallel"),
-            fun = c("logcosh", "exp"), scale = FALSE, max.iter = 200,
-            tol = 1e-04, keepX = rep(50,ncomp), w.init = NULL)
+.sipca <- function(X,
+                    ncomp  = 3,
+                    mode = c("deflation", "parallel"),
+                    fun = c("logcosh", "exp"),
+                    scale = FALSE,
+                    max.iter = 200,
+                    tol = 1e-04,
+                    keepX = NULL,
+                    w.init = NULL) {
+  mode <- .matchArg(mode)
+  fun <- .matchArg(fun)
+
+  dim_x <- dim(X)
+  d <- dim_x[dim_x != 1]
+  if (length(d) != 2)
+    stop("data must be in a matrix form")
+  X <- if (length(d) != length(dim_x))
   {
-    cl = match.call()
-    cl[[1]] = as.name('sipca')
+    matrix(X, d[1], d[2])
+  }
+  else {
+    as.matrix(X)
+  }
 
-    dim_x <- dim(X)
-    d <- dim_x[dim_x != 1]
-    if (length(d) != 2)
-      stop("data must be in a matrix form")
-    X <- if (length(d) != length(dim_x))
-    {matrix(X, d[1], d[2])}
-    else {as.matrix(X)}
+  alpha <- 1
 
-    alpha <- 1
+  X.names = dimnames(X)[[2]]
+  if (is.null(X.names))
+    X.names = paste("X", 1:ncol(X), sep = "")
 
-    mode <- .matchArg(mode)
-    fun <- .matchArg(fun)
+  ind.names = dimnames(X)[[1]]
+  if (is.null(ind.names))
+    ind.names = 1:nrow(X)
 
-    X.names = dimnames(X)[[2]]
-    if (is.null(X.names)) X.names = paste("X", 1:ncol(X), sep = "")
+  X <- scale(X, scale = FALSE)
+  if (scale) {
+    X = scale(X, scale = scale)
+  }
+  svd_mat <- svd(X)
+  right_sing_vect <- svd_mat$v
+  right_sing_vect <- scale(right_sing_vect, center = TRUE, scale = TRUE)
+  n <- nrow(t(X))
+  p <- ncol(t(X))
 
-    ind.names = dimnames(X)[[1]]
-    if (is.null(ind.names)) ind.names = 1:nrow(X)
+  if (ncomp > min(n, p)) {
+    message("'ncomp' is too large: reset to ", min(n, p))
+    ncomp <- min(n, p)
+  }
+  if (is.null(w.init))
+    w.init <- matrix(1 / sqrt(ncomp), ncomp, ncomp)
+  else {
+    if (!is.matrix(w.init) || length(w.init) != (ncomp ^ 2))
+      stop("w.init is not a matrix or is the wrong size")
+  }
 
-    X <- scale(X, scale = FALSE)
-    if (scale) {X=scale(X, scale=scale)}
-    svd_mat <- svd(X)
-    right_sing_vect <- svd_mat$v
-    right_sing_vect <- scale(right_sing_vect, center=TRUE, scale=TRUE)
-    n <- nrow(t(X))
-    p <- ncol(t(X))
+  X1 <- t(right_sing_vect)[1:ncomp, ]
 
-    if (ncomp > min(n, p)) {
-      message("'ncomp' is too large: reset to ", min(n, p))
-      ncomp <- min(n, p)
+  if (mode == "deflation") {
+    unmix_mat <- ica.def(
+      X1,
+      ncomp,
+      tol = tol,
+      fun = fun,
+      alpha = alpha,
+      max.iter = max.iter,
+      verbose = FALSE,
+      w.init = w.init
+    )
+  }
+  else if (mode == "parallel") {
+    unmix_mat <- ica.par(
+      X1,
+      ncomp,
+      tol = tol,
+      fun = fun,
+      alpha = alpha,
+      max.iter = max.iter,
+      verbose = FALSE,
+      w.init = w.init
+    )
+  }
+  w <- unmix_mat
+  independent_mat <- w %*% X1
+  #==order independent_mat by kurtosis==#
+  kurt <- vector(length = ncomp)
+  independent_mat.new <- matrix(nrow = ncomp, ncol = n)
+  for (h in 1:ncomp) {
+    kurt[h] <-
+      (mean(independent_mat[h, ] ^ 4) - 3 * (mean(independent_mat[h, ] ^ 2)) ^
+         2)
+  }
+  for (i in 1:ncomp) {
+    independent_mat.new[i, ] <-
+      independent_mat[order(kurt, decreasing = TRUE)[i], ]
+    independent_mat.new[i, ] <-
+      independent_mat.new[i, ] / as.vector(crossprod(independent_mat.new[i, ]))
+  }
+
+  #== variable selection==#
+  v.sparse = matrix(nrow = ncomp, ncol = n)
+  for (i in 1:ncomp) {
+    nx <- n - keepX[i]
+    v.sparse[i,] = ifelse(
+      abs(independent_mat.new[i,]) > abs(independent_mat.new[i,][order(abs(independent_mat.new[i,]))][nx]),
+      (abs(independent_mat.new[i,]) - abs(independent_mat.new[i,][order(abs(independent_mat.new[i,]))][nx])) * sign(independent_mat.new[i,]),
+      0
+    )
+  }
+  independent_mat.new = v.sparse
+
+
+  mix_mat <- t(w) %*% solve(w %*% t(w))
+
+  ipc_mat = matrix(nrow = p, ncol = ncomp)
+  ipc_mat = X %*% t(independent_mat.new)
+  ##== force orthogonality ==##
+  for (h in 1:ncomp) {
+    if (h == 1) {
+      ipc_mat[, h] = X %*% (t(independent_mat.new)[, h])
     }
-    if(is.null(w.init))
-      w.init <- matrix(1/sqrt(ncomp),ncomp,ncomp)
-    else {
-      if(!is.matrix(w.init) || length(w.init) != (ncomp^2))
-        stop("w.init is not a matrix or is the wrong size")
+    if (h > 1) {
+      ipc_mat[, h] = (lsfit(y = X %*% (t(
+        independent_mat.new
+      )[, h]), ipc_mat[, 1:(h - 1)], intercept = FALSE)$res)
     }
+    ipc_mat[, h] = ipc_mat[, h] / as.vector(sqrt(crossprod(ipc_mat[, h])))
+  }
+  ##== force over ==##
+  # put rownames of loading vectors
+  colnames(independent_mat.new) = colnames(X)
 
-    X1 <- t(right_sing_vect)[1:ncomp,]
+  {
+    ## keeping this for the exported generic's benefit, but is not necessary as far as methods are concerned
+    mcr = match.call() ## match call for returning
+    mcr[[1]] = as.name('sipca')
+    mcr[-1L] <- lapply(mcr[-1L], eval.parent)
+  }
 
-    if (mode == "deflation") {
-      unmix_mat <- ica.def(X1, ncomp, tol = tol, fun = fun,
-                           alpha = alpha, max.iter = max.iter, verbose = FALSE, w.init = w.init)
-    }
-    else if (mode == "parallel") {
-      unmix_mat <- ica.par(X1, ncomp, tol = tol, fun = fun,
-                           alpha = alpha, max.iter = max.iter, verbose = FALSE, w.init = w.init)
-    }
-    w <- unmix_mat
-    independent_mat <- w %*% X1
-    #==order independent_mat by kurtosis==#
-    kurt <- vector(length=ncomp)
-    independent_mat.new <- matrix(nrow = ncomp, ncol = n)
-    for(h in 1:ncomp){
-      kurt[h] <- (mean(independent_mat[h,]^4)-3*(mean(independent_mat[h,]^2))^2)
-    }
-    for(i in 1:ncomp){
-      independent_mat.new[i,] <- independent_mat[order(kurt,decreasing=TRUE)[i],]
-      independent_mat.new[i,] <- independent_mat.new[i,]/as.vector(crossprod(independent_mat.new[i,]))
-    }
-
-    #== variable selection==#
-    v.sparse=matrix(nrow = ncomp, ncol = n)
-    for(i in 1:ncomp){
-      nx <- n - keepX[i]
-      v.sparse[i,] = ifelse(abs(independent_mat.new[i,]) > abs(independent_mat.new[i,][order(abs(independent_mat.new[i,]))][nx]),
-                            (abs(independent_mat.new[i,]) - abs(independent_mat.new[i,][order(abs(independent_mat.new[i,]))][nx])) * sign(independent_mat.new[i,]), 0)
-    }
-    independent_mat.new = v.sparse
+  result = (
+    list(
+      call = mcr,
+      X = X,
+      ncomp = ncomp,
+      keepX = keepX,
+      unmixing = t(unmix_mat),
+      mixing = t(mix_mat),
+      loadings = list(X = t(independent_mat.new)),
+      rotation = t(independent_mat.new),
+      kurtosis = kurt[order(kurt, decreasing = TRUE)],
+      names = list(X = X.names, sample = ind.names)
+    )
+  )
 
 
-    mix_mat <- t(w) %*% solve(w %*% t(w))
+  result$x = ipc_mat
+  result$variates = list(X = ipc_mat)
+  dimnames(result$x) = list(ind.names, paste("IPC", 1:ncol(result$rotation), sep = " "))
 
-    ipc_mat = matrix(nrow=p, ncol=ncomp)
-    ipc_mat = X %*% t(independent_mat.new)
-    ##== force orthogonality ==##
-    for(h in 1:ncomp){
-      if(h==1){ipc_mat[,h]=X %*% (t(independent_mat.new)[,h])}
-      if(h>1){ipc_mat[,h]=(lsfit(y=X%*%(t(independent_mat.new)[,h]), ipc_mat[,1:(h-1)],intercept=FALSE)$res)}
-      ipc_mat[,h]=ipc_mat[,h]/as.vector(sqrt(crossprod(ipc_mat[,h])))
-    }
-    ##== force over ==##
-    # put rownames of loading vectors
-    colnames(independent_mat.new) = colnames(X)
+  class(result) = c("sipca", "ipca", "pca")
 
-    result = (list(call=cl, X = X, ncomp=ncomp, keepX=keepX, unmixing = t(unmix_mat), mixing = t(mix_mat), loadings = list(X=t(independent_mat.new)), rotation = t(independent_mat.new),
-                   kurtosis = kurt[order(kurt,decreasing=TRUE)],names = list(X = X.names, sample = ind.names)))
+  #calcul explained variance
+  explX = explained_variance(X, result$variates$X, ncomp)
+  result$explained_variance = explX
 
-    result$x = ipc_mat
-    result$variates=list(X=ipc_mat)
-    dimnames(result$x) = list(ind.names, paste("IPC", 1:ncol(result$rotation), sep = " "))
-
-    class(result) = c("sipca","ipca","pca")
-
-    #calcul explained variance
-    explX=explained_variance(X,result$variates$X,ncomp)
-    result$explained_variance=explX
-
-
-
-    return(invisible(result))
+  return(invisible(result))
   }
 #' @title Independent Principal Component Analysis
 #'
@@ -152,35 +209,22 @@
 
 ####################################################################################
 ## ---------- Generic
-#' @param ... aguments passed to the generic.
-#' @usage \S4method{sipca}{ANY}X, ncomp  = 3, mode = c("deflation","parallel"),
-#' fun = c("logcosh", "exp"), scale = FALSE, max.iter = 200,
-#' tol = 1e-04, keepX = rep(50,ncomp), w.init = NULL)
+#' @param ... Aguments passed to the generic.
 #' @export
-setGeneric('sipca', function (X, ncomp=2,...) standardGeneric('sipca'))
+sipca <- function(X=NULL, data=NULL, ncomp=2, keepX=NULL, ...) UseMethod('sipca')
 
 ####################################################################################
 ## ---------- Methods
 
-## ----------------------------------- ANY
-#' @export
-setMethod('sipca', 'ANY', .sipca)
-
-## ----------------------------------- MultiAssayExperiment
-#' @importFrom SummarizedExperiment assay assays
+## ----------------------------------- X=matrix
 #' @rdname sipca
 #' @export
-setMethod('sipca', 'MultiAssayExperiment', function(X, ncomp=2,..., assay=NULL){
-  ## refer to pca for code details
-  if(!assay %in% tryCatch(names(assays(X)), error=function(e)e)) .inv_assay()
-  ml <- match.call()
-  ml[[1L]] <- quote(sipca)
-  mli <- ml
-  mli[[1L]] <- quote(.sipca)
-  arg.ind <- match(names(formals(.sipca)), names(mli), 0L)
-  mli <- mli[c(1L,arg.ind)]
-  mli[['X']] <- t(assay(X, assay))
-  result <- eval(mli, parent.frame())
-  result[["call"]] <- ml
-  return(result)
-})
+sipca.default <- .sipca
+
+## ----------------------------------- X= assay name from data
+#' @importFrom SummarizedExperiment assay
+#' @rdname sipca
+#' @export
+sipca.character <- function(X=NULL, data=NULL, ncomp=2, keepX=NULL, ...){
+  .helper_pca(match.call(), fun = 'sipca')
+}

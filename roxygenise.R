@@ -3,7 +3,7 @@
 roxygen2::roxygenise()
 ############# load the pks to access functions
 devtools::load_all()
-fun = 'pca'
+fun = 'spca'
 # fun=NULL
 if (!is.null(fun)) {
   source(sprintf('tests/testthat/test-%s.R', fun))

@@ -51,7 +51,7 @@ squote <- function(char) paste0("'",char,"'")
 #' @importFrom SummarizedExperiment assays
 #' @importFrom SummarizedExperiment assay
 
-names2mat <- function(mc, mcc){ ## mc is list(data=MAE, X=X_name, Y=Y_name)
+.names2mat <- function(mc, mcc){ ## mc is list(data=MAE, X=X_name, Y=Y_name)
   tryCatch({
     if(any(class(c(mc$X, mc$Y))!="character")) stop("mc must have character X and Y", call. = FALSE)
   }, error=function(e) message("oops! something went wrong! please check X and Y again or contact us if you had no luck!"))
@@ -104,7 +104,7 @@ names2mat <- function(mc, mcc){ ## mc is list(data=MAE, X=X_name, Y=Y_name)
 .getXY <- function(mc){
   mc[c('data', 'formula')]<- lapply( mc[c('data', 'formula')], eval.parent)
   mc$formula <- eval.parent(mc$formula)
-  mcc <- mc ## copy so can change mc but keep the call for names2mat
+  mcc <- mc ## copy so can change mc but keep the call for .names2mat
   # expectedArgs <- c('X', 'Y', 'formula', 'data')
   # mc[expectedArgs] <- lapply(mc[expectedArgs], eval.parent)
   ## function to check formula's class and ensure non-NULL X and Y are not provided with it
@@ -131,7 +131,7 @@ names2mat <- function(mc, mcc){ ## mc is list(data=MAE, X=X_name, Y=Y_name)
     if(class(try(mc$formula))!="NULL"){
       .sformula_checker(mc=mc)
       mc[c("X", "Y")] <- as.character(as.list(mc$formula)[3:2])
-      mc <- names2mat(mc, mcc)
+      mc <- .names2mat(mc, mcc)
     }
     ##--------------- if data & formula=NULL
     else {
@@ -143,7 +143,7 @@ names2mat <- function(mc, mcc){ ## mc is list(data=MAE, X=X_name, Y=Y_name)
       ## ensure it is a single character
       if(any(sapply( mc[c("X", "Y")], length)!=1))
         .stop("inv_xy", "'X' and 'Y' must be assay names from 'data'")
-      mc <- names2mat(mc, mcc)
+      mc <- .names2mat(mc, mcc)
     }
     # ##--- if data, X and Y , expect X and Y to be assays and change them to matrices
     # else if(class(try(mc$formula))!="NULL"){
@@ -182,3 +182,16 @@ names2mat <- function(mc, mcc){ ## mc is list(data=MAE, X=X_name, Y=Y_name)
 #   result <- eval(ml, parent.frame())
 #   return(result)
 # }
+
+.helper_pca <- function(mc, fun='pca'){
+  .check_data_assay(mc)
+  mc[-1L] <- lapply(mc[-1L], function(x) eval.parent(x, n = 2))
+  mcr <- mc ## to return as output
+  mcr[[1L]] <- as.name(fun) ## returned call to have 'pca' as function
+  mc$X <- t(assay(mc$data, mc$X)) ## change X into matrix of assay name
+  mc$data <- NULL ## remove data as not needed in internal
+  mc[[1L]] <- as.name(sprintf(".%s", fun)) ## add internal to the call's function
+  result <- eval.parent(mc) ## evaluate the call
+  result$call <- mcr ## replace the returned call from internal by the current one
+  return(result)
+}

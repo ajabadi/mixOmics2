@@ -8,10 +8,9 @@
                  w.init = NULL,
                  max.iter = 200,
                  tol = 1e-04) {
-  arg.call = match.call()
-  ## match or set the multi-choice arguments
-  mode <- arg.call$mode <- .matchArg(mode)
-  fun <- arg.call$fun <- .matchArg(fun)
+
+  mode <- .matchArg(mode)
+  fun <- .matchArg(fun)
   #-- X matrix
   if (is.data.frame(X))
     X = as.matrix(X)
@@ -115,7 +114,6 @@
   #-- end checking --#
   #------------------#
 
-
   #-- ipca approach ----------------------------------------------------------#
   #---------------------------------------------------------------------------#
 
@@ -185,11 +183,15 @@
   dimnames(S) = list(X.names, paste("IPC", 1:ncol(S), sep = ""))
   dimnames(ipc) = list(ind.names, paste("IPC", 1:ncol(ipc), sep = ""))
 
-  cl = match.call()
-  cl[[1]] = as.name('ipca')
+  {
+    ## keeping this for the exported generic's benefit, but is not necessary as far as methods are concerned
+    mcr = match.call() ## match call for returning
+    mcr[[1]] = as.name('ipca')
+    mcr[-1L] <- lapply(mcr[-1L], eval.parent)
+  }
 
   result = list(
-    call = cl,
+    call = mcr,
     X = X,
     ncomp = ncomp,
     x = ipc,
@@ -281,43 +283,22 @@
 
 ####################################################################################
 ## ---------- Generic
-#' @param ... aguments passed to the generic.
-#' @usage \S4method{ipca}{ANY}X, ncomp = 2,  mode = c("deflation","parallel"),
-#' fun = c("logcosh", "exp", "kur"), scale = FALSE, w.init = NULL,
-#' max.iter = 200, tol = 1e-04)
+#' @param ... Aguments passed to the generic.
 #' @export
-setGeneric('ipca', function(X, ncomp = 2, ...)
-  standardGeneric('ipca'))
+ipca <- function(X=NULL, data=NULL, ncomp=2, keepX=NULL, ...) UseMethod('ipca')
 
 ####################################################################################
 ## ---------- Methods
 
-## ----------------------------------- ANY
-#' @export
-setMethod('ipca', 'ANY', .ipca)
-
-## ----------------------------------- MultiAssayExperiment
-#' @importFrom SummarizedExperiment assay assays
+## ----------------------------------- X=matrix
 #' @rdname ipca
 #' @export
-setMethod('ipca', 'MultiAssayExperiment', function(X,
-                                                   ncomp = 2,
-                                                   ...,
-                                                   assay = NULL) {
-  ## refer to pca for code details
-  if (!assay %in% tryCatch(
-    names(assays(X)),
-    error = function(e)
-      e))
-    .inv_assay()
-  ml <- match.call()
-  ml[[1L]] <- quote(ipca)
-  mli <- ml
-  mli[[1L]] <- quote(.ipca)
-  arg.ind <- match(names(formals(.ipca)), names(mli), 0L)
-  mli <- mli[c(1L, arg.ind)]
-  mli[['X']] <- t(assay(X, assay))
-  result <- eval(mli, parent.frame())
-  result[["call"]] <- ml
-  return(result)
-})
+ipca.default <- .ipca
+
+## ----------------------------------- X= assay name from data
+#' @importFrom SummarizedExperiment assay
+#' @rdname ipca
+#' @export
+ipca.character <- function(X=NULL, data=NULL, ncomp=2, keepX=NULL, ...){
+  .helper_pca(match.call(), fun = 'ipca')
+}

@@ -1,11 +1,16 @@
 ####################################################################################
 ## ---------- internal
-.spca <- function(X, ncomp = 2, center = TRUE, scale = TRUE,
-                  keepX = rep(ncol(X), ncomp),max.iter = 500, tol = 1e-06,
-                  logratio = c('none','CLR'), multilevel = NULL) {
-  arg.call = match.call()
-  ## match or set the multi-choice arguments
-  arg.call$logratio <- logratio <- .matchArg(logratio)
+.spca <- function(X,
+                  ncomp = 2,
+                  center = TRUE,
+                  scale = TRUE,
+                  keepX = NULL,
+                  max.iter = 500,
+                  tol = 1e-06,
+                  logratio = c('none', 'CLR'),
+                  multilevel = NULL) {
+
+  logratio <- .matchArg(logratio)
   #-- check that the user did not enter extra arguments
   user.arg = names(arg.call)[-1]
 
@@ -111,14 +116,12 @@
   #-- multilevel approach ----------------------------------------------------#
   #---------------------------------------------------------------------------#
 
-
   #--scaling the data--#
   X=scale(X,center=center,scale=scale)
   cen = attr(X, "scaled:center")
   sc = attr(X, "scaled:scale")
   if (any(sc == 0))
     stop("cannot rescale a constant/zero column to unit variance.")
-
 
   #--initialization--#
   X=as.matrix(X)
@@ -203,15 +206,11 @@
       loadings.old = loadings
 
     }
-
-
-
     #v.final = v.new/sqrt(drop(crossprod(v.new)))
 
     #--deflation of data--#
     c = crossprod(X.temp, u) / drop(crossprod(u))
     X.temp= X.temp - u %*% t(c)  #svd.X$d[1] * svd.X$u[,1] %*% t(svd.X$v[,1])
-
 
     vect.iter[h] = iter
     mat.v[,h] = loadings
@@ -224,28 +223,32 @@
     # KA: to add if biplot function (but to be fixed!)
     #sdev[h] = sqrt(svd.X$d[1])
 
-
   }#fin h
 
   rownames(mat.u) = ind.names
+  {
+    ## keeping this for the exported generic's benefit, but is not necessary as far as methods are concerned
+    mcr = match.call() ## match call for returning
+    mcr[[1]] = as.name('spca')
+    mcr[-1L] <- lapply(mcr[-1L], eval.parent)
+  }
 
-  cl = match.call()
-  cl[[1]] = as.name('spca')
-
-  result = (list(call = cl, X = X,
-                 ncomp = ncomp,
-                 #sdev = sdev,  # KA: to add if biplot function (but to be fixed!)
-                 #center = center, # KA: to add if biplot function (but to be fixed!)
-                 #scale = scale,   # KA: to add if biplot function (but to be fixed!)
-                 varX = vect.varX/sum(X^2),
-                 keepX = vect.keepX,
-                 iter = vect.iter,
-                 rotation = mat.v,
-                 x = mat.u,
-                 names = list(X = X.names, sample = ind.names),
-                 loadings = list(X = mat.v),
-                 variates = list(X = mat.u)
-  ))
+  result = list(
+    call = mcr,
+    X = X,
+    ncomp = ncomp,
+    #sdev = sdev,  # KA: to add if biplot function (but to be fixed!)
+    #center = center, # KA: to add if biplot function (but to be fixed!)
+    #scale = scale,   # KA: to add if biplot function (but to be fixed!)
+    varX = vect.varX / sum(X ^ 2),
+    keepX = vect.keepX,
+    iter = vect.iter,
+    rotation = mat.v,
+    x = mat.u,
+    names = list(X = X.names, sample = ind.names),
+    loadings = list(X = mat.v),
+    variates = list(X = mat.u)
+  )
 
   class(result) = c("spca", "prcomp", "pca")
 
@@ -305,6 +308,7 @@
 #' vector.} \item{iter}{the number of iterations needed to reach convergence
 #' for each component.} \item{rotation}{the matrix containing the sparse
 #' loading vectors.} \item{x}{the matrix containing the principal components.}
+#' Refer to \code{pca} for different type of inputs supported.
 
 ## ----------------------------------- Misc
 #' @author Ignacio Gonzalez, Kim-Anh Lê Cao, Fangzhou Yao, Al J Abadi
@@ -317,44 +321,22 @@
 #' @example examples/spca-example.R
 ####################################################################################
 ## ---------- Generic
-#' @param ... currently ignored.
-#' @usage {spca}{default}(X, assay=NULL, ncomp = 2, center = TRUE, scale = TRUE,
-#'keepX = rep(ncol(X), ncomp), max.iter = 500, tol = 1e-06, logratio = 'none',
-#'multilevel = NULL)
+#' @param ... Aguments passed to the generic.
 #' @export
-setGeneric('spca', function (X, ncomp=2, keepX, ...) standardGeneric('spca'))
-
-####################################################################################
-## ---------- Generic
-#' @param ... aguments passed to the generic.
-#' @usage \S4method{spca}{ANY}X, ncomp = 2, center = TRUE, scale = TRUE,
-#' keepX = rep(ncol(X), ncomp),max.iter = 500, tol = 1e-06,
-#' logratio = c('none','CLR'), multilevel = NULL)
-#' @export
-setGeneric('spca', function (X, ncomp=2,...) standardGeneric('spca'))
+spca <- function(X=NULL, data=NULL, ncomp=2, keepX=NULL, ...) UseMethod('spca')
 
 ####################################################################################
 ## ---------- Methods
 
-## ----------------------------------- ANY
-#' @export
-setMethod('spca', 'ANY', .spca)
-
-## ----------------------------------- MultiAssayExperiment
-#' @importFrom SummarizedExperiment assay assays
+## ----------------------------------- X=matrix
 #' @rdname spca
 #' @export
-setMethod('spca', 'MultiAssayExperiment', function(X, ncomp=2,..., assay=NULL){
-  ## refer to pca for code details
-  if(!assay %in% tryCatch(names(assays(X)), error=function(e)e)) .inv_assay()
-  ml <- match.call()
-  ml[[1L]] <- quote(spca)
-  mli <- ml
-  mli[[1L]] <- quote(.spca)
-  arg.ind <- match(names(formals(.sipca)), names(mli), 0L)
-  mli <- mli[c(1L,arg.ind)]
-  mli[['X']] <- t(assay(X, assay))
-  result <- eval(mli, parent.frame())
-  result[["call"]] <- ml
-  return(result)
-})
+spca.default <- .spca
+
+## ----------------------------------- X= assay name from data
+#' @importFrom SummarizedExperiment assay
+#' @rdname spca
+#' @export
+spca.character <- function(X=NULL, data=NULL, ncomp=2, keepX=NULL, ...){
+  .helper_pca(match.call(), fun = 'spca')
+}

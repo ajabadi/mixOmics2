@@ -1,15 +1,19 @@
 ####################################################################################
 ## ---------- internal
-.pca <- function(X, ncomp = 2, center = TRUE, scale = FALSE, max.iter = 500,
-                 tol = 1e-09, logratio = c('none','CLR','ILR'), ilr.offset = 0.001,
-                 V = NULL, multilevel = NULL){
- arg.call = match.call()
- ## match or set the multi-choice arguments
- arg.call$logratio <- logratio <- .matchArg(logratio)
+.pca <- function(X,
+                 ncomp = 2,
+                 center = TRUE,
+                 scale = FALSE,
+                 max.iter = 500,
+                 tol = 1e-09,
+                 logratio = c('none', 'CLR', 'ILR'),
+                 ilr.offset = 0.001,
+                 V = NULL,
+                 multilevel = NULL) {
 
+ logratio <- .matchArg(logratio)
  err = tryCatch(mget(names(formals()), sys.frame(sys.nframe())),
                 error = function(e) e)
-
  if ("simpleError" %in% class(err))
    stop(err[[1]], ".", call. = FALSE)
 
@@ -90,7 +94,7 @@
  if (is.null(V) & logratio == "ILR") # back-transformation to clr-space, will be used later to recalculate loadings etc
    V = clr.backtransfo(X)
 
- X = logratio.transfo(X = X, logratio = logratio, offset = if(logratio == "ILR") {ilr.offset} else {0})
+ X = logratio.transfo(X = X, logratio = logratio, offset = if (logratio == "ILR") {ilr.offset} else {0})
 
  #as X may have changed
  if (ncomp > min(ncol(X), nrow(X)))
@@ -120,7 +124,6 @@
  }
  #-- multilevel approach ----------------------------------------------------#
  #---------------------------------------------------------------------------#
-
  X = scale(X, center = center, scale = scale)
  cen = attr(X, "scaled:center")
  sc = attr(X, "scaled:scale")
@@ -133,10 +136,13 @@
  na.X = FALSE
  if (any(is.na.X)) na.X = TRUE
  NA.X = any(is.na.X)
-
- cl = match.call()
- cl[[1]] = as.name('pca')
- result = list(call = cl, X = X, ncomp = ncomp,NA.X = NA.X,
+ {
+    ## keeping this for the exported generic's benefit, but is not necessary as far as methods are concerned
+    mcr = match.call() ## match call for returning
+    mcr[[1]] = as.name('pca')
+    mcr[-1L] <- lapply(mcr[-1L], eval.parent)
+ }
+ result = list(call = mcr, X = X, ncomp = ncomp,NA.X = NA.X,
                center = if (is.null(cen)) {FALSE} else {cen},
                scale = if (is.null(sc)) {FALSE} else {sc},
                names = list(X = X.names, sample = ind.names))
@@ -145,8 +151,7 @@
  #-- pca approach -----------------------------------------------------------#
  #---------------------------------------------------------------------------#
 
- if(logratio == 'CLR' | logratio=='none')
- {
+ if (logratio == 'CLR' | logratio == 'none') {
    #-- if there are missing values use NIPALS agorithm
    if (any(is.na.X))
    {
@@ -183,7 +188,7 @@
    } else {
      result$sdev = res$d / sqrt(max(1, nrow(X) - 1))
      result$rotation = V %*% res$v
-     result$x = res$u%*% diag(res$d)
+     result$x = res$u %*% diag(res$d)
    }
  }
 
@@ -191,19 +196,19 @@
  dimnames(result$rotation) = list(X.names, paste("PC", 1:ncol(result$rotation), sep = ""))
  dimnames(result$x) = list(ind.names, paste("PC", 1:ncol(result$x), sep = ""))
 
- result$var.tot=sum(X^2 / max(1, nrow(X) - 1))# same as all res$d, or variance after nipals replacement of the missing values
+ result$var.tot = sum(X ^ 2 / max(1, nrow(X) - 1))# same as all res$d, or variance after nipals replacement of the missing values
 
  # to be similar to other methods, add loadings and variates as outputs
- result$loadings = list(X=result$rotation)
- result$variates = list(X=result$x)
+ result$loadings = list(X = result$rotation)
+ result$variates = list(X = result$x)
 
  # output multilevel if needed
- if(!is.null(multilevel))
-   result=c(result, list(Xw = Xw, design = multilevel))
+ if (!is.null(multilevel))
+    result = c(result, list(Xw = Xw, design = multilevel))
 
- class(result) = c("pca","prcomp")
- if(!is.null(multilevel))
-   class(result)=c("mlpca",class(result))
+ class(result) = c("pca", "prcomp")
+ if (!is.null(multilevel))
+    class(result) = c("mlpca", class(result))
 
  #calcul explained variance
  result$explained_variance = result$sdev^2 / result$var.tot
@@ -336,18 +341,9 @@ pca <- function(X=NULL, data=NULL, ncomp=2, ...) UseMethod('pca')
 pca.default <- .pca
 
 ## ----------------------------------- X= assay name from data
+#' @importFrom SummarizedExperiment assay
 #' @rdname pca
 #' @export
 pca.character <- function(X=NULL, data=NULL, ncomp=2, ...){
-   mc <- match.call()
-   .check_data_assay(mc)
-   mc[-1L] <- lapply(mc[-1L], eval.parent)
-   mcr <- mc ## to return as output
-   mcr[[1L]] <- quote(pca) ## returned call to have 'pca' as function
-   mc$X <- t(assay(data, X)) ## change X into matrix of assay name
-   mc$data <- NULL ## remove data as not needed in internal
-   mc[[1L]] <- quote(.pca) ## add internal to the call's function
-   result <- eval(mc) ## evaluate the call
-   result$call <- mcr ## replace the returned call from internal by the current one
-   return(result)
+   .helper_pca(match.call(), fun = 'pca')
 }
