@@ -9,20 +9,18 @@
                  max.iter = 200,
                  tol = 1e-04) {
 
+  ## ----------------------------------- checks
   mode <- .matchArg(mode)
   fun <- .matchArg(fun)
-  #-- X matrix
-  if (is.data.frame(X))
-    X = as.matrix(X)
 
-  if (!is.matrix(X) || is.character(X))
-    stop("'X' must be a numeric matrix.", call. = FALSE)
+  mcd <- mget(names(formals()),sys.frame(sys.nframe())) ## match.call and defaults
+  err = tryCatch(mcd, error = function(e) e) ## see if arguments can be evaluated
+  if ("simpleError" %in% class(err))
+    stop(err[[1]], ".", call. = FALSE)
 
-  if (any(apply(X, 1, is.infinite)))
-    stop("infinite values in 'X'.", call. = FALSE)
-
-  if (any(is.na(X)))
-    stop("missing values in 'X'.", call. = FALSE)
+  ## check pca entries for match.call and defaults and do necessary adjustments to
+  ## arguments in this environement from within function
+  .pcaEntryChecker(mcd, check.keepX = FALSE, check.center = FALSE, check.NA = TRUE)
 
   nc = ncol(X)
   nr = nrow(X)
@@ -36,26 +34,7 @@
   if (is.null(ind.names))
     ind.names = 1:nr
 
-  #-- ncomp
-  if (is.null(ncomp) ||
-      !is.numeric(ncomp) || ncomp < 1 || !is.finite(ncomp))
-    stop("invalid value for 'ncomp'.", call. = FALSE)
-
-  ncomp = round(ncomp)
-
-  if (ncomp > min(nc, nr))
-    stop("use smaller 'ncomp'", call. = FALSE)
-
-  #-- scale
-  if (!is.logical(scale))
-  {
-    if (!is.numeric(scale) || (length(scale) != nc))
-      stop(
-        "'scale' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
-        call. = FALSE
-      )
-  }
-
+## ----------------------------------- scale
   X = scale(X, center = TRUE, scale = scale)
   sc = attr(X, "scaled:scale")
 
@@ -300,5 +279,5 @@ ipca.default <- .ipca
 #' @rdname ipca
 #' @export
 ipca.character <- function(X=NULL, data=NULL, ncomp=2, keepX=NULL, ...){
-  .helper_pca(match.call(), fun = 'ipca')
+  .pcaMethodsHelper(match.call(), fun = 'ipca')
 }

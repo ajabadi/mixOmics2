@@ -11,21 +11,19 @@
                  V = NULL,
                  multilevel = NULL) {
 
+## ----------------------------------- checks
  logratio <- .matchArg(logratio)
- err = tryCatch(mget(names(formals()), sys.frame(sys.nframe())),
-                error = function(e) e)
+ mcd <- mget(names(formals()),sys.frame(sys.nframe())) ## match.call and defaults
+ err = tryCatch(mcd, error = function(e) e) ## see if arguments can be evaluated
  if ("simpleError" %in% class(err))
    stop(err[[1]], ".", call. = FALSE)
 
- #-- X matrix
- if (is.data.frame(X))
-   X = as.matrix(X)
+ ## check pca entries for match.call and defaults and do necessary adjustments to
+ ## arguments in this environement from within function
+ .pcaEntryChecker(mcd, check.keepX = FALSE, check.center = TRUE, check.NA = FALSE)
 
- if (!is.matrix(X) || is.character(X))
-   stop("'X' must be a numeric matrix.", call. = FALSE)
-
- if (any(apply(X, 1, is.infinite)))
-   stop("infinite values in 'X'.", call. = FALSE)
+ if (logratio != "none" && any(X < 0))
+    stop("'X' contains negative values, you can not log-transform your data")
 
  #-- put a names on the rows and columns of X --#
  X.names = colnames(X)
@@ -35,79 +33,16 @@
  ind.names = rownames(X)
  if (is.null(ind.names))
    ind.names = 1:nrow(X)
-
- #-- ncomp
- if (is.null(ncomp))
-   ncomp = min(nrow(X),ncol(X))
-
- ncomp = round(ncomp)
-
- if ( !is.numeric(ncomp) || ncomp < 1 || !is.finite(ncomp))
-   stop("invalid value for 'ncomp'.", call. = FALSE)
-
- if (ncomp > min(ncol(X), nrow(X)))
-   stop("use smaller 'ncomp'", call. = FALSE)
-
- #-- log.ratio
- choices = c('CLR', 'ILR','none')
- logratio = choices[pmatch(logratio, choices)]
-
- if (any(is.na(logratio)) || length(logratio) > 1)
-   stop("'logratio' should be one of 'CLR' ,'ILR'or 'none'.", call. = FALSE)
-
- if (logratio != "none" && any(X < 0))
-   stop("'X' contains negative values, you can not log-transform your data")
-
-
- #-- cheking center and scale
- if (!is.logical(center))
- {
-   if (!is.numeric(center) || (length(center) != ncol(X)))
-     stop("'center' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
-          call. = FALSE)
- }
-
- if (!is.logical(scale))
- {
-   if (!is.numeric(scale) || (length(scale) != ncol(X)))
-     stop("'scale' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
-          call. = FALSE)
- }
-
- #-- max.iter
- if (is.null(max.iter) || !is.numeric(max.iter) || max.iter < 1 || !is.finite(max.iter))
-   stop("invalid value for 'max.iter'.", call. = FALSE)
-
- max.iter = round(max.iter)
-
- #-- tol
- if (is.null(tol) || !is.numeric(tol) || tol < 0 || !is.finite(tol))
-   stop("invalid value for 'tol'.", call. = FALSE)
-
- #-- end checking --#
- #------------------#
-
-
- #-----------------------------#
- #-- logratio transformation --#
-
+ ## ----------------------------------- log ratio transformation
  if (is.null(V) & logratio == "ILR") # back-transformation to clr-space, will be used later to recalculate loadings etc
    V = clr.backtransfo(X)
-
  X = logratio.transfo(X = X, logratio = logratio, offset = if (logratio == "ILR") {ilr.offset} else {0})
-
  #as X may have changed
  if (ncomp > min(ncol(X), nrow(X)))
    stop("use smaller 'ncomp'", call. = FALSE)
 
- #-- logratio transformation --#
- #-----------------------------#
-
- #---------------------------------------------------------------------------#
- #-- multilevel approach ----------------------------------------------------#
-
- if (!is.null(multilevel))
- {
+ ## ----------------------------------- multilevel
+ if (!is.null(multilevel)){
    # we expect a vector or a 2-columns matrix in 'Y' and the repeated measurements in 'multilevel'
    multilevel = data.frame(multilevel)
 
@@ -122,8 +57,7 @@
    Xw = withinVariation(X, design = multilevel)
    X = Xw
  }
- #-- multilevel approach ----------------------------------------------------#
- #---------------------------------------------------------------------------#
+ ## ----------------------------------- scale
  X = scale(X, center = center, scale = scale)
  cen = attr(X, "scaled:center")
  sc = attr(X, "scaled:scale")
@@ -345,5 +279,5 @@ pca.default <- .pca
 #' @rdname pca
 #' @export
 pca.character <- function(X=NULL, data=NULL, ncomp=2, ...){
-   .helper_pca(match.call(), fun = 'pca')
+   .pcaMethodsHelper(match.call(), fun = 'pca')
 }

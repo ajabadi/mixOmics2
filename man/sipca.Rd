@@ -8,9 +8,9 @@
 \usage{
 sipca(X = NULL, data = NULL, ncomp = 2, keepX = NULL, ...)
 
-\method{sipca}{default}(X, ncomp = 3, mode = c("deflation",
-  "parallel"), fun = c("logcosh", "exp"), scale = FALSE,
-  max.iter = 200, tol = 1e-04, keepX = NULL, w.init = NULL)
+\method{sipca}{default}(X, ncomp = 3, keepX = NULL,
+  mode = c("deflation", "parallel"), fun = c("logcosh", "exp"),
+  scale = FALSE, max.iter = 200, tol = 1e-04, w.init = NULL)
 
 \method{sipca}{character}(X = NULL, data = NULL, ncomp = 2,
   keepX = NULL, ...)

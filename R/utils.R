@@ -55,10 +55,10 @@ squote <- function(char) paste0("'",char,"'")
   tryCatch({
     if(any(class(c(mc$X, mc$Y))!="character")) stop("mc must have character X and Y", call. = FALSE)
   }, error=function(e) message("oops! something went wrong! please check X and Y again or contact us if you had no luck!"))
-  if(!mc$X %in% names(assays(mc$data))) .stop("inv_xy", " 'X' is not a valid assay from 'data'")
+  if(!mc$X %in% names(assays(mc$data))) .stop(.subclass = "inv_xy", message = " 'X' is not a valid assay from 'data'")
   ## --- if 'Y' is a colData
   if(mc$Y %in% names(colData(mc$data))){
-    if(mc$Y %in% names(assays(mc$data))) .stop("inv_xy", paste0(mcc$Y, " matches to both colData and assay in 'data', change its name in one and continue."))
+    if(mc$Y %in% names(assays(mc$data))) .stop(.subclass = "inv_xy", message = paste0(mcc$Y, " matches to both colData and assay in 'data', change its name in one and continue."))
     ## ----- if Y is a colData column subset it using X samples
     Xcoldata <- suppressMessages( as.data.frame(colData(mc$data[,,mc$X]))) ## keep X assay coldata - DataFrame to data.frame
     mc$Y <- Xcoldata[,mc$Y] ## keep the coldata desired for Y
@@ -89,7 +89,7 @@ squote <- function(char) paste0("'",char,"'")
     mc$data <- mc$data[,complete.cases(mc$data[,,c(mc$X, mc$Y)])] ## keep complete data b/w two assays
     mc$X <- assay(mc$data, mc$X)
     mc$Y <- assay(mc$data, mc$Y)
-  } else {.stop("inv_xy", paste0(squote(mcc$Y), " is not an assay or column data from the MAE object" ))}
+  } else {.stop(.subclass = "inv_xy", message = paste0(squote(mcc$Y), " is not an assay or column data from the MAE object" ))}
   mc$X <- t(as.matrix(mc$X))
   mc$Y <- as.matrix(mc$Y)
 
@@ -142,14 +142,14 @@ squote <- function(char) paste0("'",char,"'")
       mc[c("X", "Y")] <- lapply( mc[c("X", "Y")], eval.parent)
       ## ensure it is a single character
       if(any(sapply( mc[c("X", "Y")], length)!=1))
-        .stop("inv_xy", "'X' and 'Y' must be assay names from 'data'")
+        .stop(.subclass = "inv_xy", message = "'X' and 'Y' must be assay names from 'data'")
       mc <- .names2mat(mc, mcc)
     }
-    # ##--- if data, X and Y , expect X and Y to be assays and change them to matrices
+    ##--- if data, X and Y , expect X and Y to be assays and change them to matrices
     # else if(class(try(mc$formula))!="NULL"){
     #   ## if formula not a fomrula class, expect it to be NULL and X and Y to be assay/colData
     #   if(class(try(mc$formula))!="NULL")
-    #     .stop("inv_formula", "'formula' must be a formula object of form Y~X")
+    #     .stop(.subclass = "inv_formula", message = "'formula' must be a formula object of form Y~X")
     #
     # }
 
@@ -183,9 +183,9 @@ squote <- function(char) paste0("'",char,"'")
 #   return(result)
 # }
 
-.helper_pca <- function(mc, fun='pca'){
+.pcaMethodsHelper <- function(mc, fun='pca'){
+  mc[-1L] <- lapply(mc[-1L], function(x) eval.parent(x, n = 2L))
   .check_data_assay(mc)
-  mc[-1L] <- lapply(mc[-1L], function(x) eval.parent(x, n = 2))
   mcr <- mc ## to return as output
   mcr[[1L]] <- as.name(fun) ## returned call to have 'pca' as function
   mc$X <- t(assay(mc$data, mc$X)) ## change X into matrix of assay name
@@ -194,4 +194,89 @@ squote <- function(char) paste0("'",char,"'")
   result <- eval.parent(mc) ## evaluate the call
   result$call <- mcr ## replace the returned call from internal by the current one
   return(result)
+}
+
+#' PCA Entry Checker
+#'
+#' checks X, ncomp, scale, center, max.iter, and tol. Makes adjustments to
+#' them in the parent environment if necessary. for IPCA, 'center' argument does
+#' not apply (is always TRUE) and NA's are not allowed.
+#' Note: it possibly replaces X, ncomp, and max.iter in parent.frame using <<-.
+#' Note: if the error classes are too many, you can batch replace and simplify.
+#' @noRd
+.pcaEntryChecker <-
+  function(mc,
+           check.keepX = FALSE,
+           check.center = TRUE,
+           check.NA = FALSE) {
+
+
+  #-------- X
+  if (is.data.frame(mc$X))
+    mc$X <- as.matrix(mc$X)
+
+  if (!(is.matrix(mc$X) && is.numeric(mc$X)))
+    .stop(.subclass = 'inv_matrix', message = "'X' must be a numeric matrix.")
+
+  if (any(apply(mc$X, 1, is.infinite)))
+    .stop(.subclass = 'inv_matrix', message = "infinite values in 'X'.")
+
+  ## checking NAs, only for ICA
+  if (check.NA) {
+    if (any(is.na(mc$X)))
+      .stop(.subclass = 'inv_X',message = "missing values in 'X'.")
+  }
+
+
+  #-------- ncomp
+  if (is.null(mc$ncomp))
+    mc$ncomp <- as.integer(min(dim(mc$X)))
+
+  if ( !is.numeric(mc$ncomp) || mc$ncomp < 1 || !is.finite(mc$ncomp))
+    .stop(.subclass = 'inv_ncomp', message = "'ncomp' must be an integer not greater than min(dim(X))")
+
+  if (mc$ncomp > min(dim(mc$X)))
+    .stop(.subclass = 'inv_ncomp', message = "'ncomp' must be an integer not greater than min(dim(X))")
+
+  #-------- keepX
+  if (check.keepX) {
+    if (is.null(mc$keepX))
+      mc$keepX <- rep(ncol(mc$X), mc$ncomp)
+    if (length(mc$keepX) != mc$ncomp)
+      .stop(message = paste0("length of 'keepX' must be equal to 'ncomp', that is ", mc$ncomp, "."))
+    if (any(mc$keepX > ncol(mc$X)))
+      .stop(message = "each component of 'keepX' must be lower or equal to smallest dimension of 'X'")
+    keepX <<- mc$keepX ## write to parent.frame
+    }
+
+  #-------- center
+  ## no centering option in ICA
+  if (check.center) {
+    if (!is.logical(mc$center))
+    {
+      if (!is.numeric(mc$center) || (length(mc$center) != ncol(mc$X)))
+        .stop(message = "'center' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.")
+    }
+  }
+
+
+  #-------- scale
+  if (!is.logical(mc$scale))
+  {
+    if (!is.numeric(mc$scale) || (length(mc$scale) != ncol(mc$X)))
+      .stop(message = "'scale' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.")
+  }
+
+  #-------- max.iter
+  if (is.null(mc$max.iter) || !is.numeric(mc$max.iter) || mc$max.iter < 1 || !is.finite(mc$max.iter))
+    .stop("invalid value for 'max.iter'.")
+
+  #-------- tol
+  if (is.null(mc$tol) || !is.numeric(mc$tol) || mc$tol < 0 || !is.finite(mc$tol))
+    .stop("invalid value for 'tol'.")
+
+  ## write in parent.frame
+  X <<- mc$X
+  ncomp <<- mc$ncomp
+  max.iter <<- as.integer(mc$max.iter)
 }

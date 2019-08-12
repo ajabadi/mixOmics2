@@ -1,5 +1,4 @@
 #' \dontrun{
-## successful: FALSE
 
 library(mixOmics.data)
 

@@ -8,8 +8,8 @@
 \usage{
 spca(X = NULL, data = NULL, ncomp = 2, keepX = NULL, ...)
 
-\method{spca}{default}(X, ncomp = 2, center = TRUE, scale = TRUE,
-  keepX = NULL, max.iter = 500, tol = 1e-06, logratio = c("none",
+\method{spca}{default}(X, ncomp = 2, center = TRUE, keepX = NULL,
+  scale = TRUE, max.iter = 500, tol = 1e-06, logratio = c("none",
   "CLR"), multilevel = NULL)
 
 \method{spca}{character}(X = NULL, data = NULL, ncomp = 2,
@@ -103,20 +103,19 @@ transformation and additional offset might be needed.
 
 library(mixOmics.data)
 spca.rat <- spca(liver.toxicity$gene, ncomp = 3, keepX = rep(50, 3))
-spca.rat
-
+plot(spca.rat)
+print(spca.rat)
 ## variable representation
 plotVar(spca.rat, cex=2)
-
+## 3d plot
 plotVar(spca.rat,style="3d")
 # }
 
 # example with MultiAssayExperiment class
 # --------------------------------
-
-spca.rat <- spca(liver.toxicity.mae, assay='gene', ncomp = 3, keepX = rep(50, 3))
-spca.rat
-
+## X is the name of an assay from data
+spca.rat <- spca(data=liver.toxicity.mae, X='gene', ncomp = 3, keepX = rep(50, 3))
+plotVar(spca.rat, cex=2)
 # \dontrun{
 
 

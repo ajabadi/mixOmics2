@@ -1,11 +1,10 @@
 #' \dontrun{
-## successful: TRUE
-## final: TRUE
 
 library(mixOmics.data)
 # example with missing values where NIPALS is applied
 # --------------------------------
-pca.res <- pca(multidrug$ABC.trans, ncomp = 4, scale = TRUE)
+pca.res <- pca(X = multidrug$ABC.trans, ncomp = 4, scale = TRUE)
+pca.res
 plot(pca.res)
 print(pca.res)
 biplot(pca.res, xlabs = multidrug$cell.line$Class, cex = 0.7)

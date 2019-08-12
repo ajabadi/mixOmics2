@@ -1,22 +1,28 @@
 ############# build all documentation for the package and update namespace
 # file.remove(list.files('man/', pattern = '.Rd', full.names = TRUE))
 roxygen2::roxygenise()
-############# load the pks to access functions
+############# load the pkg to access functions
 devtools::load_all()
 fun = 'spca'
-# fun=NULL
-if (!is.null(fun)) {
-  source(sprintf('tests/testthat/test-%s.R', fun))
-  source(sprintf('examples/%s-example.R', fun))
+
+# fun = NULL
+test_fun <- function(fun=fun){
+  if (!is.null(fun)) {
+    ## run file tests
+    devtools::test_file(file = sprintf('tests/testthat/test-%s.R', fun))
+    ## run examples
+    source(sprintf('examples/%s-example.R', fun))
+  }
 }
+test_fun(fun = fun)
 
-
+devtools::test_file()
 ############# run ./tests tests which then redirects to testthat.R. testhat/helper-*.R files are run before tests
 devtools::test()
 ############# check without examples
 devtools::check(args = "--no-examples")
 ############# test examples
-devtools::run_examples()
+devtools::test_file(file = 'tests/testthat/test-pca.R')
 ## path to Rd files - will let you know if there are any errors/warnings
 # testthat::test_example("man/parent_base_ext.Rd")
 ############# manual tests

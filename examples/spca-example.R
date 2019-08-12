@@ -1,22 +1,19 @@
 #' \dontrun{
-## successful: TRUE
 
 library(mixOmics.data)
 spca.rat <- spca(liver.toxicity$gene, ncomp = 3, keepX = rep(50, 3))
-spca.rat
-
+print(spca.rat)
 ## variable representation
 plotVar(spca.rat, cex=2)
-
+## 3d plot
 plotVar(spca.rat,style="3d")
 # }
 
 # example with MultiAssayExperiment class
 # --------------------------------
-
-spca.rat <- spca(liver.toxicity.mae, assay='gene', ncomp = 3, keepX = rep(50, 3))
-spca.rat
-
+## X is the name of an assay from data
+spca.rat <- spca(data=liver.toxicity.mae, X='gene', ncomp = 3, keepX = rep(50, 3))
+plotVar(spca.rat, cex=2)
 # \dontrun{
 
 
@@ -31,10 +28,9 @@ plotIndiv(spca.rat, cex = 0.01,
 # ----------------
 
 data("diverse.16S")
-pca.res = pca(X = diverse.16S$data.TSS, ncomp = 5,
+spca.res = spca(X = diverse.16S$data.TSS, ncomp = 5, keepX = rep(20, 5),
               logratio = 'CLR', multilevel = diverse.16S$sample)
-plot(pca.res)
-plotIndiv(pca.res, ind.names = FALSE, group = diverse.16S$bodysite, title = '16S diverse data',
+plotIndiv(spca.res, ind.names = FALSE, group = diverse.16S$bodysite, title = '16S diverse data - sPCA',
           legend=TRUE)
 
   #' }

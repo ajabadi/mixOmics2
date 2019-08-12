@@ -1,7 +1,7 @@
 ## -----------------------------------------------------------------------------------
 ## ---------------  custom stop to define specific error classes
 ## -----------------------------------------------------------------------------------
-.stop <- function(.subclass, message, call = NULL, ...) {
+.stop <- function(message, .subclass='customError', call = NULL, ...) {
   formals(stop)$call. <- FALSE
   err <- structure(
     list(

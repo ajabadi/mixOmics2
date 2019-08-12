@@ -100,7 +100,6 @@ library(mixOmics.data)
 
 # implement IPCA on a microarray dataset
 ipca.res <- ipca(liver.toxicity$gene, ncomp = 3, mode="deflation")
-ipca.res
 
 # samples representation
 plotIndiv(ipca.res, ind.names = as.character(liver.toxicity$treatment[, 4]),

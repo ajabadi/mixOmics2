@@ -1,16 +1,25 @@
 ####################################################################################
 ## ---------- internal
 .sipca <- function(X,
-                    ncomp  = 3,
-                    mode = c("deflation", "parallel"),
-                    fun = c("logcosh", "exp"),
-                    scale = FALSE,
-                    max.iter = 200,
-                    tol = 1e-04,
-                    keepX = NULL,
-                    w.init = NULL) {
+                   ncomp  = 3,
+                   keepX = NULL,
+                   mode = c("deflation", "parallel"),
+                   fun = c("logcosh", "exp"),
+                   scale = FALSE,
+                   max.iter = 200,
+                   tol = 1e-04,
+                   w.init = NULL) {
   mode <- .matchArg(mode)
   fun <- .matchArg(fun)
+
+  mcd <- mget(names(formals()),sys.frame(sys.nframe())) ## match.call and defaults
+  err = tryCatch(mcd, error = function(e) e) ## see if arguments can be evaluated
+  if ("simpleError" %in% class(err))
+    stop(err[[1]], ".", call. = FALSE)
+
+  ## check sipca entries for match.call and defaults and do necessary adjustments to
+  ## arguments in this environement from within function
+  .pcaEntryChecker(mcd, check.keepX = TRUE, check.center = FALSE, check.NA = TRUE)
 
   dim_x <- dim(X)
   d <- dim_x[dim_x != 1]
@@ -33,11 +42,9 @@
   ind.names = dimnames(X)[[1]]
   if (is.null(ind.names))
     ind.names = 1:nrow(X)
+  ## center but scale only if asked
+  X <- scale(X, center = TRUE, scale = scale)
 
-  X <- scale(X, scale = FALSE)
-  if (scale) {
-    X = scale(X, scale = scale)
-  }
   svd_mat <- svd(X)
   right_sing_vect <- svd_mat$v
   right_sing_vect <- scale(right_sing_vect, center = TRUE, scale = TRUE)
@@ -226,5 +233,5 @@ sipca.default <- .sipca
 #' @rdname sipca
 #' @export
 sipca.character <- function(X=NULL, data=NULL, ncomp=2, keepX=NULL, ...){
-  .helper_pca(match.call(), fun = 'sipca')
+  .pcaMethodsHelper(match.call(), fun = 'sipca')
 }
