@@ -98,7 +98,7 @@ function(x, ...)
 
     mode = paste("'", x$mode, "'", sep = "")
 
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
 
     cat(" PLS with a", mode, "mode with", x$ncomp, "PLS components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
@@ -128,7 +128,7 @@ function(x, ...)
 
     mode = paste("'", x$mode, "'", sep = "")
 
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
 
     cat(" MINT PLS with a", mode, "mode with", x$ncomp, "PLS components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
@@ -159,7 +159,7 @@ print.mixo_plsda <-
 function(x, ...)
 {
 
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
 
     cat(" PLS-DA (regression mode) with", x$ncomp, "PLS-DA components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
@@ -191,7 +191,7 @@ print.mint.plsda <-
 function(x, ...)
 {
 
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
 
     cat(" MINT PLS-DA (regression mode) with", x$ncomp, "PLS-DA components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
@@ -229,7 +229,7 @@ function(x, ...)
     keepX = paste("[", x$keepX, "]", sep = "")
     keepY = paste("[", x$keepY, "]", sep = "")
 
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
 
     cat(" sPLS with a", mode, "mode with", x$ncomp, "sPLS components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
@@ -262,7 +262,7 @@ function(x, ...)
     keepX = paste("[", x$keepX, "]", sep = "")
     keepY = paste("[", x$keepY, "]", sep = "")
 
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
 
     cat(" MINT sPLS with a", mode, "mode with", x$ncomp, "sPLS components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
@@ -301,7 +301,7 @@ function(x, ...)
     keepX = paste("[", x$keepX, "]", sep = "")
     keepY = paste("[", x$keepY, "]", sep = "")
 
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
     cat(" sPLS-DA (regression mode) with", x$ncomp, "sPLS-DA components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y with", ncol(x$ind.mat) , "classes. \n\n")
@@ -335,7 +335,7 @@ function(x, ...)
     keepX = paste("[", x$keepX, "]", sep = "")
     keepY = paste("[", x$keepY, "]", sep = "")
 
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
     cat(" MINT sPLS-DA (regression mode) with", x$ncomp, "sPLS-DA components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y with", ncol(x$ind.mat) , "classes. \n\n")
@@ -370,7 +370,7 @@ print.rcc <-
 function(x, ...)
 {
 
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
 
     cat(" rCCA with", x$ncomp, "components and regularization parameters", x$lambda[1], "and", x$lambda[2], "for the X and Y data. \n")
     cat(" You entered data X of dimensions :", nrow(x$X), ncol(x$X), "\n")
@@ -418,10 +418,7 @@ print.pca <- function(x, ...)
 print.spca <-
 function(x, ...)
 {
-
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
-
-    cat(" sparse pCA with", x$ncomp, "principal components. \n")
+    cat(" sparse PCA with", x$ncomp, "principal components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
 
     cat(" Selection of", x$keepX, "variables on each of the principal components on the X data set. \n")
@@ -443,9 +440,6 @@ function(x, ...)
 print.ipca <-
 function(x, ...)
 {
-
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
-
     cat(" IPCA with", x$ncomp, "independent components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
 
@@ -464,8 +458,6 @@ function(x, ...)
 print.sipca <-
 function(x, ...)
 {
-
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
 
     cat(" Sparse IPCA with", x$ncomp, "independent components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
@@ -487,8 +479,6 @@ function(x, ...)
 # ------------------------ print for rgcca -------------------------
 print.rgcca <- function(x, ...)
 {
-
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
 
     # components
     for(k in 1:length(x$blocks)){
@@ -523,8 +513,6 @@ print.rgcca <- function(x, ...)
 # ------------------------ print for sgcca -------------------------
 print.sgcca<- function(x, ...)
 {
-
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
 
     # components
     for(k in 1 : length(x$X)){
@@ -567,8 +555,6 @@ print.sgcca<- function(x, ...)
 # ------------------------ print for sgcca -------------------------
 print.sgccda<- function(x, ...)
 {
-
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
 
     # components
     for(k in 1 : length(x$X)){
@@ -713,7 +699,6 @@ function(x, ...)
 
 print.perf.pls.mthd = function(x, ...)
 {
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
     cat(" MSEP, R2, Q2, Q2.total, RSS, PRESS. See the help file ?perf \n\n")
@@ -725,7 +710,7 @@ print.perf.pls.mthd = function(x, ...)
 
 print.perf.spls.mthd = function(x, ...)
 {
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
     cat(" MSEP, R2, Q2, Q2.total, RSS, PRESS. See the help file ?perf \n")
@@ -740,7 +725,7 @@ print.perf.spls.mthd = function(x, ...)
 
 print.perf.plsda.mthd = function(x, ...)
 {
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
     cat(" Error rate (overall or BER) for each component and for each distance: see object$error.rate \n")
@@ -756,7 +741,7 @@ print.perf.plsda.mthd = function(x, ...)
 
 print.perf.splsda.mthd = function(x, ...)
 {
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
     cat(" Error rate (overall or BER) for each component and for each distance (averaged over the nrepeat): see object$error.rate \n")
@@ -774,7 +759,7 @@ print.perf.splsda.mthd = function(x, ...)
 
 print.perf.mint.splsda.mthd = function(x, ...)
 {
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
     cat(" Study-specific error rate (overall, BER and error rate per class) for each component and for each distance: see object$study.specific.error \n")
@@ -791,7 +776,7 @@ print.perf.mint.splsda.mthd = function(x, ...)
 
 print.perf.sgccda.mthd = function(x, ...)
 {
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
     cat(" Error rate (overall or BER) for each component and for each distance: see object$error.rate \n")
@@ -810,20 +795,20 @@ print.perf.sgccda.mthd = function(x, ...)
 # tune: "spls", "splsda", "mint.splsda", "rcc", "pca"
 print.tune.pca = function(x, ...)
 {
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
     cat(" for all principal components, see object$sdev, object$explained_variance and object$cum.var\n")
 }
 
 print.tune.rcc = function(x, ...)
 {
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
     cat("  lambda1 = ", x$opt.lambda1, ", see object$opt.lambda1\n", " lambda2 = ", x$opt.lambda2, ",  see object$opt.lambda2\n",
     "CV-score = ", x$opt.score, ", see object$opt.score\n")
 }
 
 print.tune.splsda = function(x, ...)
 {
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
     cat(" Optimal keepX for each component, see object$choice.keepX \n")
@@ -841,7 +826,7 @@ print.tune.splsda = function(x, ...)
 
 print.tune.mint.splsda = function(x, ...)
 {
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
     cat(" Optimal keepX for each component, see object$choice.keepX \n")
@@ -856,7 +841,7 @@ print.tune.mint.splsda = function(x, ...)
 
 print.tune.block.splsda = function(x, ...)
 {
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
     cat(" Optimal keepX for each component, see object$choice.keepX \n")
@@ -870,7 +855,7 @@ print.tune.block.splsda = function(x, ...)
 
 print.predict = function(x, ...)
 {
-    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
     if(is.list(x$predict)) #block analysis
